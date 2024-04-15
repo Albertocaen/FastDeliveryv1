@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  usuario-mysql:
+    image: mysql
+    container_name: usuario-mysql
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 2810
+      MYSQL_DATABASE: Fastdelivery
+      MYSQL_USER: caen
+      MYSQL_PASSWORD: caen
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d

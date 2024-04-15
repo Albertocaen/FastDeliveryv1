@@ -1,0 +1,29 @@
+PERSONA(DNI (PK), email, nombre, apellido, telefono, contraseña, usuario)
+
+ADMIN(DNI_ADMIN(PK,FK))
+
+CLIENTE(DNI_CLIENTE (PK,FK), direccion, ciudad, codigo_postal, cliente_pedido (FK -> REPARTIDOR.DNI_REPARTIDOR))
+
+REPARTIDOR(DNI_REPARTIDOR (PK,FK),calificacion, horario_trabajo, estado_de_disponibilidad, cantidad_pedidos, placa_vehiculo(FK -> VEHICULO.placa_vehiculo))
+
+VEHICULO(placa_vehiculo (PK), marca, modelo, color)
+
+MOTO(placa_vehiculo (PK,FK), cilindrada, tipo)
+
+COCHE(placa_vehiculo (PK,FK), capacidad_carga, tipo_combustible)
+
+PROVEEDOR(id_proveedor (PK), nombre_empresa, telefono, email)
+
+PRODUCTO(id_producto (PK), nombre, descripcion, precio, id_proveedor_producto (FK -> PROVEEDOR.id_proveedor))
+
+STOCK(id_stock (PK), cantidad, fecha_ingreso, id_producto (FK -> PRODUCTO.id_producto), DNI_ADMIN (FK -> ADMIN.DNI_ADMIN))
+
+INCIDENCIA(id_incidencia (PK), descripcion, fecha, tipo, hora, id_stock (FK -> STOCK.id_stock))
+
+PEDIDO_CLIENTE(id_pedido_cliente (PK), cantidad, fecha_pedido, peso, estado, dni_cliente_pedido (FK -> DNI_CLIENTE), dni_repartidor_pedido(FK ->DNI_REPARTIDOR))
+
+PEDIDO_PROVEEDOR(id_pedido_proveedor (PK), cantidad, fecha_pedido, estado, id_proveedor_pedido (FK -> PROVEEDOR.id_proveedor), dni_admin_pedido(FK -> ADMIN.DNI_ADMIN))
+
+PEDIDO_CLIENTE_PRODUCTO(id_pedido_cliente_producto (PK), id_pedido_cliente_pp (FK -> PEDIDO_CLIENTE.id_pedido_cliente), id_producto_pp (FK -> PRODUCTO.id_producto), cantidad, precio_unitario, subtotal)
+
+PEDIDO_PROVEEDOR_PRODUCTO(id_pedido_proveedor_producto (PK), id_pedido_proveedor_pp (FK -> PEDIDO_PROVEEDOR.id_pedido_proveedor), id_producto_pp (FK -> PRODUCTO.id_producto), cantidad, precio_unitario, subtotal)

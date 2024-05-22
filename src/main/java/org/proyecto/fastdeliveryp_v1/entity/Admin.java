@@ -1,10 +1,12 @@
 package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
+
+@Data
 @Entity
 @Table(name = "ADMIN")
 public class Admin {
@@ -12,47 +14,16 @@ public class Admin {
     @Column(name = "DNI_ADMIN", nullable = false, length = 20)
     private String dniAdmin;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "DNI_ADMIN", nullable = false)
     private Persona persona;
 
-    @OneToMany(mappedBy = "dniAdminPedido")
-    private Set<PedidoProveedor> pedidoProveedors = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "dniAdmin", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Stock> stocks;
 
-    @OneToMany(mappedBy = "dniAdmin")
-    private Set<Stock> stocks = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "dniAdminPedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoProveedor> pedidosProveedor;
 
-    public String getDniAdmin() {
-        return dniAdmin;
-    }
-
-    public void setDniAdmin(String dniAdmin) {
-        this.dniAdmin = dniAdmin;
-    }
-
-    public Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Persona persona) {
-        this.persona = persona;
-    }
-
-    public Set<PedidoProveedor> getPedidoProveedors() {
-        return pedidoProveedors;
-    }
-
-    public void setPedidoProveedors(Set<PedidoProveedor> pedidoProveedors) {
-        this.pedidoProveedors = pedidoProveedors;
-    }
-
-    public Set<Stock> getStocks() {
-        return stocks;
-    }
-
-    public void setStocks(Set<Stock> stocks) {
-        this.stocks = stocks;
-    }
 
 }

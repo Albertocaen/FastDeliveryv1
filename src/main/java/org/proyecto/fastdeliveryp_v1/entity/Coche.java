@@ -1,7 +1,9 @@
 package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "COCHE")
 public class Coche {
@@ -20,36 +22,5 @@ public class Coche {
     @Column(name = "tipo_combustible", length = 50)
     private String tipoCombustible;
 
-    public String getPlacaVehiculo() {
-        return placaVehiculo;
-    }
-
-    public void setPlacaVehiculo(String placaVehiculo) {
-        this.placaVehiculo = placaVehiculo;
-    }
-
-    public Vehiculo getVehiculo() {
-        return vehiculo;
-    }
-
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
-    }
-
-    public Float getCapacidadCarga() {
-        return capacidadCarga;
-    }
-
-    public void setCapacidadCarga(Float capacidadCarga) {
-        this.capacidadCarga = capacidadCarga;
-    }
-
-    public String getTipoCombustible() {
-        return tipoCombustible;
-    }
-
-    public void setTipoCombustible(String tipoCombustible) {
-        this.tipoCombustible = tipoCombustible;
-    }
 
 }

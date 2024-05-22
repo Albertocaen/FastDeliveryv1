@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Cliente</title>
+</head>
+<body>
+<h1>Editar Cliente</h1>
+<form th:action="@{/clientes/edit/{dniCliente}(dniCliente=${cliente.dniCliente})}" th:object="${cliente}" method="post">
+    <label>DNI: <input type="text" th:field="*{dniCliente}" readonly></label><br>
+    <label>Nombre: <input type="text" th:field="*{persona.nombre}"></label><br>
+    <label>Email: <input type="email" th:field="*{persona.email}"></label><br>
+    <label>Apellido: <input type="text" th:field="*{persona.apellido}"></label><br>
+    <label>Teléfono: <input type="text" th:field="*{persona.telefono}"></label><br>
+    <label>Usuario: <input type="text" th:field="*{persona.usuario}"></label><br>
+    <label>Contraseña: <input type="password" th:field="*{persona.contraseña}"></label><br>
+    <label>Dirección: <input type="text" th:field="*{direccion}"></label><br>
+    <label>Ciudad: <input type="text" th:field="*{ciudad}"></label><br>
+    <label>Código Postal: <input type="text" th:field="*{codigoPostal}"></label><br>
+    <button type="submit">Guardar</button>
+</form>
+<a href="/clientes">Volver a la lista</a>
+</body>
+</html>

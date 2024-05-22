@@ -1,10 +1,11 @@
 package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
-
+import lombok.Data;
+import java.util.List;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
+@Data
 @Entity
 @Table(name = "REPARTIDOR")
 public class Repartidor {
@@ -12,8 +13,8 @@ public class Repartidor {
     @Column(name = "DNI_REPARTIDOR", nullable = false, length = 20)
     private String dniRepartidor;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "DNI_REPARTIDOR", nullable = false)
     private Persona persona;
 
@@ -33,71 +34,7 @@ public class Repartidor {
     @JoinColumn(name = "placa_vehiculo")
     private Vehiculo placaVehiculo;
 
-    @OneToMany(mappedBy = "clientePedido")
-    private Set<Cliente> clientes = new LinkedHashSet<>();
-
-    public String getDniRepartidor() {
-        return dniRepartidor;
-    }
-
-    public void setDniRepartidor(String dniRepartidor) {
-        this.dniRepartidor = dniRepartidor;
-    }
-
-    public Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Persona persona) {
-        this.persona = persona;
-    }
-
-    public Float getCalificacion() {
-        return calificacion;
-    }
-
-    public void setCalificacion(Float calificacion) {
-        this.calificacion = calificacion;
-    }
-
-    public String getHorarioTrabajo() {
-        return horarioTrabajo;
-    }
-
-    public void setHorarioTrabajo(String horarioTrabajo) {
-        this.horarioTrabajo = horarioTrabajo;
-    }
-
-    public String getEstadoDeDisponibilidad() {
-        return estadoDeDisponibilidad;
-    }
-
-    public void setEstadoDeDisponibilidad(String estadoDeDisponibilidad) {
-        this.estadoDeDisponibilidad = estadoDeDisponibilidad;
-    }
-
-    public Integer getCantidadPedidos() {
-        return cantidadPedidos;
-    }
-
-    public void setCantidadPedidos(Integer cantidadPedidos) {
-        this.cantidadPedidos = cantidadPedidos;
-    }
-
-    public Vehiculo getPlacaVehiculo() {
-        return placaVehiculo;
-    }
-
-    public void setPlacaVehiculo(Vehiculo placaVehiculo) {
-        this.placaVehiculo = placaVehiculo;
-    }
-
-    public Set<Cliente> getClientes() {
-        return clientes;
-    }
-
-    public void setClientes(Set<Cliente> clientes) {
-        this.clientes = clientes;
-    }
+    @OneToMany(mappedBy = "dniRepartidorPedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PedidoCliente> pedidos;
 
 }

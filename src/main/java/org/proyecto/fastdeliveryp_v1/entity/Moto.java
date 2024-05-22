@@ -1,7 +1,9 @@
 package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "MOTO")
 public class Moto {
@@ -17,28 +19,6 @@ public class Moto {
     @Column(name = "cilindrada")
     private Integer cilindrada;
 
-    public String getPlacaVehiculo() {
-        return placaVehiculo;
-    }
 
-    public void setPlacaVehiculo(String placaVehiculo) {
-        this.placaVehiculo = placaVehiculo;
-    }
-
-    public Vehiculo getVehiculo() {
-        return vehiculo;
-    }
-
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
-    }
-
-    public Integer getCilindrada() {
-        return cilindrada;
-    }
-
-    public void setCilindrada(Integer cilindrada) {
-        this.cilindrada = cilindrada;
-    }
 
 }

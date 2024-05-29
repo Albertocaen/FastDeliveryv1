@@ -2,6 +2,7 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class Cliente {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
+    @ToString.Exclude
     @JoinColumn(name = "DNI_CLIENTE")
     private Persona persona;
 

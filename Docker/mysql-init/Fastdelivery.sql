@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS PERSONA (
                                        nombre VARCHAR(50),
                                        apellido VARCHAR(50),
                                        telefono VARCHAR(20),
-                                       contrasena VARCHAR(50),
+                                       contrasena VARCHAR(100),
                                        usuario VARCHAR(50),
                                        CONSTRAINT chk_persona_usuario CHECK (usuario IN ('admin', 'cliente', 'repartidor'))
 );

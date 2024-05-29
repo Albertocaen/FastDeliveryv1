@@ -3,10 +3,12 @@ package org.proyecto.fastdeliveryp_v1.service;
 import org.proyecto.fastdeliveryp_v1.entity.*;
 import org.proyecto.fastdeliveryp_v1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class ClienteService {
@@ -18,21 +20,7 @@ public class ClienteService {
     private PersonaRepository personaRepository;
 
     @Autowired
-    private RepartidorRepository repartidorRepository;
-
-    @Autowired
-    private AdminRepository adminRepository;
-
-    @Autowired
-    private StockRepository stockRepository;
-
-    @Autowired
-    private PedidoClienteRepository pedidoClienteRepository;
-
-
-    @Autowired
-    private PedidoProveedorRepository pedidoProveedorRepository;
-
+    private PasswordEncoder passwordEncoder;
 
     public List<Cliente> getAllClientes() {
         return clienteRepository.findAll();
@@ -42,83 +30,87 @@ public class ClienteService {
         return clienteRepository.findById(dni).orElse(null);
     }
 
+    @Transactional
     public Cliente saveCliente(Cliente cliente) {
-        // Asignar el DNI de Cliente a la Persona
         Persona persona = cliente.getPersona();
+        if (persona == null) {
+            throw new IllegalArgumentException("El cliente debe tener una persona asociada.");
+        }
         persona.setDni(cliente.getDniCliente());
 
-        // Guardar la persona antes del cliente
-        personaRepository.save(persona);
+        persona.setContraseña(passwordEncoder.encode(persona.getContraseña()));
 
-        // Luego guardar el cliente
+        // Validar el cliente antes de guardar
+        validateCliente(cliente);
+
+
         return clienteRepository.save(cliente);
     }
 
+
+    @Transactional
     public void updateCliente(String dniCliente, Cliente cliente) {
-        // Asegúrate de que el DNI de la Persona está asignado
-        cliente.getPersona().setDni(cliente.getDniCliente());
-
-        // Asegúrate de que el campo usuario tiene un valor permitido
-        if (!cliente.getPersona().getUsuario().equals("admin") &&
-                !cliente.getPersona().getUsuario().equals("cliente") &&
-                !cliente.getPersona().getUsuario().equals("repartidor")) {
-            cliente.getPersona().setUsuario("cliente"); // Asigna un valor por defecto si no es válido
+        Persona persona = cliente.getPersona();
+        if (persona == null) {
+            throw new IllegalArgumentException("El cliente debe tener una persona asociada.");
         }
+        persona.setDni(cliente.getDniCliente());
 
-        // Guardar la persona antes del cliente
-        personaRepository.save(cliente.getPersona());
+        persona.setContraseña(passwordEncoder.encode(persona.getContraseña()));
 
-        // Luego guardar el cliente
+        // Validar el cliente antes de actualizar
+        validateCliente(cliente);
+
+
         clienteRepository.save(cliente);
     }
+
     @Transactional
     public void deleteCliente(String dniCliente) {
+
+        // El manejo de el delete se facilito debido a el cambio en la base de datos a cascade
         Cliente cliente = clienteRepository.findById(dniCliente).orElse(null);
         if (cliente != null) {
-            Persona persona = cliente.getPersona();
-
-            // Verificar y eliminar cualquier relación con Repartidor y Admin si existen
-            if (persona != null) {
-                Repartidor repartidor = repartidorRepository.findByPersonaDni(persona.getDni());
-                if (repartidor != null) {
-                    // Encontrar y eliminar pedidos relacionados con el repartidor
-                    List<PedidoCliente> pedidos = pedidoClienteRepository.findByDniRepartidorPedido(repartidor);
-                    for (PedidoCliente pedido : pedidos) {
-
-                    }
-                    // Eliminar pedidos del repartidor
-                    pedidoClienteRepository.deleteAll(pedidos);
-
-                    repartidorRepository.delete(repartidor);
-                }
-
-                Admin admin = adminRepository.findByPersonaDni(persona.getDni());
-                if (admin != null) {
-                    // Eliminar stocks relacionados con el admin
-                    List<Stock> stocks = stockRepository.findByDniAdmin(admin);
-                    for (Stock stock : stocks) {
-                        stockRepository.delete(stock);
-                    }
-
-                    // Encontrar y eliminar pedidos proveedores relacionados con el admin
-                    List<PedidoProveedor> pedidosProveedor = pedidoProveedorRepository.findByDniAdminPedido_DniAdmin(admin);
-                    for (PedidoProveedor pedidoProveedor : pedidosProveedor) {
-
-                    }
-                    // Eliminar pedidos del proveedor
-                    pedidoProveedorRepository.deleteAll(pedidosProveedor);
-
-                    adminRepository.delete(admin);
-                }
-
-                // Finalmente, eliminar la persona
-                clienteRepository.deletePersonaByDni(persona.getDni());
-            }
-
-            // Limpiar las relaciones antes de eliminar el cliente
             clienteRepository.delete(cliente);
         }
     }
+
+    //validate
+    private void validateCliente(Cliente cliente) {
+        if (cliente.getDniCliente() == null || cliente.getDniCliente().trim().isEmpty()) {
+            throw new IllegalArgumentException("El DNI del cliente no puede estar vacío.");
+        }
+
+        Persona persona = cliente.getPersona();
+        if (persona == null) {
+            throw new IllegalArgumentException("El cliente debe tener una persona asociada.");
+        }
+
+        if (persona.getNombre() == null || persona.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre de la persona no puede estar vacío.");
+        }
+
+        if (persona.getEmail() == null || !isValidEmail(persona.getEmail())) {
+            throw new IllegalArgumentException("El email de la persona no es válido.");
+        }
+
+        // Verificar si el email ya existe en la base de datos
+        Persona existingPersona = personaRepository.findByEmail(persona.getEmail());
+        if (existingPersona != null && !existingPersona.getDni().equals(persona.getDni())) {
+            throw new IllegalArgumentException("El email ya está en uso.");
+        }
+
+        if (persona.getContraseña() == null || persona.getContraseña().length() < 6) {
+            throw new IllegalArgumentException("La contraseña debe tener al menos 6 caracteres.");
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
+    }
+
 }
 
 

@@ -39,6 +39,17 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    public String createPasswordResetToken(String email) {
+        Claims claims = Jwts.claims().setSubject(email);
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24 horas
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         try {
             Claims claims = getAllClaimsFromToken(token);
@@ -55,6 +66,17 @@ public class JwtTokenUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
+    public String getUsernameFromPasswordResetToken(String token) {
+        try {
+            Claims claims = getAllClaimsFromToken(token);
+            return claims.getSubject();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -66,6 +88,15 @@ public class JwtTokenUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public Boolean isTokenExpired(String token) {
+        final Date expiration = getExpirationDateFromToken(token);
+        return expiration.before(new Date());
+    }
+
+    public Date getExpirationDateFromToken(String token) {
+        return getClaimFromToken(token, Claims::getExpiration);
     }
 }
 

@@ -1,12 +1,10 @@
-version: "3.9"
-
+version: '3.9'
 services:
   usuario-mysql:
-    image: mysql
+    image: mysql:8.0
     container_name: usuario-mysql
     ports:
       - "3306:3306"
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: 2810
       MYSQL_DATABASE: Fastdelivery

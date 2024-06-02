@@ -30,6 +30,9 @@ public class ClienteService {
         return clienteRepository.findById(dni).orElse(null);
     }
 
+
+    public Cliente getClienteByEmail(String email) {return clienteRepository.findByEmail(email);}
+
     @Transactional
     public Cliente saveCliente(Cliente cliente) {
         Persona persona = cliente.getPersona();

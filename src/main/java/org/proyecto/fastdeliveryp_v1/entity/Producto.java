@@ -23,6 +23,9 @@ public class Producto {
     @Column(name = "precio")
     private Float precio;
 
+    @Column(name = "img")
+    private String img;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proveedor_producto")
     private Proveedor idProveedorProducto;

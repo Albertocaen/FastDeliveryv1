@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agregar Nuevo Producto</title>
+</head>
+<body>
+<h1>Agregar Nuevo Producto</h1>
+<form th:action="@{/productos}" th:object="${producto}" method="post" enctype="multipart/form-data">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" th:field="*{nombre}" required/><br/>
+
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" th:field="*{descripcion}" required></textarea><br/>
+
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" th:field="*{precio}" step="0.01" required/><br/>
+
+    <label for="imagen">Imagen:</label>
+    <input type="file" id="imagen" name="imagen"/><br/>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<!-- Si el producto ya tiene una imagen, mostrarla -->
+<div th:if="${producto.img != null}">
+    <h2>Imagen actual:</h2>
+    <img th:src="${producto.img}" alt="Imagen del Producto" width="150"/>
+</div>
+</body>
+</html>

@@ -62,23 +62,24 @@ CREATE TABLE IF NOT EXISTS ADMIN (
 );
 
 CREATE TABLE IF NOT EXISTS PROVEEDOR (
-                                         id_proveedor INT PRIMARY KEY,
+                                         id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
                                          nombre_empresa VARCHAR(50),
                                          telefono VARCHAR(20),
                                          email VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS PRODUCTO (
-                                        id_producto INT PRIMARY KEY,
+                                        id_producto INT AUTO_INCREMENT PRIMARY KEY,
                                         nombre VARCHAR(50),
                                         descripcion VARCHAR(1000),
                                         precio FLOAT,
                                         id_proveedor_producto INT,
+                                        img VARCHAR(100),
                                         FOREIGN KEY (id_proveedor_producto) REFERENCES PROVEEDOR(id_proveedor) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS STOCK (
-                                     id_stock INT PRIMARY KEY,
+                                     id_stock INT AUTO_INCREMENT PRIMARY KEY,
                                      cantidad INT,
                                      fecha_ingreso DATE,
                                      id_producto INT,
@@ -88,7 +89,7 @@ CREATE TABLE IF NOT EXISTS STOCK (
 );
 
 CREATE TABLE IF NOT EXISTS PEDIDO_CLIENTE (
-                                              id_pedido_cliente INT PRIMARY KEY,
+                                              id_pedido_cliente INT AUTO_INCREMENT PRIMARY KEY,
                                               cantidad INT,
                                               fecha_pedido DATE,
                                               peso FLOAT,
@@ -102,7 +103,7 @@ CREATE TABLE IF NOT EXISTS PEDIDO_CLIENTE (
 );
 
 CREATE TABLE IF NOT EXISTS PEDIDO_PROVEEDOR (
-                                                id_pedido_proveedor INT PRIMARY KEY,
+                                                id_pedido_proveedor INT AUTO_INCREMENT PRIMARY KEY,
                                                 cantidad INT,
                                                 fecha_pedido DATE,
                                                 estado VARCHAR(50),
@@ -111,5 +112,4 @@ CREATE TABLE IF NOT EXISTS PEDIDO_PROVEEDOR (
                                                 FOREIGN KEY (id_proveedor_pedido) REFERENCES PROVEEDOR(id_proveedor) ON DELETE CASCADE,
                                                 FOREIGN KEY (dni_admin_pedido) REFERENCES ADMIN(DNI_ADMIN) ON DELETE SET NULL
 );
-
 

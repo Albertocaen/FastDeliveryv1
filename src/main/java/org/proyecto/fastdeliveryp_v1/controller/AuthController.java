@@ -1,6 +1,7 @@
 package org.proyecto.fastdeliveryp_v1.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.proyecto.fastdeliveryp_v1.security.JwtTokenUtil;
 import org.proyecto.fastdeliveryp_v1.service.PersonaService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Collection;
 
 @Controller
+
 public class AuthController {
 
     @Autowired
@@ -58,7 +60,7 @@ public class AuthController {
             cookie.setMaxAge(7 * 24 * 60 * 60); // 1 semana
             response.addCookie(cookie);
 
-            return "redirect:/clientes"; // Redirigir a la página de clientes después del inicio de sesión exitoso
+            return "redirect:/inicio"; // Redirigir a la página de clientes después del inicio de sesión exitoso
         } catch (AuthenticationException e) {
             model.addAttribute("error", "Credenciales de inicio de sesión inválidas");
             return "login";
@@ -86,5 +88,20 @@ public class AuthController {
             return "register";
         }
     }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // Eliminar la cookie JWT
+        Cookie cookie = new Cookie("JWT", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Set the cookie to expire immediately
+        response.addCookie(cookie);
 
+        // Invalidate the session
+        request.getSession().invalidate();
+
+        return "redirect:/inicio";
+    }
 }
+
+

@@ -1,0 +1,12 @@
+<div th:fragment="chatbot">
+    <div class="card chatbot-container minimized">
+        <div class="card-header" onclick="toggleChatbot()">Tienes Alguna Pregunta?</div>
+        <div class="card-body chatbot-messages" id="chatbot-messages"></div>
+        <div class="input-group mb-3">
+            <input type="text" id="chatbot-input" class="form-control" placeholder="Escribe tu pregunta...">
+            <div class="input-group-append">
+                <button class="btn" type="button" onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -13,6 +13,9 @@ public interface ClienteRepository extends JpaRepository<Cliente, String> {
     @Query("SELECT c FROM Cliente c WHERE c.dniCliente = :dniCliente")
     Cliente findByDniCliente(@Param("dniCliente") String dniCliente);
 
+    @Query("SELECT c FROM Cliente c WHERE c.persona.email = :email")
+    Cliente findByEmail(@Param("email") String email);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Persona p WHERE p.dni = ?1")

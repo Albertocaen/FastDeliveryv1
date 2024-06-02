@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - FastDelivery</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/animation.css">
+    <link rel="stylesheet" href="/static/css/chat/chat.css">
+    <link rel="stylesheet" href="/static/css/nav.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<div class="offer-banner">
+    <h4>50€ DE DESCUENTO</h4>
+</div>
+<div class="music-control" onclick="toggleMusic()">
+    <img src="/static/uploads/610e8867f8bb190004769dd9.png" alt="Music Control" id="music-icon">
+</div>
+<audio id="background-music" loop>
+    <source src="/static/music/Mami%20yo%20te%20veo,%20ahí%20con%20tus%20amigas%20__%20Pitbull%20vs%20Afrojack%20•%20Maldito%20alcohol%20(Letra).mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+</audio>
+<!-- Incluye el fragmento de navegación -->
+<div th:replace="fragmentos/nav :: nav-menu"></div>
+
+<!-- Contenido de la página -->
+<div class="container">
+
+    <!-- Sección de anuncios -->
+    <div class="advertisement"></div>
+
+    <!-- Productos destacados -->
+    <div class="row">
+        <div class="col-md-4" th:each="producto : ${productosDestacados}">
+            <div class="highlight-product">
+                <div class="producto-info">
+                    <h3 th:text="${producto.nombre}">Producto</h3>
+                    <p th:text="${producto.descripcion}">Descripción del producto</p>
+                    <p th:text="'Precio: ' + ${producto.precio} + ' €'">Precio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carrusel de Productos -->
+    <div id="productosCarrusel" class="carousel slide mt-5" data-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'" th:each="producto, iterStat : ${productos}">
+                <div class="d-flex justify-content-center">
+                    <div class="card">
+                        <img class="card-img-top" th:src="${producto.img}" alt="Imagen de Producto">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${producto.nombre}">Nombre del Producto</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class=" custom-arrow carousel-control-prev" href="#productosCarrusel" role="button" data-slide="prev">
+            <span class=" carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class=" custom-arrow carousel-control-next" href="#productosCarrusel" role="button" data-slide="next">
+            <span class="  carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Siguiente</span>
+        </a>
+    </div>
+
+    <div id="contenido-dinamico" class="mt-4"></div>
+</div>
+<div th:replace="fragmentos/chatbot :: chatbot"></div>
+
+
+<!-- Pie de página -->
+<footer class="footer">
+    <div class="container">
+        <div class="column">
+            <h4>FastDelivery</h4>
+            <p>CALLE VELLUTERS,10<br>
+                P.I. CASANOVA<br>
+                (46190) RIBARROJA DEL TURIA<br>
+                VALENCIA - ESPAÑA</p>
+            <p>HORARIO DE ATENCIÓN AL CLIENTE:<br>
+                DE LUNES A JUEVES DE 9 A 14 Y DE 15 A 18H<br>
+                VIERNES DE 9 A 15H</p>
+            <p><i class="fas fa-envelope"></i> info@fastdelivery.es</p>
+        </div>
+        <div class="column">
+            <h4>INFORMACIÓN</h4>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/primer-pedido.html">-5% en tu primer pedido!</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/quienes-somos.html">Quiénes somos</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/envios.html">Envíos y seguimiento</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/pagos.html">Formas de pago</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/preguntas-frecuentes.html">Preguntas frecuentes</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/devoluciones.html">Devoluciones</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/contacto.html">Contacto</a>
+        </div>
+        <div class="column">
+            <h4>CLIENTES</h4>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/crear-cuenta.html">Crear una cuenta</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/mi-cuenta.html">Mi cuenta</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/historial-pedidos.html">Historial de pedidos</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/alertas.html">Alertas</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/profesional.html">Conviértete en Profesional</a>
+        </div>
+        <div class="column">
+            <h4>INFO. LEGAL</h4>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/privacidad.html">Aviso legal. Política de Privacidad</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/condiciones-compra.html">Condiciones de compra</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/cambios-devoluciones.html">Cambios y devoluciones</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/cookies.html">Ley de cookies</a>
+            <div class="payment-methods">
+                <img src="/static/uploads/580b57fcd9996e24bc43c530.png" alt="Paypal">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/js/chatbot.js"></script>
+<script src="/js/musicControl.js"></script>
+<script src="/static/js/Jquery.js"></script>
+</body>
+</html>

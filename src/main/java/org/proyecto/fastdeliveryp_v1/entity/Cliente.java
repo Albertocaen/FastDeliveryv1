@@ -30,6 +30,7 @@ public class Cliente {
     @Column(name = "codigo_postal", length = 10)
     private String codigoPostal;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "dniClientePedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoCliente> pedidos;
 }

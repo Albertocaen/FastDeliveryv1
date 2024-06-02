@@ -2,6 +2,7 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -28,6 +29,7 @@ public class PedidoCliente {
     @Column(name = "estado", length = 50)
     private String estado;
 
+    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dni_cliente_pedido")
     private Cliente dniClientePedido;

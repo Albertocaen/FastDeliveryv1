@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,19 +34,24 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
+                if (jwtTokenUtil.isTokenExpired(token)) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+                    return;
+                }
+
                 String username = jwtTokenUtil.getUsernameFromToken(token);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
+                    String role = jwtTokenUtil.getClaimFromToken(token, claims -> claims.get("role", String.class));
                     if (jwtTokenUtil.validateToken(token, userDetails)) {
                         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                                userDetails, null, AuthorityUtils.createAuthorityList(role));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 }
             } catch (Exception e) {
-                // Log the exception details
+                e.printStackTrace();
             }
         }
 
@@ -54,11 +60,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private String getTokenFromCookies(Cookie[] cookies) {
         if (cookies == null) return null;
+
         for (Cookie cookie : cookies) {
             if ("JWT".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
+
         return null;
     }
 }
+

@@ -1,0 +1,42 @@
+/* Estilos para el carrusel de productos */
+.carousel-inner {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.carousel-item {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: auto;
+}
+
+.card {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.card-title {
+    text-align: center;
+    font-size: 1.2em;
+}
+
+/* Estilos para las flechas del carrusel */
+.custom-arrow {
+    background-color: black;
+
+}
+
+/* Espaciado entre las tarjetas del carrusel */
+.carousel-item .card {
+    margin: 0 15px;
+}
+
+/* Animación para las transiciones del carrusel */
+.carousel-item-next, .carousel-item-prev, .carousel-item.active {
+    transition: transform 0.5s ease-in-out;
+}

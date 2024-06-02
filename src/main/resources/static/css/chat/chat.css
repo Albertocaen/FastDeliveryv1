@@ -1,0 +1,166 @@
+/* Estilos base para el chatbot */
+.chatbot-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Ocultar en dispositivos móviles y tabletas */
+@media (max-width: 1024px) {
+    .chatbot-container {
+        display: none;
+    }
+}
+
+/* Estilos para el encabezado del chatbot */
+.chatbot-header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-header h4 {
+    margin: 0;
+}
+
+.chatbot-header .close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+}
+
+/* Estilos para los mensajes del chatbot */
+.chatbot-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Estilos para la entrada del chatbot */
+.chatbot-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chatbot-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chatbot-input button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Estilos para minimizar el chatbot */
+.minimized {
+    height: 70px !important;
+}
+
+
+.user-message {
+    background-color: #e1ffc7;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    align-self: flex-end;
+}
+
+.chatbot-message {
+    background-color: #f1f1f1;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    align-self: flex-start;
+}
+
+.music-control {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    background-color: whitesmoke;
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    z-index: 1100;  /* Asegúrate de que esté por encima de otros elementos */
+    transition: transform 0.3s ease-in-out;
+}
+
+.music-control img {
+    width: 30px;
+    height: 30px;
+}
+
+.music-control:hover {
+    transform: scale(1.1);
+}
+
+
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+    .music-control {
+        top: 60px; /* Ajusta la posición para dispositivos móviles */
+        right: 20px;
+        padding: 8px;
+    }
+
+    .music-control img {
+        width: 25px;
+        height: 25px;
+    }
+}
+
+/* Media queries para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .music-control {
+        top: 15px; /* Ajusta la posición para tablets */
+        right: 25px;
+        padding: 10px;
+    }
+
+    .music-control img {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Media queries para pantallas grandes */
+@media (min-width: 1025px) {
+    .music-control {
+        top: 10px;
+        right: 20px;
+        padding: 10px;
+    }
+
+    .music-control img {
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+

@@ -2,44 +2,67 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista de Productos</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/productos/productos.css">
 </head>
 <body>
-<h1>Lista de Productos</h1>
-<a href="/productos/new">Nuevo Producto</a>
-<div th:if="${message}">
-    <p th:text="${message}"></p>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="text-center">Lista de Productos</h1>
+        <a href="/inicio" class="btn btn-secondary">Volver a Inicio</a>
+    </div>
+    <div class="text-right mb-3">
+        <a href="/productos/new" class="btn btn-primary">Nuevo Producto</a>
+    </div>
+    <div id="productosContainer">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.id}"></td>
+                <td th:text="${producto.nombre}"></td>
+                <td th:text="${producto.descripcion}"></td>
+                <td th:text="${producto.precio}"></td>
+                <!-- Mostrar imagen según la ruta -->
+                <td>
+                    <img th:if="${producto.img != null}"
+                         th:src="${producto.img}"
+                         alt="Imagen del Producto" width="100" class="img-thumbnail"/>
+                </td>
+                <td>
+                    <a th:href="@{/productos/edit/{id}(id=${producto.id})}" class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/productos(page=${currentPage - 1})}">Anterior</a>
+            </li>
+            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}" th:classappend="${page == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/productos(page=${page})}" th:text="${page}">1</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/productos(page=${currentPage + 1})}">Siguiente</a>
+            </li>
+        </ul>
+    </nav>
 </div>
-<table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Precio</th>
-        <th>Imagen</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="producto : ${productos}">
-        <td th:text="${producto.id}"></td>
-        <td th:text="${producto.nombre}"></td>
-        <td th:text="${producto.descripcion}"></td>
-        <td th:text="${producto.precio}"></td>
-        <!-- Mostrar imagen según la ruta -->
-        <td>
-            <img th:if="${producto.img != null}"
-                 th:src="${producto.img}"
-                 alt="Imagen del Producto" width="100" />
-        </td>
-        <td>
-            <a th:href="@{/productos/edit/{id}(id=${producto.id})}">Editar</a>
-            <a th:href="@{/productos/delete/{id}(id=${producto.id})}"
-               onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

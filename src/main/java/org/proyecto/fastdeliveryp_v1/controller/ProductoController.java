@@ -4,6 +4,9 @@ import org.proyecto.fastdeliveryp_v1.entity.Producto;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +35,15 @@ public class ProductoController {
     private String rutaImagenes;
 
     @GetMapping
-    public String listProductos(Model model) {
-        List<Producto> productos = productoService.getAllProductos();
-        model.addAttribute("productos", productos);
+    public String listProductos(Model model, @RequestParam(defaultValue = "0") int page) {
+        int pageSize = 10; // Tamaño de la página
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Producto> productoPage = productoService.getAllProductos(pageable);
+
+        model.addAttribute("productos", productoPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productoPage.getTotalPages());
         return "productos/list";
     }
 

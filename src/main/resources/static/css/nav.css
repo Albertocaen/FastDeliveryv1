@@ -202,8 +202,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: fixed;
     top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 10px;
     z-index: 1100;
     animation: highlight 1s infinite alternate;
     text-align: center;
@@ -211,39 +210,21 @@ body {
     white-space: nowrap;
 }
 
-@keyframes highlight {
-    0% {
-        transform: scale(1);
-        background-color: whitesmoke;
-        color: black;
-        text-shadow: none;
-    }
-    50% {
-        transform: scale(1.1);
-        background-color: floralwhite;
-        color: whitesmoke; /* Cambia el color a rojo para resaltar */
-        text-shadow: 0 0 10px rgba(22, 0, 0, 0.5);
-    }
-    100% {
-        transform: scale(1);
-        background-color: whitesmoke;
-        color: black;
-        text-shadow: none;
-    }
-}
-
-/* Media queries para ajuste en dispositivos móviles */
+/* Ajustes para dispositivos móviles */
 @media (max-width: 768px) {
     .offer-banner {
-        top: 0; /* Ajusta la posición para dejar espacio para el banner */
-        width: 100%; /* Ocupa todo el ancho */
-        left: 0;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        width: auto;
         transform: none;
-        padding: 0.5em 0;
+        padding: 0.5em;
+        border-radius: 10px;
+        font-size: 1em;
     }
 
     .navbar {
-        top: 40px; /* Añade margen superior para compensar el espacio del banner */
+        margin-top: 60px; /* Añade margen superior para compensar el espacio del banner */
     }
 }
 
@@ -251,8 +232,8 @@ body {
 @media (max-width: 429px) {
     .offer-banner {
         top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 10px;
+        right: 10px;
         font-size: 14px;
         padding: 5px;
     }
@@ -281,9 +262,9 @@ body {
 /* Estilos para pantallas medianas (430px a 768px) */
 @media (min-width: 430px) and (max-width: 768px) {
     .offer-banner {
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
+        top: 10px;
+        left: 10px;
+        right: 10px;
         font-size: 18px;
         padding: 8px;
     }
@@ -313,8 +294,8 @@ body {
 @media (min-width: 769px) {
     .offer-banner {
         top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
+        left: 10px;
+        transform: none;
         font-size: 20px;
         padding: 10px;
     }
@@ -337,5 +318,26 @@ body {
     .footer a {
         font-size: 18px;
         margin-bottom: 10px;
+    }
+}
+
+@keyframes highlight {
+    0% {
+        transform: scale(1);
+        background-color: whitesmoke;
+        color: black;
+        text-shadow: none;
+    }
+    50% {
+        transform: scale(1.1);
+        background-color: floralwhite;
+        color: whitesmoke; /* Cambia el color a blanco para resaltar */
+        text-shadow: 0 0 10px rgba(22, 0, 0, 0.5);
+    }
+    100% {
+        transform: scale(1);
+        background-color: whitesmoke;
+        color: black;
+        text-shadow: none;
     }
 }

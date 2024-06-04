@@ -1,0 +1,150 @@
+/* Estilos para la lista de pedidos */
+body {
+    background-color: whitesmoke; /* Fondo claro */
+    color: #333; /* Texto oscuro */
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 2em; /* Añadir padding al body */
+}
+
+/* Contenedor principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Título */
+h1 {
+    color: black; /* Color negro para el título */
+    font-size: 2em;
+    text-align: center;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    background-color: whitesmoke; /* Fondo claro */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Enlace de nuevo pedido */
+.btn-new {
+    display: inline-block;
+    margin-bottom: 1em;
+    padding: 0.5em 1em;
+    background-color: #333; /* Fondo negro */
+    color: floralwhite; /* Texto claro */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-new:hover {
+    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+    transform: scale(1.05);
+}
+
+/* Tabla de pedidos */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 2s ease-in-out;
+}
+
+thead {
+    background-color: #333; /* Fondo negro para el encabezado */
+    color: floralwhite; /* Texto claro */
+}
+
+th, td {
+    padding: 1em;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Línea de separación */
+}
+
+th {
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Fondo claro para filas pares */
+}
+
+tr:hover {
+    background-color: #f1f1f1; /* Fondo más claro al pasar el ratón */
+}
+
+td a {
+    color: floralwhite; /* Texto claro */
+    background-color: #333; /* Fondo negro */
+    padding: 0.5em;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 0.5em;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+td a:hover {
+    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+    transform: scale(1.05);
+}
+
+/* Notificaciones */
+#notifications {
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: white; /* Fondo dorado */
+    color: #333; /* Texto oscuro */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Flecha de volver atrás */
+.back-arrow {
+    display: inline-block;
+    margin-bottom: 1em;
+    padding: 0.5em 1em;
+    background-color: #333; /* Fondo negro */
+    color: floralwhite; /* Texto claro */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.back-arrow:hover {
+    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+    transform: scale(1.05);
+}
+
+.back-arrow::before {
+    content: '\2190'; /* Unicode para la flecha hacia la izquierda */
+    margin-right: 0.5em;
+}
+
+/* Estilos específicos para dispositivos móviles */
+@media (max-width: 768px) {
+    body {
+        padding: 1em; /* Reducir padding en dispositivos móviles */
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    table {
+        font-size: 0.9em; /* Reducir tamaño de fuente en la tabla */
+    }
+
+    th, td {
+        padding: 0.5em;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

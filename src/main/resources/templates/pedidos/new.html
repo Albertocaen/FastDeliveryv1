@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Nuevo Pedido</title>
+    <link rel="stylesheet" href="/static/css/pedidos/form.css">
 </head>
 <body>
-<h1>Nuevo Pedido</h1>
-<form action="#" th:action="@{/pedidos}" th:object="${pedido}" method="post">
-    <label for="cantidad">Cantidad:</label>
-    <input type="number" id="cantidad" th:field="*{cantidad}" /><br/>
+<div th:fragment="new" class="form-container">
+    <h1>Nuevo Pedido</h1>
+    <form th:action="@{/pedidos}" th:object="${pedido}" method="post">
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" th:field="*{cantidad}" /><br/>
 
-    <label for="fechaPedido">Fecha del Pedido:</label>
-    <input type="date" id="fechaPedido" th:field="*{fechaPedido}" /><br/>
+        <label for="fechaPedido">Fecha del Pedido:</label>
+        <input type="date" id="fechaPedido" th:field="*{fechaPedido}" /><br/>
 
-    <label for="peso">Peso:</label>
-    <input type="number" id="peso" th:field="*{peso}" /><br/>
+        <label for="peso">Peso:</label>
+        <input type="number" id="peso" th:field="*{peso}" /><br/>
 
-    <label for="idProducto">Producto:</label>
-    <select id="idProducto" th:field="*{producto.id}">
-        <option th:each="producto : ${productos}" th:value="${producto.id}" th:text="${producto.nombre}"></option>
-    </select><br/>
-
-    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-        <label for="dniClientePedido">Cliente:</label>
-        <select id="dniClientePedido" th:field="*{dniClientePedido.dniCliente}">
-            <option th:each="cliente : ${clientes}" th:value="${cliente.dniCliente}" th:text="${cliente.persona.nombre}"></option>
+        <label for="idProducto">Producto:</label>
+        <select id="idProducto" th:field="*{producto.id}">
+            <option th:each="producto : ${productos}" th:value="${producto.id}" th:text="${producto.nombre}"></option>
         </select><br/>
-    </div>
 
-    <button type="submit">Guardar</button>
-</form>
+        <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+            <label for="dniClientePedido">Cliente:</label>
+            <select id="dniClientePedido" th:field="*{dniClientePedido.dniCliente}">
+                <option th:each="cliente : ${clientes}" th:value="${cliente.dniCliente}" th:text="${cliente.persona.nombre}"></option>
+            </select><br/>
+        </div>
+
+        <button type="submit" class="btn-submit">Guardar</button>
+    </form>
+</div>
 </body>
 </html>

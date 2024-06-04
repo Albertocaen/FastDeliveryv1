@@ -55,8 +55,9 @@ public class PedidoClienteController {
         return "pedidos/list";
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/new")
-    public String newPedidoForm(Model model, Principal principal) {
+    public String showNewPedidoForm(Model model, Principal principal) {
         model.addAttribute("pedido", new PedidoCliente());
         model.addAttribute("productos", productoService.getAllProductos());
 
@@ -64,11 +65,12 @@ public class PedidoClienteController {
             model.addAttribute("clientes", clienteService.getAllClientes());
         }
 
-        return "pedidos/new";
+        return "pedidos/new :: new";  // Devolver solo el fragmento del formulario
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping
-    public String savePedido(@ModelAttribute PedidoCliente pedido, Principal principal) {
+    public String saveNewPedido(@ModelAttribute PedidoCliente pedido, Principal principal, Model model) {
         Repartidor repartidorAsignado = repartidorService.asignarRepartidorDisponible();
 
         pedido.setDniRepartidorPedido(repartidorAsignado);
@@ -83,7 +85,13 @@ public class PedidoClienteController {
         }
 
         pedidoClienteService.savePedido(pedido);
-        return "redirect:/pedidos";
+        model.addAttribute("pedido", new PedidoCliente());
+        model.addAttribute("productos", productoService.getAllProductos());
+        if (hasRole("ROLE_ADMIN")) {
+            model.addAttribute("clientes", clienteService.getAllClientes());
+        }
+        model.addAttribute("message", "El pedido ha sido creado con éxito.");
+        return "pedidos/new :: new";  // Devolver solo el fragmento del formulario actualizado
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
@@ -91,15 +99,17 @@ public class PedidoClienteController {
     public String changeEstadoForm(@PathVariable Integer id, Model model) {
         PedidoCliente pedido = pedidoClienteService.getPedidoById(id);
         model.addAttribute("pedido", pedido);
-        return "pedidos/estado";
+        return "pedidos/estado :: estado";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/estado")
-    public String changeEstado(@ModelAttribute PedidoCliente pedido) {
+    public String changeEstado(@ModelAttribute PedidoCliente pedido, Model model) {
         pedidoClienteService.updatePedidoEstado(pedido.getId(), pedido.getEstado());
         messagingTemplate.convertAndSend("/topic/notifications", "El estado del pedido con ID " + pedido.getId() + " ha sido actualizado a " + pedido.getEstado());
-        return "redirect:/pedidos";
+        model.addAttribute("pedido", pedido);  // Añadido para devolver el objeto actualizado
+        model.addAttribute("message", "El estado del pedido ha sido actualizado con éxito.");
+        return "pedidos/estado :: estado";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

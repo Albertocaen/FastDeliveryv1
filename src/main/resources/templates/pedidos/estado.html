@@ -2,22 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Cambiar Estado del Pedido</title>
+    <link rel="stylesheet" href="/static/css/pedidos/form.css">
 </head>
 <body>
-<h1>Cambiar Estado del Pedido</h1>
-<form th:action="@{/pedidos/estado}" th:object="${pedido}" method="post">
-    <input type="hidden" th:field="*{id}">
-    <label for="estado">Estado:</label>
-    <select id="estado" th:field="*{estado}">
-        <option value="Pendiente">Pendiente</option>
-        <option value="Procesado">Procesado</option>
-        <option value="Enviado">Enviado</option>
-        <option value="Entregado">Entregado</option>
-        <option value="Cancelado">Cancelado</option>
-    </select>
-    <br>
-    <button type="submit">Guardar</button>
-</form>
-<a th:href="@{/pedidos}">Volver</a>
+<div th:fragment="estado" class="form-container">
+    <h1>Cambiar Estado del Pedido</h1>
+    <form th:action="@{/pedidos/estado}" th:object="${pedido}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label for="estado">Estado:</label>
+        <select id="estado" th:field="*{estado}">
+            <option value="Pendiente">Pendiente</option>
+            <option value="Procesado">Procesado</option>
+            <option value="Enviado">Enviado</option>
+            <option value="Entregado">Entregado</option>
+            <option value="Cancelado">Cancelado</option>
+        </select>
+        <br>
+        <button type="submit" class="btn-submit">Guardar</button>
+    </form>
+</div>
 </body>
 </html>

@@ -1,0 +1,133 @@
+body {
+    background-color: floralwhite;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: whitesmoke;
+    color: black;
+    padding: 0.5em;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.table {
+    margin-top: 2em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.table th {
+    background-color: whitesmoke;
+    color: black;
+    border-bottom: 2px solid black;
+}
+
+.table td {
+    background-color: #fff;
+    color: #333;
+}
+
+.img-thumbnail {
+    max-width: 100px;
+    height: auto;
+    border: 1px solid black;
+}
+
+.btn-primary {
+    background-color: #333;
+    color: whitesmoke;
+    border: none;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: black;
+    transform: scale(1.05);
+}
+
+.btn-warning {
+    background-color: #ffcc00;
+    color: black;
+    border: none;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-warning:hover {
+    background-color: #e6b800;
+    transform: scale(1.05);
+}
+
+.btn-danger {
+    background-color: #ff3300;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-danger:hover {
+    background-color: #cc2900;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #666;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background-color: #4d4d4d;
+    transform: scale(1.05);
+}
+
+.pagination {
+    margin-top: 1em;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.page-link {
+    color: #333;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.page-link:hover {
+    background-color: whitesmoke;
+    color: black;
+}
+
+.page-item.active .page-link {
+    background-color: black;
+    border-color: black;
+    color: whitesmoke;
+}
+
+.page-item.disabled .page-link {
+    color: #ccc;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

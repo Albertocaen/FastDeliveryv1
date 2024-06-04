@@ -3,6 +3,7 @@ package org.proyecto.fastdeliveryp_v1.service;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
 import org.proyecto.fastdeliveryp_v1.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    public Page<Producto> getAllProductos(Pageable pageable) {
+        return productoRepository.findAll(pageable);
+    }
     public List<Producto> getAllProductos() {
         return productoRepository.findAll();
     }

@@ -2,11 +2,12 @@ package org.proyecto.fastdeliveryp_v1.service;
 
 import org.proyecto.fastdeliveryp_v1.entity.Cliente;
 import org.proyecto.fastdeliveryp_v1.entity.Persona;
-import org.proyecto.fastdeliveryp_v1.repository.ClienteRepository;
-import org.proyecto.fastdeliveryp_v1.repository.PersonaRepository;
+import org.proyecto.fastdeliveryp_v1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonaService {
@@ -20,13 +21,50 @@ public class PersonaService {
     @Autowired
     private ClienteRepository clienteRepository;
 
+
+    public Persona getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return personaRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public void updatePersona(Persona persona) {
+        Persona existingPersona = personaRepository.findById(persona.getDni()).orElseThrow(() -> new RuntimeException("Persona no encontrada"));
+
+        existingPersona.setNombre(persona.getNombre());
+        existingPersona.setApellido(persona.getApellido());
+        existingPersona.setTelefono(persona.getTelefono());
+
+        if (persona.getCliente() != null) {
+            if (existingPersona.getCliente() == null) {
+                existingPersona.setCliente(persona.getCliente());
+            } else {
+                existingPersona.getCliente().setDireccion(persona.getCliente().getDireccion());
+                existingPersona.getCliente().setCiudad(persona.getCliente().getCiudad());
+                existingPersona.getCliente().setCodigoPostal(persona.getCliente().getCodigoPostal());
+            }
+        }
+
+        if (persona.getRepartidor() != null) {
+            if (existingPersona.getRepartidor() == null) {
+                existingPersona.setRepartidor(persona.getRepartidor());
+            } else {
+                existingPersona.getRepartidor().setCalificacion(persona.getRepartidor().getCalificacion());
+                existingPersona.getRepartidor().setHorarioTrabajo(persona.getRepartidor().getHorarioTrabajo());
+                existingPersona.getRepartidor().setEstadoDeDisponibilidad(persona.getRepartidor().getEstadoDeDisponibilidad());
+            }
+        }
+
+        personaRepository.save(existingPersona);
+    }
+
+
     public void registerUser(String dni, String email, String nombre, String apellido, String telefono, String contrasena) {
         // Verificar si el email ya existe en la base de datos
         if (personaRepository.findByEmail(email) != null) {
             throw new IllegalArgumentException("El email ya está en uso.");
         }
 
-        // Crear una nueva instancia de Persona
         Persona persona = new Persona();
         persona.setDni(dni);
         persona.setEmail(email);
@@ -34,7 +72,7 @@ public class PersonaService {
         persona.setApellido(apellido);
         persona.setTelefono(telefono);
         persona.setContraseña(passwordEncoder.encode(contrasena));
-        persona.setUsuario("cliente"); // Establecer el rol del usuario como "cliente"
+        persona.setUsuario("cliente");
 
         // Guardar la persona
         personaRepository.save(persona);

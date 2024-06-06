@@ -1,0 +1,56 @@
+<div th:fragment="edit" class="container mt-5">
+    <h1>Editar Perfil</h1>
+    <form id="editProfileForm" th:action="@{/profile/edit}" th:object="${persona}" method="post">
+        <div class="form-group">
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" th:field="*{dni}" class="form-control" readonly/>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" th:field="*{apellido}" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" readonly/>
+        </div>
+        <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" th:field="*{telefono}" class="form-control"/>
+        </div>
+        <div th:if="${persona.cliente != null}">
+            <div class="form-group">
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" th:field="*{cliente.direccion}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" th:field="*{cliente.ciudad}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="codigoPostal">Código Postal:</label>
+                <input type="text" id="codigoPostal" th:field="*{cliente.codigoPostal}" class="form-control"/>
+            </div>
+        </div>
+        <div th:if="${persona.repartidor != null}">
+            <div class="form-group">
+                <label for="calificacion">Calificación:</label>
+                <input type="number" id="calificacion" th:field="*{repartidor.calificacion}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="horarioTrabajo">Horario de Trabajo:</label>
+                <input type="text" id="horarioTrabajo" th:field="*{repartidor.horarioTrabajo}" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="estadoDeDisponibilidad">Estado de Disponibilidad:</label>
+                <input type="text" id="estadoDeDisponibilidad" th:field="*{repartidor.estadoDeDisponibilidad}"
+                       class="form-control"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a href="/profile" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ES">
 <head>
     <title>Lista de Productos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/productos/productos.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/js/carritoList/CarritoList.js"></script>
 </head>
 <body>
 <div class="container mt-5">
@@ -32,16 +34,20 @@
                 <td th:text="${producto.nombre}"></td>
                 <td th:text="${producto.descripcion}"></td>
                 <td th:text="${producto.precio}"></td>
-                <!-- Mostrar imagen según la ruta -->
                 <td>
-                    <img th:if="${producto.img != null}"
-                         th:src="${producto.img}"
-                         alt="Imagen del Producto" width="100" class="img-thumbnail"/>
+                    <img th:if="${producto.img != null}" th:src="${producto.img}" alt="Imagen del Producto" width="100"
+                         class="img-thumbnail"/>
                 </td>
                 <td>
                     <a th:href="@{/productos/edit/{id}(id=${producto.id})}" class="btn btn-warning btn-sm">Editar</a>
                     <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm"
                        onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
+                    <input type="number" name="cantidad" value="1" min="1" class="form-control d-inline-block w-auto"
+                           style="width: 60px;">
+                    <button class="btn btn-success btn-sm agregarCarrito" th:data-id="${producto.id}">
+                        <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Agregar al Carrito"
+                             style="width: 20px; height: 20px;">
+                    </button>
                 </td>
             </tr>
             </tbody>
@@ -52,7 +58,8 @@
             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                 <a class="page-link" th:href="@{/productos(page=${currentPage - 1})}">Anterior</a>
             </li>
-            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}" th:classappend="${page == currentPage} ? 'active'">
+            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${page == currentPage} ? 'active'">
                 <a class="page-link" th:href="@{/productos(page=${page})}" th:text="${page}">1</a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
@@ -61,6 +68,7 @@
         </ul>
     </nav>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

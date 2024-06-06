@@ -2,7 +2,6 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
 
 import java.time.LocalDate;
 
@@ -31,7 +30,6 @@ public class PedidoProveedor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dni_admin_pedido")
     private Admin dniAdminPedido;
-
 
 
 }

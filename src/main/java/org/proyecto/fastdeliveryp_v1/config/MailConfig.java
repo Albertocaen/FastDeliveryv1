@@ -18,6 +18,7 @@ public class MailConfig {
 
     @Value("${spring.mail.host}")
     private String host;
+
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

@@ -15,7 +15,7 @@ public class Cliente {
     @Column(name = "DNI_CLIENTE", nullable = false, length = 20)
     private String dniCliente;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @MapsId
     @ToString.Exclude
     @JoinColumn(name = "DNI_CLIENTE")

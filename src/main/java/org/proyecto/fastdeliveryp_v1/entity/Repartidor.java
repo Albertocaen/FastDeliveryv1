@@ -2,6 +2,8 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
 import java.util.List;
 
 @Data
@@ -30,9 +32,11 @@ public class Repartidor {
     private Integer cantidadPedidos;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     @JoinColumn(name = "placa_vehiculo")
     private Vehiculo placaVehiculo;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "dniRepartidorPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoCliente> pedidos;
 

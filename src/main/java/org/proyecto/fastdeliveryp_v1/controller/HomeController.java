@@ -1,16 +1,16 @@
 package org.proyecto.fastdeliveryp_v1.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.proyecto.fastdeliveryp_v1.entity.CarritoItem;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +27,19 @@ public class HomeController {
     }
 
     @GetMapping("/inicio")
-    public String homePage(Model model) {
+    public String homePage(Model model, @CookieValue(value = "carrito", defaultValue = "") String carritoCookie) {
         List<Producto> productosDestacados = productoService.getProductosDestacados(3);
         List<Producto> todosLosProductos = productoService.getAllProductos();
         model.addAttribute("productosDestacados", productosDestacados);
         model.addAttribute("productos", todosLosProductos);
+
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeCookie(carritoCookie);
+        model.addAttribute("carrito", carrito);
+        model.addAttribute("carritoItemsCount", carrito.size());
+
         return "home/index";
     }
+
 
     @PostMapping("/chat")
     @ResponseBody

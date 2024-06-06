@@ -88,16 +88,16 @@ public class AuthController {
             return "register";
         }
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // Eliminar la cookie JWT
+        // invalidar la cookie para cerrar
         Cookie cookie = new Cookie("JWT", null);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setMaxAge(0); // Set the cookie to expire immediately
+        cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        // Invalidate the session
         request.getSession().invalidate();
 
         return "redirect:/inicio";

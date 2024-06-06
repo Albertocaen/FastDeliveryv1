@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const backgroundMusic = document.getElementById('background-music');
     const musicIcon = document.getElementById('music-icon');
     let isPlaying = false;

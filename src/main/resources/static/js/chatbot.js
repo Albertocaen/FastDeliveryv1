@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Manejo del chatbot desplegable
-    window.toggleChatbot = function() {
+    window.toggleChatbot = function () {
         const chatbotContainer = document.querySelector('.chatbot-container');
         chatbotContainer.classList.toggle('minimized');
         if (chatbotContainer.classList.contains('minimized')) {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Envío de mensajes
-    window.sendMessage = async function() {
+    window.sendMessage = async function () {
         const inputField = document.getElementById('chatbot-input');
         const userMessage = inputField.value;
         const messagesContainer = document.getElementById('chatbot-messages');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: userMessage })
+                body: JSON.stringify({message: userMessage})
             });
 
             const data = await response.json();

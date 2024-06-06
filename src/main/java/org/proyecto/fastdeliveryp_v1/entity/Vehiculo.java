@@ -2,10 +2,11 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+
+
 @Data
 @Entity
 @Table(name = "VEHICULO")
@@ -23,6 +24,7 @@ public class Vehiculo {
     @Column(name = "color", length = 50)
     private String color;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "placaVehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Repartidor> repartidores;
 }

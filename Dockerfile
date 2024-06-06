@@ -1,8 +1,8 @@
 # Usar una imagen base de OpenJDK con Alpine
 FROM eclipse-temurin:22-jdk-alpine
 
-# Instalar Apache
-RUN apk add --no-cache apache2
+# Instalar Apache y netcat (para el script de espera)
+RUN apk add --no-cache apache2 netcat-openbsd
 
 # Crear un directorio para la aplicación
 WORKDIR /app
@@ -27,5 +27,11 @@ RUN echo "Include /etc/apache2/conf.d/*.conf" >> /etc/apache2/httpd.conf
 # Exponer el puerto en el que la aplicación se ejecuta
 EXPOSE 8080
 
-# Iniciar Apache en segundo plano y luego ejecutar la aplicación
-CMD ["/bin/sh", "-c", "httpd && java -jar /app/app.jar"]
+# Iniciar Apache en segundo plano y luego ejecutar el script de espera seguido de la aplicación
+CMD /bin/sh -c 'httpd && \
+  while ! nc -z usuario-mysql 3306; do \
+    echo "Esperando a la base de datos en usuario-mysql:3306..."; \
+    sleep 2; \
+  done; \
+  echo "¡Base de datos lista!"; \
+  java -jar /app/app.jar'

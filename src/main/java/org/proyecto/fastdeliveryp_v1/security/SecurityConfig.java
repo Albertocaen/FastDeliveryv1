@@ -25,9 +25,10 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/register", "/auth/forgotPassword", "/auth/**", "/auth/resetPassword/**","/templates/**", "/static/**", "/css/**", "/js/**", "/images/**","/inicio", "/").permitAll()
+                        .requestMatchers("/login", "/register", "/auth/forgotPassword", "/pedidos/success", "/pedidos/cancel", "/auth/**", "/auth/resetPassword/**", "/templates/**", "/static/**", "/css/**", "/js/**", "/images/**", "/inicio", "/").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/user/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/carrito/**").authenticated()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

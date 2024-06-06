@@ -157,12 +157,12 @@ INSERT INTO CLIENTE (DNI_CLIENTE, direccion, ciudad, codigo_postal, cliente_pedi
 VALUES
        ('02837654B', 'Calle Sótano 2', 'Avila', '49080', '00785378Y'),
        ('03888034R', 'Calle Gran via,12', 'Madrid', '28000', '02837654B'),
-       ('04611222G', NULL, NULL, NULL, '04611222G'),
-       ('05089543J', NULL, NULL, '28187', '10108711N'),
-       ('10765424Y', NULL, 'Asturias', NULL, '10765424Y'),
-       ('10987222H', 'Calle Austria 34 Semisótano A', 'Ávila', NULL, '10987222H'),
-       ('20878837Ñ', 'Calle Duran, 34 Local', 'Barcelona', NULL, '50984222T'),
-       ('56890323O', NULL, 'Madrid', '28060', 'M0026541H'),
+       ('04611222G','Calle modistas', 'Madrid', '28038', '04611222G'),
+       ('05089543J', 'Calle modistas', 'Madrid', '28187', '10108711N'),
+       ('10765424Y', 'Calle modistas', 'Asturias', 'Madrid', '10765424Y'),
+       ('10987222H', 'Calle Austria 34 Semisótano A', 'Ávila', 'Madrid', '10987222H'),
+       ('20878837Ñ', 'Calle Duran, 34 Local', 'Barcelona','Madrid', '50984222T'),
+       ('56890323O', 'Calle modistas', 'Madrid', '28060', 'M0026541H'),
        ('X2567980A', 'Calle Lopez de Hoyos 29', 'Madrid', '28045', 'R2980277Q');
 
 

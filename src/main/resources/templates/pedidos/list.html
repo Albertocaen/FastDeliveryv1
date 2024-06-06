@@ -31,7 +31,8 @@
         <tbody>
         <tr th:each="pedido : ${pedidos}">
             <td th:text="${pedido.id}"></td>
-            <td th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}">Cliente</td>
+            <td th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}">Cliente
+            </td>
             <td th:text="${pedido.fechaPedido}"></td>
             <td th:text="${pedido.producto.nombre}"></td>
             <td th:text="${pedido.peso}"></td>

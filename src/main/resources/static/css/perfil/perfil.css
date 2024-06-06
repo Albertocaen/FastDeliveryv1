@@ -1,0 +1,40 @@
+body {
+    background-color: floralwhite;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: whitesmoke;
+    color: black;
+    padding: 0.5em;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+
+.container {
+    margin-top: 2em;
+}
+
+.form-group {
+    margin-bottom: 1em;
+}
+
+.btn {
+    margin-right: 0.5em;
+}
+
+.back-arrow:hover {
+    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+    transform: scale(1.05);
+}
+
+.back-arrow::before {
+    content: '\2190'; /* Unicode para la flecha hacia la izquierda */
+    margin-right: 0.5em;
+}
+

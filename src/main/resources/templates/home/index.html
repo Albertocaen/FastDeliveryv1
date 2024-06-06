@@ -16,10 +16,11 @@
     <img src="/static/uploads/610e8867f8bb190004769dd9.png" alt="Music Control" id="music-icon">
 </div>
 <audio id="background-music" loop>
-    <source src="/static/music/Mami%20yo%20te%20veo,%20ahí%20con%20tus%20amigas%20__%20Pitbull%20vs%20Afrojack%20•%20Maldito%20alcohol%20(Letra).mp3" type="audio/mp3">
+    <source src="/static/music/Mami%20yo%20te%20veo,%20ahí%20con%20tus%20amigas%20__%20Pitbull%20vs%20Afrojack%20•%20Maldito%20alcohol%20(Letra).mp3"
+            type="audio/mp3">
     Your browser does not support the audio element.
 </audio>
-<!-- Incluye el fragmento de navegación -->
+
 <div th:replace="fragmentos/nav :: nav-menu"></div>
 
 <!-- Contenido de la página -->
@@ -44,7 +45,8 @@
     <!-- Carrusel de Productos -->
     <div id="productosCarrusel" class="carousel slide mt-5" data-ride="carousel">
         <div class="carousel-inner">
-            <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'" th:each="producto, iterStat : ${productos}">
+            <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'"
+                 th:each="producto, iterStat : ${productos}">
                 <div class="d-flex justify-content-center">
                     <div class="card">
                         <img class="card-img-top" th:src="${producto.img}" alt="Imagen de Producto">
@@ -70,7 +72,6 @@
 <div th:replace="fragmentos/chatbot :: chatbot"></div>
 
 
-<!-- Pie de página -->
 <footer class="footer">
     <div class="container">
         <div class="column">
@@ -86,11 +87,13 @@
         </div>
         <div class="column">
             <h4>INFORMACIÓN</h4>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/primer-pedido.html">-5% en tu primer pedido!</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/primer-pedido.html">-5% en tu primer
+                pedido!</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/quienes-somos.html">Quiénes somos</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/envios.html">Envíos y seguimiento</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/pagos.html">Formas de pago</a>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/preguntas-frecuentes.html">Preguntas frecuentes</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/preguntas-frecuentes.html">Preguntas
+                frecuentes</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/devoluciones.html">Devoluciones</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/contacto.html">Contacto</a>
         </div>
@@ -98,15 +101,20 @@
             <h4>CLIENTES</h4>
             <a href="#" class="load-content" data-url="/templates/fragmentos/crear-cuenta.html">Crear una cuenta</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/mi-cuenta.html">Mi cuenta</a>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/historial-pedidos.html">Historial de pedidos</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/historial-pedidos.html">Historial de
+                pedidos</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/alertas.html">Alertas</a>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/profesional.html">Conviértete en Profesional</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/profesional.html">Conviértete en
+                Profesional</a>
         </div>
         <div class="column">
             <h4>INFO. LEGAL</h4>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/privacidad.html">Aviso legal. Política de Privacidad</a>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/condiciones-compra.html">Condiciones de compra</a>
-            <a href="#" class="load-content" data-url="/templates/fragmentos/cambios-devoluciones.html">Cambios y devoluciones</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/privacidad.html">Aviso legal. Política de
+                Privacidad</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/condiciones-compra.html">Condiciones de
+                compra</a>
+            <a href="#" class="load-content" data-url="/templates/fragmentos/cambios-devoluciones.html">Cambios y
+                devoluciones</a>
             <a href="#" class="load-content" data-url="/templates/fragmentos/cookies.html">Ley de cookies</a>
             <div class="payment-methods">
                 <img src="/static/uploads/580b57fcd9996e24bc43c530.png" alt="Paypal">

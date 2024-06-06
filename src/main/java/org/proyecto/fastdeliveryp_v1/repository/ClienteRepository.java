@@ -20,4 +20,4 @@ public interface ClienteRepository extends JpaRepository<Cliente, String> {
     @Transactional
     @Query("DELETE FROM Persona p WHERE p.dni = ?1")
     void deletePersonaByDni(String dni);
-    }
+}

@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PedidoProveedorRepository extends JpaRepository<PedidoProveedor, Integer> {
-    List<PedidoProveedor> findByDniAdminPedido_DniAdmin(Admin dniAdmin);
+    List<PedidoProveedor> findByDniAdminPedidoDniAdmin(String dniAdmin);
 }
 

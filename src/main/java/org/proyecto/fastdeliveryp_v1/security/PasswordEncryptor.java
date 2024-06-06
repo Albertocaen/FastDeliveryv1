@@ -1,4 +1,5 @@
 package org.proyecto.fastdeliveryp_v1.security;
+
 import org.proyecto.fastdeliveryp_v1.entity.Persona;
 import org.proyecto.fastdeliveryp_v1.repository.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ public class PasswordEncryptor implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-  //Este script se ejecutará al iniciar la aplicación y cifrará todas las contraseñas que no estén cifradas.
+    //Este script se ejecutará al iniciar la aplicación y cifrará todas las contraseñas que no estén cifradas.
     @Override
     public void run(String... args) throws Exception {
         // Obtiene todos los usuarios
-        List<Persona> personas= personaRepository.findAll();
+        List<Persona> personas = personaRepository.findAll();
 
         for (Persona persona : personas) {
             // Cifra la contraseña si no está ya cifrada

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -22,7 +21,6 @@
     <button type="submit">Guardar</button>
 </form>
 
-<!-- Si el producto ya tiene una imagen, mostrarla -->
 <div th:if="${producto.img != null}">
     <h2>Imagen actual:</h2>
     <img th:src="${producto.img}" alt="Imagen del Producto" width="150"/>

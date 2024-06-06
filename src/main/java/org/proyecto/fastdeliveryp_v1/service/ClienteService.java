@@ -2,6 +2,8 @@ package org.proyecto.fastdeliveryp_v1.service;
 
 import org.proyecto.fastdeliveryp_v1.entity.*;
 import org.proyecto.fastdeliveryp_v1.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.regex.Pattern;
 @Service
 public class ClienteService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ClienteService.class);
     @Autowired
     private ClienteRepository clienteRepository;
 
@@ -31,7 +34,22 @@ public class ClienteService {
     }
 
 
-    public Cliente getClienteByEmail(String email) {return clienteRepository.findByEmail(email);}
+    public Cliente getClienteByEmail(String email) {
+        Persona persona = personaRepository.findByEmail(email);
+
+        if (persona != null) {
+            logger.info("Persona encontrada: {}", persona);
+            Cliente cliente = clienteRepository.findById(persona.getDni()).orElse(null);
+            if (cliente != null) {
+                logger.info("Cliente encontrado: {}", cliente);
+            } else {
+                logger.error("Cliente no encontrado para DNI: {}", persona.getDni());
+            }
+            return cliente;
+        }
+        logger.error("Persona no encontrada para el email: {}", email);
+        return null;
+    }
 
     @Transactional
     public Cliente saveCliente(Cliente cliente) {

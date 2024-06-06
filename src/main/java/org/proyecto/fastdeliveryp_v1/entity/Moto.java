@@ -20,5 +20,4 @@ public class Moto {
     private Integer cilindrada;
 
 
-
 }

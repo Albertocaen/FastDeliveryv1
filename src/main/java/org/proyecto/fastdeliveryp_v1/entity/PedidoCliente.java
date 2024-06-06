@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "PEDIDO_CLIENTE")
@@ -30,15 +31,16 @@ public class PedidoCliente {
     private String estado;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dni_cliente_pedido")
     private Cliente dniClientePedido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dni_repartidor_pedido")
     private Repartidor dniRepartidorPedido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_producto")
     private Producto producto;
 

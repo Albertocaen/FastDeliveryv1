@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Cancelado</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/productos}">Productos</a></li>
+            <li><a th:href="@{/carrito}">Carrito</a></li>
+            <li><a th:href="@{/contacto}">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+        <h1>Pago Cancelado</h1>
+        <p>Tu pago ha sido cancelado. Puedes intentar nuevamente o contactar al soporte si necesitas ayuda.</p>
+        <a th:href="@{/carrito}">Volver al Carrito</a>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 Fast Delivery. Todos los derechos reservados.</p>
+</footer>
+</body>
+</html>

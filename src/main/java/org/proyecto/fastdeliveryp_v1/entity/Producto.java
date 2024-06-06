@@ -3,8 +3,6 @@ package org.proyecto.fastdeliveryp_v1.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 @Data
 @Entity
 @Table(name = "PRODUCTO")

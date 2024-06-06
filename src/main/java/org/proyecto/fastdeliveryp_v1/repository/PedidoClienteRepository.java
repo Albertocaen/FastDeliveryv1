@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface PedidoClienteRepository extends JpaRepository<PedidoCliente, Integer> {
     List<PedidoCliente> findByDniRepartidorPedido(Repartidor dniRepartidorPedido);
+
     List<PedidoCliente> findByDniClientePedido(Cliente cliente);
 }

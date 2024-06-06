@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Perfil</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/perfil/perfil.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/profile.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Perfil</h1>
+    <a href="/inicio" class="back-arrow">Volver</a>
+    <div>
+        <p><strong>DNI:</strong> <span th:text="${persona.dni}"></span></p>
+        <p><strong>Nombre:</strong> <span th:text="${persona.nombre}"></span></p>
+        <p><strong>Apellido:</strong> <span th:text="${persona.apellido}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${persona.email}"></span></p>
+        <p><strong>Teléfono:</strong> <span th:text="${persona.telefono}"></span></p>
+        <div th:if="${persona.cliente != null}">
+            <p><strong>Dirección:</strong> <span th:text="${persona.cliente.direccion}"></span></p>
+            <p><strong>Ciudad:</strong> <span th:text="${persona.cliente.ciudad}"></span></p>
+            <p><strong>Código Postal:</strong> <span th:text="${persona.cliente.codigoPostal}"></span></p>
+        </div>
+        <div th:if="${persona.repartidor != null}">
+            <p><strong>Calificación:</strong> <span th:text="${persona.repartidor.calificacion}"></span></p>
+            <p><strong>Horario de Trabajo:</strong> <span th:text="${persona.repartidor.horarioTrabajo}"></span></p>
+            <p><strong>Estado de Disponibilidad:</strong> <span
+                    th:text="${persona.repartidor.estadoDeDisponibilidad}"></span></p>
+        </div>
+        <a href="#" class="editarPerfil btn btn-primary" th:data-id="${persona.dni}">Editar Perfil</a>
+    </div>
+    <div id="editProfileContainer"></div>
+</div>
+</body>
+</html>

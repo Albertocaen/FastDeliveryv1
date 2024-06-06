@@ -1,9 +1,16 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
 <nav th:fragment="nav-menu" class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container position-relative">
         <a class="navbar-brand" th:href="@{/inicio}">
             <img src="/static/uploads/imagen_2024-06-02_152502378-removebg-preview.png" alt="FastDelivery Logo" class="lh-logo">
+
             <span class="brand-name">FastDelivery</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -11,6 +18,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/profile}">Perfil</a>
+                </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
@@ -26,7 +36,15 @@
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/logout}">Logout</a>
                 </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/carrito}">
+                        <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Carrito de Compras" style="width: 30px; height: 30px;">
+                        <span id="carritoItems" class="badge badge-pill badge-primary" th:text="${#lists.size(carrito)}">0</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
+</body>
+</html>

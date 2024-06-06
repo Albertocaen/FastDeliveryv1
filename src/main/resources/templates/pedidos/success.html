@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pago Exitoso</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/productos}">Productos</a></li>
+            <li><a th:href="@{/carrito}">Carrito</a></li>
+            <li><a th:href="@{/contacto}">Contacto</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <section>
+        <h1>¡Pago Exitoso!</h1>
+        <p>Gracias por tu compra. Tu pago ha sido procesado exitosamente.</p>
+        <p>Número de Orden: <span th:text="${orderNumber}"></span></p>
+        <p>Payment ID: <span th:text="${paymentId}"></span></p>
+        <p>Token: <span th:text="${token}"></span></p>
+        <p>Payer ID: <span th:text="${payerId}"></span></p>
+        <a th:href="@{/pedidos/detalles(orderNumber=${orderNumber})}">Ver Detalles de la Orden</a>
+    </section>
+</main>
+<footer>
+    <p>&copy; 2024 Fast Delivery. Todos los derechos reservados.</p>
+</footer>
+</body>
+</html>

@@ -1,4 +1,5 @@
 package org.proyecto.fastdeliveryp_v1.config;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;

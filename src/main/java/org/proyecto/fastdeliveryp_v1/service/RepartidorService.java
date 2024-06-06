@@ -1,5 +1,6 @@
 package org.proyecto.fastdeliveryp_v1.service;
 
+import org.proyecto.fastdeliveryp_v1.entity.PedidoCliente;
 import org.proyecto.fastdeliveryp_v1.entity.Repartidor;
 import org.proyecto.fastdeliveryp_v1.repository.RepartidorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import java.util.Optional;
 @Service
 public class RepartidorService {
 
+    @Autowired
+    private PedidoClienteService pedidoClienteService;
     @Autowired
     private RepartidorRepository repartidorRepository;
 
@@ -27,14 +30,23 @@ public class RepartidorService {
     }
 
     public Repartidor asignarRepartidorDisponible() {
-        List<Repartidor> repartidores = repartidorRepository.findByEstadoDeDisponibilidadAndCantidadPedidosLessThanEqual("Disponible", 3);
-        if (!repartidores.isEmpty()) {
-            Repartidor repartidor = repartidores.get(0); // Asigna el primer repartidor disponible
-            repartidor.setCantidadPedidos(repartidor.getCantidadPedidos() + 1);
-            repartidorRepository.save(repartidor);
-            return repartidor;
-        } else {
-            throw new RuntimeException("No hay repartidores disponibles en este momento");
+        List<Repartidor> repartidores = repartidorRepository.findAll();
+
+        for (Repartidor repartidor : repartidores) {
+            liberarPedidosEntregados(repartidor);
+            if (repartidor.getCantidadPedidos() < 3) {
+                repartidor.setCantidadPedidos(repartidor.getCantidadPedidos() + 1);
+                return repartidorRepository.save(repartidor);
+            }
         }
+        return null;
+    }
+
+    private void liberarPedidosEntregados(Repartidor repartidor) {
+        List<PedidoCliente> pedidos = pedidoClienteService.getPedidosByRepartidor(repartidor);
+        long pedidosNoEntregados = pedidos.stream().filter(p -> !"Entregado".equalsIgnoreCase(p.getEstado())).count();
+        repartidor.setCantidadPedidos((int) pedidosNoEntregados);
+        repartidorRepository.save(repartidor);
     }
 }
+

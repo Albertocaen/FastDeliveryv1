@@ -114,5 +114,5 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENS
 
 Para consultas adicionales, puedes contactarme a través de:
 
-- Email: tu-email@example.com
-- GitHub: [tu-usuario](https://github.com/Albertocaen)
+- Email: alberto.caen.1@gmail.com
+- GitHub: Https://github.com/Albertocaen

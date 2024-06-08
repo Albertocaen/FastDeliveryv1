@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "VEHICULO")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Vehiculo {
     @Id
     @Column(name = "placa_vehiculo", nullable = false, length = 20)

@@ -1,13 +1,18 @@
 package org.proyecto.fastdeliveryp_v1.service;
 
+import org.proyecto.fastdeliveryp_v1.dto.PersonaDto;
 import org.proyecto.fastdeliveryp_v1.entity.Cliente;
 import org.proyecto.fastdeliveryp_v1.entity.Persona;
+import org.proyecto.fastdeliveryp_v1.mapper.PersonaMapper;
 import org.proyecto.fastdeliveryp_v1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Service
 public class PersonaService {
@@ -20,6 +25,8 @@ public class PersonaService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    PersonaMapper mapper;
 
 
     public Persona getCurrentUser() {
@@ -82,5 +89,23 @@ public class PersonaService {
         cliente.setPersona(persona);
         cliente.setDniCliente(dni);
         clienteRepository.save(cliente);
+    }
+
+    public List<PersonaDto> findAll() {
+        return personaRepository.findAll().stream().map(mapper::toDto).collect(java.util.stream.Collectors.toList());
+    }
+    public PersonaDto findById(String id) {
+        return personaRepository.findById(id).map(mapper::toDto).orElse(null);
+    }
+
+    @PostMapping
+    public PersonaDto save(PersonaDto dto) {
+        Persona persona = mapper.toEntity(dto);
+        Persona savedPersona  = personaRepository.save(persona);
+        return mapper.toDto(savedPersona);
+    }
+
+    public void deleteById(String id) {
+        clienteRepository.deleteById(id);
     }
 }

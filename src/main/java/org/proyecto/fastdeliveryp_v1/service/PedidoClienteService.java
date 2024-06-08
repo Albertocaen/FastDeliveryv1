@@ -1,10 +1,14 @@
 package org.proyecto.fastdeliveryp_v1.service;
 
+import org.proyecto.fastdeliveryp_v1.dto.PedidoClienteDto;
+import org.proyecto.fastdeliveryp_v1.dto.PersonaDto;
 import org.proyecto.fastdeliveryp_v1.entity.*;
+import org.proyecto.fastdeliveryp_v1.mapper.PedidoClienteMapper;
 import org.proyecto.fastdeliveryp_v1.repository.PedidoClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.List;
@@ -16,6 +20,8 @@ public class PedidoClienteService {
 
     @Autowired
     private SimpMessagingTemplate template;
+
+    PedidoClienteMapper mapper;
 
 
     public List<PedidoCliente> getAllPedidos() {
@@ -51,6 +57,26 @@ public class PedidoClienteService {
         NotificationMessage message = new NotificationMessage();
         message.setPedidoId(id);
         template.convertAndSend("/topic/notifications", new Notification("El estado de tu pedido ha cambiado a " + estado));
+    }
+
+
+
+    public List<PedidoClienteDto> findAll() {
+        return pedidoClienteRepository.findAll().stream().map(mapper::toDto).collect(java.util.stream.Collectors.toList());
+    }
+    public PedidoClienteDto findById(Integer id) {
+        return pedidoClienteRepository.findById(id).map(mapper::toDto).orElse(null);
+    }
+
+    @PostMapping
+    public PedidoClienteDto save(PedidoClienteDto dto) {
+        PedidoCliente pedidoCliente = mapper.toEntity(dto);
+        PedidoCliente savedPedidoCliente = pedidoClienteRepository.save(pedidoCliente);
+        return mapper.toDto(savedPedidoCliente);
+    }
+
+    public void deleteById(Integer id) {
+        pedidoClienteRepository.deleteById(id);
     }
 
 

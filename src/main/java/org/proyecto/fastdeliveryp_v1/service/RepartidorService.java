@@ -1,10 +1,14 @@
 package org.proyecto.fastdeliveryp_v1.service;
 
+import org.proyecto.fastdeliveryp_v1.dto.RepartidorDto;
 import org.proyecto.fastdeliveryp_v1.entity.PedidoCliente;
+import org.proyecto.fastdeliveryp_v1.entity.Persona;
 import org.proyecto.fastdeliveryp_v1.entity.Repartidor;
+import org.proyecto.fastdeliveryp_v1.mapper.RepartidorMapper;
 import org.proyecto.fastdeliveryp_v1.repository.RepartidorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +20,8 @@ public class RepartidorService {
     private PedidoClienteService pedidoClienteService;
     @Autowired
     private RepartidorRepository repartidorRepository;
+
+    RepartidorMapper mapper;
 
     public List<Repartidor> getAllRepartidores() {
         return repartidorRepository.findAll();
@@ -47,6 +53,25 @@ public class RepartidorService {
         long pedidosNoEntregados = pedidos.stream().filter(p -> !"Entregado".equalsIgnoreCase(p.getEstado())).count();
         repartidor.setCantidadPedidos((int) pedidosNoEntregados);
         repartidorRepository.save(repartidor);
+    }
+
+
+    public List<RepartidorDto> findAll() {
+        return repartidorRepository.findAll().stream().map(mapper::toDto).collect(java.util.stream.Collectors.toList());
+    }
+    public RepartidorDto findById(String id) {
+        return repartidorRepository.findById(id).map(mapper::toDto).orElse(null);
+    }
+
+    @PostMapping
+    public RepartidorDto save(RepartidorDto dto) {
+        Repartidor repartidor = mapper.toEntity(dto);
+       Repartidor savedRepartidor  = repartidorRepository.save(repartidor);
+        return mapper.toDto(savedRepartidor);
+    }
+
+    public void deleteById(String id) {
+        repartidorRepository.deleteById(id);
     }
 }
 

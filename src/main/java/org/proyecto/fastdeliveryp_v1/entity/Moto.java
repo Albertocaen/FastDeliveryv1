@@ -2,22 +2,16 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "MOTO")
-public class Moto {
-    @Id
-    @Column(name = "placa_vehiculo", nullable = false, length = 20)
-    private String placaVehiculo;
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "placa_vehiculo", nullable = false)
-    private Vehiculo vehiculo;
+@PrimaryKeyJoinColumn(name = "placa_vehiculo")
+public class Moto extends Vehiculo {
 
     @Column(name = "cilindrada")
     private Integer cilindrada;
-
 
 }

@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
 </head>
 <body>
-<div th:fragment="pedidos-proveedor" class="container bg-floralwhite p-4 shadow-sm rounded">
+<div th:fragment="pedidos-proveedor" class="container bg-floralwhite">
     <h1 class="mb-4">Pedidos Proveedor</h1>
     <div class="row">
         <div class="col-md-4 mb-3" th:each="pedido : ${pedidos}">
@@ -19,6 +19,7 @@
                     <p><strong>Estado: </strong><span th:text="${pedido.estado != null ? pedido.estado : 'No tiene'}">Estado</span></p>
                     <p><strong>Proveedor: </strong><span th:text="${pedido.idProveedorPedido?.nombreEmpresa != null ? pedido.idProveedorPedido.nombreEmpresa : 'No tiene'}">Proveedor</span></p>
                     <p><strong>Admin: </strong><span th:text="${pedido.dniAdminPedido?.nombre != null ? pedido.dniAdminPedido.nombre : 'No tiene'} + ' ' + ${pedido.dniAdminPedido?.apellido != null ? pedido.dniAdminPedido.apellido : ''}">Admin</span></p>
+                    <a th:href="@{/pedidoproveedores/{id}(id=${pedido.id})}" class="btn btn-primary">Ver Detalles</a>
                 </div>
             </div>
         </div>

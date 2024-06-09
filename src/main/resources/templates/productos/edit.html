@@ -1,4 +1,3 @@
-<!-- src/main/resources/templates/productos/edit.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -6,27 +5,33 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Editar Producto</h1>
-<form th:action="@{/productos/update}" th:object="${producto}" method="post" enctype="multipart/form-data">
-    <input type="hidden" th:field="*{id}">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" th:field="*{nombre}">
-    <br>
-    <label for="descripcion">Descripción:</label>
-    <textarea id="descripcion" th:field="*{descripcion}"></textarea>
-    <br>
-    <label for="precio">Precio:</label>
-    <input type="number" id="precio" th:field="*{precio}" step="0.01">
-    <br>
-    <label for="imagen">Imagen:</label>
-    <input type="file" id="imagen" name="imagen">
-    <br>
-    <div th:if="${producto.img != null}">
-        <h2>Imagen actual:</h2>
-        <img th:src="${producto.img}" alt="Imagen del Producto" width="150">
-    </div>
-    <button type="submit">Actualizar</button>
-</form>
-<a th:href="@{/productos}">Volver</a>
+<div class="container mt-5">
+    <h1>Editar Producto</h1>
+    <form th:action="@{/productos/update}" th:object="${producto}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required/>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <textarea id="descripcion" th:field="*{descripcion}" class="form-control" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" th:field="*{precio}" class="form-control" step="0.01" required/>
+        </div>
+        <div class="form-group">
+            <label for="imagen">Imagen:</label>
+            <input type="file" id="imagen" name="imagen" class="form-control"/>
+        </div>
+        <div th:if="${producto.img != null}" class="form-group">
+            <label>Imagen actual:</label>
+            <img th:src="@{${producto.img}}" alt="Imagen del Producto" class="img-thumbnail" width="150">
+        </div>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+    </form>
+    <a th:href="@{/productos}" class="btn btn-secondary mt-3">Volver</a>
+</div>
 </body>
 </html>

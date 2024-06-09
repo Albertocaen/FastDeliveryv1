@@ -113,3 +113,27 @@ CREATE TABLE IF NOT EXISTS PEDIDO_PROVEEDOR (
                                                 FOREIGN KEY (dni_admin_pedido) REFERENCES ADMIN(DNI_ADMIN) ON DELETE SET NULL
 );
 
+CREATE TABLE IF NOT EXISTS PEDIDO_CLIENTE_PRODUCTO (
+                                                       id INT AUTO_INCREMENT PRIMARY KEY,
+                                                       id_pedido_cliente INT,
+                                                       id_producto INT,
+                                                       cantidad INT,
+                                                       precio DECIMAL(10, 2),
+                                                       fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                       comentarios VARCHAR(255),
+                                                       FOREIGN KEY (id_pedido_cliente) REFERENCES PEDIDO_CLIENTE(id_pedido_cliente) ON DELETE CASCADE,
+                                                       FOREIGN KEY (id_producto) REFERENCES PRODUCTO(id_producto) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS PEDIDO_PROVEEDOR_PRODUCTO (
+                                                         id INT AUTO_INCREMENT PRIMARY KEY,
+                                                         id_pedido_proveedor INT,
+                                                         id_producto INT,
+                                                         cantidad INT,
+                                                         precio DECIMAL(10, 2),
+                                                         fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                                         comentarios VARCHAR(255),
+                                                         FOREIGN KEY (id_pedido_proveedor) REFERENCES PEDIDO_PROVEEDOR(id_pedido_proveedor) ON DELETE CASCADE,
+                                                         FOREIGN KEY (id_producto) REFERENCES PRODUCTO(id_producto) ON DELETE CASCADE
+);

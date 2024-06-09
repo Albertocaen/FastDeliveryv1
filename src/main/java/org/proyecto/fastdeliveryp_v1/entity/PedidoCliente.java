@@ -5,9 +5,11 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 
 @Data
 @Entity
@@ -40,9 +42,6 @@ public class PedidoCliente {
     @JoinColumn(name = "dni_repartidor_pedido")
     private Repartidor dniRepartidorPedido;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_producto")
-    private Producto producto;
-
-
+    @OneToMany(mappedBy = "pedidoCliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PedidoClienteProducto> productos = new HashSet<>();
 }

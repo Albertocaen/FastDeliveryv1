@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ES">
+<html xmlns:th="http://www.thymeleaf.org" lang="ES" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Lista de Productos</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <title>Productos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/productos/productos.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -9,68 +12,51 @@
 </head>
 <body>
 <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="text-center">Lista de Productos</h1>
-        <a href="/inicio" class="btn btn-secondary">Volver a Inicio</a>
+    <div class="d-flex justify-content-center align-items-center mb-3">
+        <h1 class="text-center p-3 mb-3">Productos Disponibles</h1>
     </div>
-    <div class="text-right mb-3">
-        <a href="/productos/new" class="btn btn-primary">Nuevo Producto</a>
+    <div class="d-flex justify-content-center mb-3">
+        <a href="/inicio" class="btn btn-secondary mr-2">Volver a Inicio</a>
+        <a href="/productos/new" class="btn btn-primary">Añadir nuevo</a>
+        <li class="nav-item" sec:authorize="isAuthenticated()">
+            <a class="nav-link" th:href="@{/carrito}">
+                <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Carrito de Compras" style="width: 30px; height: 30px;">
+                <span id="carritoItems" class="badge badge-pill badge-primary" th:text="${#lists.size(carrito)}">0</span>
+            </a>
+        </li>
     </div>
-    <div id="productosContainer">
-        <table class="table table-hover">
-            <thead class="thead-light">
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Imagen</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="producto : ${productos}">
-                <td th:text="${producto.id}"></td>
-                <td th:text="${producto.nombre}"></td>
-                <td th:text="${producto.descripcion}"></td>
-                <td th:text="${producto.precio}"></td>
-                <td>
-                    <img th:if="${producto.img != null}" th:src="${producto.img}" alt="Imagen del Producto" width="100"
-                         class="img-thumbnail"/>
-                </td>
-                <td>
-                    <a th:href="@{/productos/edit/{id}(id=${producto.id})}" class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm"
-                       onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
-                    <input type="number" name="cantidad" value="1" min="1" class="form-control d-inline-block w-auto"
-                           style="width: 60px;">
-                    <button class="btn btn-success btn-sm agregarCarrito" th:data-id="${producto.id}">
-                        <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Agregar al Carrito"
-                             style="width: 20px; height: 20px;">
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div id="productosContainer" class="row">
+        <div class="col-md-4 mb-4" th:each="producto : ${productos}">
+            <div class="card h-100 shadow-sm">
+                <img th:if="${producto.img != null}" th:src="@{${producto.img}}" class="card-img-top img-thumbnail" alt="Imagen del Producto">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${producto.nombre}">Nombre del Producto</h5>
+                    <p class="card-text" th:text="${producto.descripcion}">Descripción del Producto</p>
+                    <p class="card-text font-weight-bold" th:text="'Precio: ' + ${producto.precio} + ' €'">Precio</p>
+                    <div class="mt-auto">
+                        <a th:href="@{/productos/edit/{id}(id=${producto.id})}" class="btn btn-warning btn-sm mb-1">Editar</a>
+                        <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm mb-1" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
+                        <button class="btn btn-success btn-sm agregarCarrito" th:data-id="${producto.id}">
+                            <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Agregar al Carrito" style="width: 30px; height: 30px;">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <nav>
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+    <nav class="pagination justify-content-center" aria-label="Page navigation example" th:if="${totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/productos(page=${currentPage - 1})}">Anterior</a>
             </li>
-            <li class="page-item" th:each="page : ${#numbers.sequence(1, totalPages)}"
-                th:classappend="${page == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/productos(page=${page})}" th:text="${page}">1</a>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/productos(page=${i})}" th:text="${i + 1}">1</a>
             </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
                 <a class="page-link" th:href="@{/productos(page=${currentPage + 1})}">Siguiente</a>
             </li>
         </ul>
     </nav>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

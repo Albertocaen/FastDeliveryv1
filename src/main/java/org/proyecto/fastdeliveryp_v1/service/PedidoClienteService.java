@@ -4,13 +4,17 @@ import org.proyecto.fastdeliveryp_v1.dto.PedidoClienteDto;
 import org.proyecto.fastdeliveryp_v1.dto.PersonaDto;
 import org.proyecto.fastdeliveryp_v1.entity.*;
 import org.proyecto.fastdeliveryp_v1.mapper.PedidoClienteMapper;
+import org.proyecto.fastdeliveryp_v1.repository.PedidoClienteProductoRepository;
 import org.proyecto.fastdeliveryp_v1.repository.PedidoClienteRepository;
+import org.proyecto.fastdeliveryp_v1.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +24,15 @@ public class PedidoClienteService {
     private PedidoClienteRepository pedidoClienteRepository;
 
     @Autowired
+    private ProductoRepository productoRepository;
+
+    @Autowired
+    private PedidoClienteProductoRepository pedidoClienteProductoRepository;
+
+    @Autowired
     private SimpMessagingTemplate template;
 
+    @Autowired
     PedidoClienteMapper mapper;
 
 
@@ -41,8 +52,14 @@ public class PedidoClienteService {
         return pedidoClienteRepository.findByDniClientePedido(cliente);
     }
 
-    public PedidoCliente savePedido(PedidoCliente pedido) {
-        return pedidoClienteRepository.save(pedido);
+    @Transactional
+    public PedidoCliente savePedido(PedidoCliente pedido, List<PedidoClienteProducto> productos) {
+        PedidoCliente savedPedido = pedidoClienteRepository.save(pedido);
+        for (PedidoClienteProducto producto : productos) {
+            producto.setPedidoCliente(savedPedido);
+            pedidoClienteProductoRepository.save(producto);
+        }
+        return savedPedido;
     }
 
     public void deletePedido(Integer id) {
@@ -54,7 +71,6 @@ public class PedidoClienteService {
         pedido.setEstado(estado);
         pedidoClienteRepository.save(pedido);
 
-        // Enviar notificación
         NotificationMessage message = new NotificationMessage();
         message.setPedidoId(id);
         template.convertAndSend("/topic/notifications", new Notification("El estado de tu pedido ha cambiado a " + estado));
@@ -72,7 +88,7 @@ public class PedidoClienteService {
         return pedidoClienteRepository.findById(id).map(mapper::toDto).orElse(null);
     }
 
-    @PostMapping
+
     public PedidoClienteDto save(PedidoClienteDto dto) {
         PedidoCliente pedidoCliente = mapper.toEntity(dto);
         PedidoCliente savedPedidoCliente = pedidoClienteRepository.save(pedidoCliente);

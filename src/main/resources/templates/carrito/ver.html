@@ -7,40 +7,46 @@
 <body>
 <div class="container mt-5">
     <h1>Carrito de Compras</h1>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th>Total</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${carrito}">
-            <td th:text="${item.producto.nombre}">Nombre del Producto</td>
-            <td th:text="${#numbers.formatDecimal(item.producto.precio, 1, 2)}">Precio del Producto</td>
-            <td th:text="${item.cantidad}">Cantidad</td>
-            <td th:text="${#numbers.formatDecimal(item.total, 1, 2)}">Total del Producto</td>
-            <td>
-                <form th:action="@{/carrito/eliminar}" method="post">
-                    <input type="hidden" name="idProducto" th:value="${item.producto.id}"/>
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <div class="d-flex justify-content-end">
-        <span>Total: </span>
-        <span th:text="${totalCarrito}"></span>
+    <div th:if="${carrito.size() > 0}">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${carrito}">
+                <td th:text="${item.producto.nombre}">Nombre del Producto</td>
+                <td th:text="${#numbers.formatDecimal(item.producto.precio, 1, 2)}">Precio del Producto</td>
+                <td th:text="${item.cantidad}">Cantidad</td>
+                <td th:text="${#numbers.formatDecimal(item.total, 1, 2)}">Total del Producto</td>
+                <td>
+                    <form th:action="@{/carrito/eliminar}" method="post">
+                        <input type="hidden" name="idProducto" th:value="${item.producto.id}"/>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end">
+            <span class="mr-2">Total: </span>
+            <span th:text="${totalCarrito}"></span>
+        </div>
+        <form th:action="@{/paypal/pagar}" method="post">
+            <input type="hidden" name="total" th:value="${totalCarrito}"/>
+            <button type="submit" class="btn btn-primary">Pagar con PayPal</button>
+        </form>
+        <a th:href="@{/productos}" class="btn btn-primary">Seguir Comprando</a>
     </div>
-    <form th:action="@{/paypal/pagar}" method="post">
-        <input type="hidden" name="total" th:value="${totalCarrito}"/>
-        <button type="submit" class="btn btn-primary">Pagar con PayPal</button>
-    </form>
-    <a th:href="@{/productos}" class="btn btn-primary">Seguir Comprando</a>
+    <div th:if="${carrito.size() == 0}">
+        <p>No hay productos en el carrito.</p>
+        <a th:href="@{/productos}" class="btn btn-primary">Ver Productos</a>
+    </div>
 </div>
 </body>
 </html>

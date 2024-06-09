@@ -2,6 +2,7 @@ package org.proyecto.fastdeliveryp_v1.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 
@@ -10,8 +11,10 @@ import java.util.List;
 @Entity
 @Table(name = "CLIENTE")
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Cliente {
     @Id
+    @EqualsAndHashCode.Include
     @Column(name = "DNI_CLIENTE", nullable = false, length = 20)
     private String dniCliente;
 

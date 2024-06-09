@@ -16,20 +16,20 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link load-content" href="#" th:data-url="@{/stocks}" sec:authorize="hasAuthority('ROLE_ADMIN')">Stocks</a>
+                    <a class="nav-link load-content" href="#" th:data-url="@{/stocks}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Stocks</strong></a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link load-content" href="#" th:data-url="@{/proveedores}" sec:authorize="hasAuthority('ROLE_ADMIN')">Proveedores</a>
+                    <a class="nav-link load-content" href="#" th:data-url="@{/proveedores}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Proveedores</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link load-content" href="#" th:data-url="@{/pedidoproveedores}" sec:authorize="hasAuthority('ROLE_ADMIN')">Pedidos</a>
+                    <a class="nav-link load-content" href="#" th:data-url="@{/pedidoproveedores}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Pedidos</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link load-content" href="#" th:data-url="@{/repartidores}" sec:authorize="hasAuthority('ROLE_ADMIN')">Repartidores</a>
+                    <a class="nav-link load-content" href="#" th:data-url="@{/repartidores}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Repartidores</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{/inicio}" sec:authorize="hasAuthority('ROLE_ADMIN')">Inicio</a>
+                    <a class="nav-link" href="#" th:href="@{/inicio}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Inicio</strong></a>
                 </li>
             </ul>
         </div>

@@ -9,10 +9,20 @@ $(document).ready(function () {
             data: {idProducto: idProducto, cantidad: cantidad},
             success: function (response) {
                 $('#carritoItems').text(response.itemsCount);
-                alert('Producto agregado al carrito');
+                Swal.fire({
+                    title: '¡Producto agregado!',
+                    text: 'El producto ha sido agregado al carrito.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
             },
             error: function (xhr, status, error) {
-                alert('Error al agregar el producto al carrito: ' + error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al agregar el producto al carrito.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
             }
         });
     });

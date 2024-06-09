@@ -65,6 +65,11 @@ public class HomeController {
         return response;
     }
 
+    @GetMapping("/gestor")
+    public String showPage() {
+        return "home/gestor"; // Nombre de la plantilla HTML
+    }
+
     private String normalizeString(String input) {
         return Normalizer.normalize(input, Normalizer.Form.NFD)
                 .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")

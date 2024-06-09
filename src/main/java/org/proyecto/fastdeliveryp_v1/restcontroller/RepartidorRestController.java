@@ -1,6 +1,5 @@
 package org.proyecto.fastdeliveryp_v1.restcontroller;
 
-import java.lang.Long;
 import java.util.List;
 import org.proyecto.fastdeliveryp_v1.dto.RepartidorDto;
 import org.proyecto.fastdeliveryp_v1.service.RepartidorService;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/repartidors")
+@RequestMapping("/api/repartidores")
 public class RepartidorRestController {
   @Autowired
   private RepartidorService service;

@@ -31,7 +31,7 @@ public class Repartidor {
     @Column(name = "cantidad_pedidos")
     private Integer cantidadPedidos;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "placa_vehiculo")
     private Vehiculo placaVehiculo;

@@ -1,16 +1,17 @@
 package org.proyecto.fastdeliveryp_v1.service;
 
-import java.lang.Long;
 import java.util.List;
 import org.proyecto.fastdeliveryp_v1.dto.StockDto;
 import org.proyecto.fastdeliveryp_v1.mapper.StockMapper;
 import org.proyecto.fastdeliveryp_v1.repository.StockRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StockService {
+  @Autowired
   private StockRepository repository;
-
+@Autowired
   private StockMapper mapper;
 
   public List<StockDto> findAll() {

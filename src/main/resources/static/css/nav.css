@@ -1,9 +1,12 @@
 /* Fondo del body */
 body {
-    background-color: floralwhite; /* Fondo claro */
+
+    background-image: url("/static/uploads/intento.webp");
     color: #333; /* Texto oscuro */
     font-family: 'Roboto', sans-serif;
     margin: 0; /* Elimina cualquier margen predeterminado del body */
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 /* Navbar styles */
@@ -104,17 +107,15 @@ body {
 }
 
 .highlight-product {
-    background-color: #fff; /* Fondo blanco */
+    background-color: transparent; /* Fondo blanco */
     height: auto;
     padding: 1em;
-    border: 1px solid #ddd;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     margin-bottom: 2em;
     transition: transform 0.3s ease-in-out;
     animation: fadeIn 2s ease-in-out;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .highlight-product:hover {
@@ -123,25 +124,21 @@ body {
 }
 
 .advertisement {
-    background-color: #fff;
+    background-color: transparent;
     height: 25em;
-    margin-top: 4em;
+    margin-top: 8em; /* Añadir margen superior */
     margin-bottom: 2em;
     padding: 1em;
     display: flex;
     justify-content: center;
     align-items: center;
     animation: fadeIn 2s ease-in-out;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-image: url("../uploads/nuevologo.webp");
+    background-image: url("../uploads/cambio-removebg-preview.png");
     background-size: contain;
+    background-repeat: no-repeat;
     background-position: center; /* Centra la imagen */
 }
 
-.navbar {
-    margin-bottom: 2em;
-}
 
 .producto-info {
     text-align: center;
@@ -209,6 +206,8 @@ body {
     font-size: 1.2em;
     white-space: nowrap;
 }
+
+
 
 /* Ajustes para dispositivos móviles */
 @media (max-width: 768px) {
@@ -341,3 +340,25 @@ body {
         text-shadow: none;
     }
 }
+/* Estilo para la tarjeta en el carrusel */
+.card {
+    background-color: transparent; /* Fondo transparente para las tarjetas */
+    border: none; /* Sin borde para las tarjetas */
+}
+
+/* Estilo para los elementos del carrusel */
+.carousel-item {
+    background-color: transparent; /* Fondo transparente para los elementos del carrusel */
+}
+
+/* Opcional: estilo para el cuerpo de la tarjeta */
+.card-body {
+    background-color: rgba(255, 255, 255, 0.5); /* Fondo semitransparente para el cuerpo de la tarjeta */
+    border-radius: 10px; /* Bordes redondeados */
+}
+
+/* Opcional: estilo para la imagen */
+.card-img-top {
+    border-radius: 10px; /* Bordes redondeados para la imagen */
+}
+

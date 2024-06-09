@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Stocks</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:fragment="stocks" class="container bg-floralwhite p-4 shadow-sm rounded">
+    <h1 class="mb-4">Stock Disponible</h1>
+    <div class="row">
+        <div class="col-md-4 mb-3" th:each="stock : ${stocks}">
+            <div class="card">
+                <div class="card-header">
+                    <strong>ID Stock: </strong><span th:text="${stock.id != null ? stock.id : 'No tiene'}">ID Stock</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Cantidad: </strong><span th:text="${stock.cantidad != null ? stock.cantidad : 'No tiene'}">Cantidad</span></p>
+                    <p><strong>Fecha Ingreso: </strong><span th:text="${stock.fechaIngreso != null ? stock.fechaIngreso : 'No tiene'}">Fecha Ingreso</span></p>
+                    <p><strong>Producto: </strong><span th:text="${stock.idProducto != null ? stock.idProducto.nombre : 'No tiene'}">Producto</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoClienteService {
@@ -62,7 +63,10 @@ public class PedidoClienteService {
 
 
     public List<PedidoClienteDto> findAll() {
-        return pedidoClienteRepository.findAll().stream().map(mapper::toDto).collect(java.util.stream.Collectors.toList());
+        List<PedidoCliente> pedidos = pedidoClienteRepository.findAll();
+        return pedidos.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
     public PedidoClienteDto findById(Integer id) {
         return pedidoClienteRepository.findById(id).map(mapper::toDto).orElse(null);

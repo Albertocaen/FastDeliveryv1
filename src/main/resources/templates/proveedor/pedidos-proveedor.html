@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Pedidos Proveedor</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:fragment="pedidos-proveedor" class="container bg-floralwhite p-4 shadow-sm rounded">
+    <h1 class="mb-4">Pedidos Proveedor</h1>
+    <div class="row">
+        <div class="col-md-4 mb-3" th:each="pedido : ${pedidos}">
+            <div class="card">
+                <div class="card-header">
+                    <strong>ID: </strong><span th:text="${pedido.id != null ? pedido.id : 'No tiene'}">ID</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Fecha Pedido: </strong><span th:text="${pedido.fechaPedido != null ? pedido.fechaPedido : 'No tiene'}">Fecha Pedido</span></p>
+                    <p><strong>Cantidad: </strong><span th:text="${pedido.cantidad != null ? pedido.cantidad : 'No tiene'}">Cantidad</span></p>
+                    <p><strong>Estado: </strong><span th:text="${pedido.estado != null ? pedido.estado : 'No tiene'}">Estado</span></p>
+                    <p><strong>Proveedor: </strong><span th:text="${pedido.idProveedorPedido?.nombreEmpresa != null ? pedido.idProveedorPedido.nombreEmpresa : 'No tiene'}">Proveedor</span></p>
+                    <p><strong>Admin: </strong><span th:text="${pedido.dniAdminPedido?.nombre != null ? pedido.dniAdminPedido.nombre : 'No tiene'} + ' ' + ${pedido.dniAdminPedido?.apellido != null ? pedido.dniAdminPedido.apellido : ''}">Admin</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

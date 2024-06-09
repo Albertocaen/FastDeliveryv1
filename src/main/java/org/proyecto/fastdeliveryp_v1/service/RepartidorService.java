@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RepartidorService {
@@ -20,7 +21,7 @@ public class RepartidorService {
     private PedidoClienteService pedidoClienteService;
     @Autowired
     private RepartidorRepository repartidorRepository;
-
+    @Autowired
     RepartidorMapper mapper;
 
     public List<Repartidor> getAllRepartidores() {
@@ -57,7 +58,10 @@ public class RepartidorService {
 
 
     public List<RepartidorDto> findAll() {
-        return repartidorRepository.findAll().stream().map(mapper::toDto).collect(java.util.stream.Collectors.toList());
+        List<Repartidor> repartidores = repartidorRepository.findAll();
+        return repartidores.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
     public RepartidorDto findById(String id) {
         return repartidorRepository.findById(id).map(mapper::toDto).orElse(null);

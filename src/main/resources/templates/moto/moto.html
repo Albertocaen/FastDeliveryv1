@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Motos</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+</head>
+<body>
+<h1>Lista de Motos</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Placa Vehículo</th>
+        <th>Cilindrada</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Color</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="moto : ${motos}">
+        <td th:text="${moto.placaVehiculo}">Placa Vehículo</td>
+        <td th:text="${moto.cilindrada}">Cilindrada</td>
+        <td th:text="${moto.marca}">Marca</td>
+        <td th:text="${moto.modelo}">Modelo</td>
+        <td th:text="${moto.color}">Color</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

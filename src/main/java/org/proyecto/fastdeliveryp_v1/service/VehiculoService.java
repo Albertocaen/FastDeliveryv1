@@ -5,12 +5,14 @@ import java.util.List;
 import org.proyecto.fastdeliveryp_v1.dto.VehiculoDto;
 import org.proyecto.fastdeliveryp_v1.mapper.VehiculoMapper;
 import org.proyecto.fastdeliveryp_v1.repository.VehiculoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class VehiculoService {
+  @Autowired
   private VehiculoRepository repository;
-
+  @Autowired
   private VehiculoMapper mapper;
 
   public List<VehiculoDto> findAll() {

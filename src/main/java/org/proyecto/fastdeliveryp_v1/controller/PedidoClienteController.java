@@ -4,7 +4,9 @@ import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.proyecto.fastdeliveryp_v1.entity.*;
+import org.proyecto.fastdeliveryp_v1.repository.PedidoClienteProductoRepository;
 import org.proyecto.fastdeliveryp_v1.service.ClienteService;
 import org.proyecto.fastdeliveryp_v1.service.PedidoClienteService;
 import org.proyecto.fastdeliveryp_v1.service.PaypalService;
@@ -30,6 +32,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +61,9 @@ public class PedidoClienteController {
     @Autowired
     private PaypalService paypalService;
 
+    @Autowired
+    PedidoClienteProductoRepository pedidoClienteProductoRepository;
+
     @GetMapping
     public String listPedidos(Model model, Principal principal) {
         List<PedidoCliente> pedidos;
@@ -83,11 +90,11 @@ public class PedidoClienteController {
             model.addAttribute("clientes", clienteService.getAllClientes());
         }
 
-        return "pedidos/new :: new";  // Devolver solo el fragmento del formulario
+        return "pedidos/new :: new";
     }
-
     @PostMapping
-    public String saveNewPedido(@ModelAttribute PedidoCliente pedido, Principal principal, Model model) {
+    public String saveNewPedido(@ModelAttribute PedidoCliente pedido, @RequestParam List<Integer> productoIds,
+                                @RequestParam List<Integer> cantidades, Principal principal, Model model) {
         Repartidor repartidorAsignado = repartidorService.asignarRepartidorDisponible();
 
         if (repartidorAsignado == null) {
@@ -106,20 +113,35 @@ public class PedidoClienteController {
             pedido.setDniClientePedido(cliente);
         }
 
-        pedidoClienteService.savePedido(pedido);
+        List<PedidoClienteProducto> productos = new ArrayList<>();
+        for (int i = 0; i < productoIds.size(); i++) {
+            Producto producto = productoService.getProductoById(productoIds.get(i));
+            PedidoClienteProducto pedidoProducto = new PedidoClienteProducto();
+            pedidoProducto.setPedidoCliente(pedido);
+            pedidoProducto.setProducto(producto);
+            pedidoProducto.setCantidad(cantidades.get(i));
+            pedidoProducto.setPrecio(producto.getPrecio());
+            pedidoProducto.setFecha(LocalDateTime.now());
+            productos.add(pedidoProducto);
+        }
+
+        pedidoClienteService.savePedido(pedido, productos);
         model.addAttribute("pedido", new PedidoCliente());
         model.addAttribute("productos", productoService.getAllProductos());
         if (hasRole("ROLE_ADMIN")) {
             model.addAttribute("clientes", clienteService.getAllClientes());
         }
         model.addAttribute("message", "El pedido ha sido creado con éxito.");
-        return "pedidos/new :: new";  // Devolver solo el fragmento del formulario actualizado
+        return "pedidos/new :: new";
     }
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/estado/{id}")
     public String changeEstadoForm(@PathVariable Integer id, Model model) {
         PedidoCliente pedido = pedidoClienteService.getPedidoById(id);
+        if (pedido == null) {
+            throw new IllegalArgumentException("Pedido no encontrado para el ID: " + id);
+        }
         model.addAttribute("pedido", pedido);
         return "pedidos/estado :: estado";
     }
@@ -137,7 +159,7 @@ public class PedidoClienteController {
     @GetMapping("/success")
     public String successPay(@RequestParam("paymentId") String paymentId,
                              @RequestParam("PayerID") String payerId,
-                             @CookieValue(value = "carrito", defaultValue = "") String carritoCookie,
+                             HttpSession session,
                              Principal principal,
                              HttpServletResponse response,
                              Model model) {
@@ -166,8 +188,8 @@ public class PedidoClienteController {
                 }
                 logger.info("Repartidor asignado: {}", repartidorAsignado);
 
-                // Obtener carrito desde la cookie
-                List<CarritoItem> carrito = productoService.obtenerCarritoDesdeCookie(carritoCookie);
+                // Obtener carrito desde la sesión
+                List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
                 if (carrito.isEmpty()) {
                     logger.error("El carrito está vacío.");
                     return "redirect:/";
@@ -177,24 +199,28 @@ public class PedidoClienteController {
                 // Crear pedidos para cada item del carrito
                 for (CarritoItem item : carrito) {
                     PedidoCliente pedido = new PedidoCliente();
-                    pedido.setProducto(item.getProducto());
                     pedido.setDniRepartidorPedido(repartidorAsignado);
                     pedido.setEstado("En Curso");
                     pedido.setFechaPedido(LocalDate.now());
                     pedido.setCantidad(item.getCantidad());
                     pedido.setDniClientePedido(cliente);
-                    logger.info("Pedido a guardar: {}", pedido);
+
+                    List<PedidoClienteProducto> productos = new ArrayList<>();
+                    PedidoClienteProducto pedidoProducto = new PedidoClienteProducto();
+                    pedidoProducto.setPedidoCliente(pedido);
+                    pedidoProducto.setProducto(item.getProducto());
+                    pedidoProducto.setCantidad(item.getCantidad());
+                    pedidoProducto.setPrecio(item.getProducto().getPrecio());
+                    pedidoProducto.setFecha(LocalDateTime.now());
+                    productos.add(pedidoProducto);
 
                     // Guardar el pedido
-                    PedidoCliente savedPedido = pedidoClienteService.savePedido(pedido);
+                    PedidoCliente savedPedido = pedidoClienteService.savePedido(pedido, productos);
                     logger.info("Pedido guardado: {}", savedPedido);
                 }
 
-                // invalidar la cookie para borrar el pedido del carrito
-                Cookie cookie = new Cookie("carrito", null);
-                cookie.setPath("/");
-                cookie.setMaxAge(0); // Set the cookie to expire immediately
-                response.addCookie(cookie);
+                // Invalidar la sesión para borrar el pedido del carrito
+                session.removeAttribute("carrito");
 
                 // Generar número de orden
                 String orderNumber = generarNumeroOrden();
@@ -212,11 +238,16 @@ public class PedidoClienteController {
         return "redirect:/";
     }
 
-
     @GetMapping("/cancel")
     public String cancelPay() {
         logger.info("Pago cancelado por el usuario");
         return "pedidos/cancel";
+    }
+    
+    @GetMapping("/delete/{id}")
+    public String deletePedido(@PathVariable Integer id, Model model) {
+        pedidoClienteService.deleteById(id);
+        return "redirect:/pedidos"; // Redirige a la lista de pedidos después de eliminar
     }
 
     private boolean hasRole(String role) {

@@ -3,12 +3,15 @@ package org.proyecto.fastdeliveryp_v1.controller;
 import jakarta.servlet.http.HttpSession;
 import org.proyecto.fastdeliveryp_v1.entity.CarritoItem;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
+import org.proyecto.fastdeliveryp_v1.service.CustomUserDetails;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,19 +29,27 @@ public class HomeController {
         return "redirect:/inicio";
     }
 
+
     @GetMapping("/inicio")
-    public String homePage(Model model, @CookieValue(value = "carrito", defaultValue = "") String carritoCookie) {
+    public String homePage(Model model, HttpSession session, Authentication authentication) {
+        String userId = "anonimo";
+        if (authentication != null && authentication.isAuthenticated()) {
+            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+            userId = user.getUsername().replaceAll("[^a-zA-Z0-9]", "_");
+        }
+
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
+        model.addAttribute("carrito", carrito);
+        model.addAttribute("carritoItemsCount", carrito.size());
+
         List<Producto> productosDestacados = productoService.getProductosDestacados(3);
         List<Producto> todosLosProductos = productoService.getAllProductos();
         model.addAttribute("productosDestacados", productosDestacados);
         model.addAttribute("productos", todosLosProductos);
 
-        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeCookie(carritoCookie);
-        model.addAttribute("carrito", carrito);
-        model.addAttribute("carritoItemsCount", carrito.size());
-
         return "home/index";
     }
+
 
 
     @PostMapping("/chat")

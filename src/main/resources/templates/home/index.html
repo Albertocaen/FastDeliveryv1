@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio - FastDelivery</title>
+    <title>Baco</title>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -17,7 +17,7 @@
     <img src="/static/uploads/610e8867f8bb190004769dd9.png" alt="Music Control" id="music-icon">
 </div>
 <audio id="background-music" loop>
-    <source src="/static/music/Mami%20yo%20te%20veo,%20ahí%20con%20tus%20amigas%20__%20Pitbull%20vs%20Afrojack%20•%20Maldito%20alcohol%20(Letra).mp3"
+    <source src="/static/music/pitbull.mp3"
             type="audio/mp3">
     Your browser does not support the audio element.
 </audio>
@@ -71,11 +71,12 @@
 
     </div>
 
-    <div id="contenido-dinamico" style="background-color: transparent" class="mt-4"></div>
+
 </div>
 <div th:replace="fragmentos/chatbot :: chatbot"></div>
 
 <footer class="footer">
+    <div id="contenido-dinamico" style="background-color: transparent" class="mt-4"></div>
     <div class="container">
         <div class="column">
             <h4>FastDelivery</h4>

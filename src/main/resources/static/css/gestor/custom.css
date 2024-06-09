@@ -1,26 +1,19 @@
 body {
-
     background-image: url("/static/uploads/intento.webp");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
     color: #333; /* Texto oscuro */
     font-family: 'Roboto', sans-serif;
     margin: 0; /* Elimina cualquier margen predeterminado del body */
-    background-size: contain;
-    background-repeat: no-repeat;
     height: 100%;
-}
-
-main{
-    background-color: transparent;
-    color: #333; /* Texto oscuro */
-    font-family: 'Roboto', sans-serif;
-    margin: 0; /* Elimina cualquier margen predeterminado del body */
-    background-size: contain;
-    background-repeat: no-repeat;
 }
 
 .navbar {
     background-color: black;
     border-bottom: 2px solid #ccc;
+    margin-bottom: 20px;
 }
 
 .navbar-brand img.lh-logo {
@@ -51,6 +44,9 @@ main{
 #contenido-dinamico {
     min-height: 400px;
     margin-top: 70px; /* To adjust for fixed navbar */
+    background-color: transparent;
+    color: #333; /* Texto oscuro */
+    font-family: 'Roboto', sans-serif;
 }
 
 h1 {
@@ -58,11 +54,11 @@ h1 {
 }
 
 .bg-floralwhite {
-    background-color: whitesmoke;
+    background-color: transparent;
 }
 
 .bg-whitesmoke {
-    background-color: black;
+    background-color: transparent;
 }
 
 .fade-in {
@@ -78,6 +74,7 @@ h1 {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white background */
 }
 
 .card:hover {
@@ -85,10 +82,11 @@ h1 {
 }
 
 .card-header {
-    background-color: #f8f9fa;
+    background-color: transparent;
     font-weight: bold;
 }
 
 .card-body p {
     margin-bottom: 10px;
+    background-color: transparent;
 }

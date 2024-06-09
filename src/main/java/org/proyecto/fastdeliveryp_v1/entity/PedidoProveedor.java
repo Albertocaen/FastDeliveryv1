@@ -1,12 +1,12 @@
 package org.proyecto.fastdeliveryp_v1.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -35,6 +35,9 @@ public class PedidoProveedor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dni_admin_pedido")
     private Admin dniAdminPedido;
+
+    @OneToMany(mappedBy = "pedidoProveedor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PedidoProveedorProducto> productos = new HashSet<>();
 
 
 }

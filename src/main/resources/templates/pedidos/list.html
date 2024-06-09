@@ -6,6 +6,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="/static/css/pedidos/pedidos.css">
     <link rel="stylesheet" href="/static/css/pedidos/form.css">
 </head>
@@ -23,8 +25,7 @@
             <th>ID</th>
             <th>Cliente</th>
             <th>Fecha</th>
-            <th>Producto</th>
-            <th>Peso</th>
+            <th>Productos</th>
             <th>Estado</th>
             <th sec:authorize="hasAuthority('ROLE_ADMIN')">Acciones</th>
         </tr>
@@ -32,18 +33,17 @@
         <tbody>
         <tr th:each="pedido : ${pedidos}">
             <td th:text="${pedido.id}"></td>
-            <td th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}">Cliente
-            </td>
+            <td th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}"></td>
             <td th:text="${pedido.fechaPedido}"></td>
-            <td th:text="${pedido.producto.nombre}"></td>
-            <td th:text="${pedido.peso}"></td>
-            <td th:text="${pedido.estado}"></td>
             <td>
-                <div sec:authorize="hasAuthority('ROLE_ADMIN')" class="actions">
-                    <a href="#" class="estadoPedidoLink" th:data-id="${pedido.id}">Cambiar Estado</a>
-                    <a th:href="@{/pedidos/delete/{id}(id=${pedido.id})}"
-                       onclick="return confirm('¿Estás seguro de que deseas eliminar este pedido?');">Eliminar</a>
-                </div>
+                <ul>
+                    <li th:each="producto : ${pedido.productos}" th:text="${producto.producto.nombre + ' - ' + producto.cantidad + ' unidades'}"></li>
+                </ul>
+            </td>
+            <td th:text="${pedido.estado}"></td>
+            <td sec:authorize="hasAuthority('ROLE_ADMIN')">
+                <a href="#" class="estadoPedidoLink" th:data-id="${pedido.id}">Cambiar Estado</a>
+                <a href="#" class="deletePedidoLink" th:data-id="${pedido.id}">Eliminar</a>
             </td>
         </tr>
         </tbody>
@@ -68,5 +68,6 @@
     }
 </script>
 <script src="/js/newEstado.js"></script>
+<script src="/js/notifiaciones/notificaciones.js"></script>
 </body>
 </html>

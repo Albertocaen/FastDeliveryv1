@@ -3,6 +3,9 @@ package org.proyecto.fastdeliveryp_v1.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @Table(name = "PRODUCTO")
@@ -27,5 +30,11 @@ public class Producto {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_proveedor_producto")
     private Proveedor idProveedorProducto;
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PedidoClienteProducto> pedidosClientes = new HashSet<>();
+
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PedidoProveedorProducto> pedidosProveedores = new HashSet<>();
 
 }

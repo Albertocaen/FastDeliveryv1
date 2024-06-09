@@ -11,8 +11,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Persona {
     @Id
+    @EqualsAndHashCode.Include
     @Column(name = "DNI", nullable = false, length = 20)
     private String dni;
 

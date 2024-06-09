@@ -1,5 +1,7 @@
 package org.proyecto.fastdeliveryp_v1.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.proyecto.fastdeliveryp_v1.entity.CarritoItem;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/productos")
@@ -33,18 +32,30 @@ public class ProductoController {
     @Value("${ruta.imagenes}")
     private String rutaImagenes;
 
-    @GetMapping
-    public String listProductos(Model model, @RequestParam(defaultValue = "0") int page) {
-        int pageSize = 10; // Tamaño de la página
 
+    @GetMapping
+    public String listProductos(Model model, @RequestParam(defaultValue = "0") int page, HttpSession session, Principal principal) {
+        String userId = principal != null ? principal.getName() : "anonimo";
+        userId = userId.replaceAll("[^a-zA-Z0-9]", "_");
+
+        int pageSize = 6; // Tamaño de la página
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Producto> productoPage = productoService.getAllProductos(pageable);
 
+        if (page >= productoPage.getTotalPages() && productoPage.getTotalPages() > 0) {
+            return "redirect:/productos?page=" + (productoPage.getTotalPages() - 1);
+        }
+
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
+        model.addAttribute("carrito", carrito);
+        model.addAttribute("carritoItemsCount", carrito.size());
         model.addAttribute("productos", productoPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productoPage.getTotalPages());
+
         return "productos/list";
     }
+
 
     @GetMapping("/new")
     public String newProductoForm(Model model) {

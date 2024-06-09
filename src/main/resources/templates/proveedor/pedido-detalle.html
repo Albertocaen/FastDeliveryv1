@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Detalle del Pedido Proveedor</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div class="container">
+    <h1>Detalle del Pedido Proveedor</h1>
+    <div>
+        <p><strong>ID Pedido: </strong><span th:text="${pedido.id}"></span></p>
+        <p><strong>Fecha Pedido: </strong><span th:text="${pedido.fechaPedido}"></span></p>
+        <p><strong>Cantidad: </strong><span th:text="${pedido.cantidad}"></span></p>
+        <p><strong>Estado: </strong><span th:text="${pedido.estado}"></span></p>
+        <p><strong>Proveedor: </strong><span th:text="${pedido.idProveedorPedido.nombreEmpresa}"></span></p>
+        <p><strong>Admin: </strong><span th:text="${pedido.dniAdminPedido.nombre}"></span> <span th:text="${pedido.dniAdminPedido.apellido}"></span></p>
+        <h2>Productos</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID Producto</th>
+                <th>Nombre Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Fecha</th>
+                <th>Comentarios</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.idProducto}"></td>
+                <td th:text="${producto.nombreProducto}"></td>
+                <td th:text="${producto.cantidad}"></td>
+                <td th:text="${producto.precio}"></td>
+                <td th:text="${producto.fecha}"></td>
+                <td th:text="${producto.comentarios}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

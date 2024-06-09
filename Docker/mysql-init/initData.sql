@@ -3,7 +3,7 @@ INSERT INTO PERSONA (DNI, email, nombre, apellido, telefono, contrasena, usuario
 VALUES ('00765835D', 'lomejor25@yahoo.com', 'Ambrosio', 'Gimenez', '645202098', 'password123', 'cliente'),
        ('00785378Y', 'mariobros10@gmail.com', 'Pedro', 'Bros', '640919128', 'password123', 'repartidor'),
        ('02837654B', 'madrid@gmail.com', 'Sonia', 'Bros', '645202098', 'madrid2023', 'repartidor'),
-       ('02876444D', 'PEREZ@GMAIL.COM', 'Purificacion', 'Bros', '645202098', 'password123','cliente' ),
+       ('02876444D', 'PEREZ@GMAIL.COM', 'Purificacion', 'Bros', '645202098', 'password123', 'cliente'),
        ('03888034R', 'clave22@gmail.com', 'Ambrosio', N'Bros', '645202098', 'password123', 'cliente'),
        ('04611222G', 'PALABRASDEBILES@GMAIL.COM', 'Armando', 'Luis', '650009191', 'Palabras10', 'repartidor'),
        ('04654999M', 'PALABRASDEBILES1@GMAIL.COM', 'Ambrosio', 'Bros', '645202098', 'lopez2525', 'cliente'),
@@ -37,7 +37,6 @@ VALUES ('00765835D', 'lomejor25@yahoo.com', 'Ambrosio', 'Gimenez', '645202098', 
        ('X2567980A', 'INDICE90@GMAIL.COM', 'Helena', 'Pozo', '678367481', 'indice', 'admin');
 
 
-
 -- Datos de ejemplo para la tabla ADMIN
 INSERT INTO ADMIN (DNI_ADMIN)
 VALUES ('19007843L'),
@@ -51,7 +50,7 @@ VALUES ('19007843L'),
 
 -- Datos de ejemplo para la tabla VEHICULO
 INSERT INTO VEHICULO (placa_vehiculo, marca, modelo, color, tipo)
-VALUES ('0076GFI', 'YAMAHA', 'FZ1N', 'MORADA','MOTO'),
+VALUES ('0076GFI', 'YAMAHA', 'FZ1N', 'MORADA', 'MOTO'),
        ('0204KKK', 'MONTESA', 'COTA', 'MORADA', 'MOTO'),
        ('1010YYY', 'SUZUKI', 'VITARA', 'BLANCO', 'COCHE'),
        ('1111HDS', 'HONDA', 'JAZZ', 'GRIS', 'COCHE'),
@@ -145,28 +144,23 @@ VALUES ('00785378Y', 7, '10:00 a 17:00', 'Disponible', 1, '0204KKK'),
        ('10108711N', 6, '00:00 a 06:00', 'Disponible', 3, '2653JSP'),
        ('10765424Y', 7, '13:00 a 18:30', 'Disponible', 3, '2626ERT'),
        ('10987222H', 10, '9:30 a 16:00', 'Vacaciones', 0, 'TO33333'),
-       ('50984222T', 6, '15:00 a 21:00', 'Disponible',0, '3245MB'),
+       ('50984222T', 6, '15:00 a 21:00', 'Disponible', 0, '3245MB'),
        ('M0026541H', 8, '9:30 a 14:30', 'Disponible', 3, '4545HJG'),
        ('P2098654F', 6, '16:30 a 22:00', 'Disponible', 0, '2456ROR'),
        ('R2980277Q', 7, '9:30 a 16:00', 'Disponible', 2, '2738WSS');
 
 
-
 -- Datos de ejemplo para la tabla CLIENTE
 INSERT INTO CLIENTE (DNI_CLIENTE, direccion, ciudad, codigo_postal, cliente_pedido)
-VALUES
-       ('02837654B', 'Calle Sótano 2', 'Avila', '49080', '00785378Y'),
+VALUES ('02837654B', 'Calle Sótano 2', 'Avila', '49080', '00785378Y'),
        ('03888034R', 'Calle Gran via,12', 'Madrid', '28000', '02837654B'),
-       ('04611222G','Calle modistas', 'Madrid', '28038', '04611222G'),
+       ('04611222G', 'Calle modistas', 'Madrid', '28038', '04611222G'),
        ('05089543J', 'Calle modistas', 'Madrid', '28187', '10108711N'),
        ('10765424Y', 'Calle modistas', 'Asturias', 'Madrid', '10765424Y'),
        ('10987222H', 'Calle Austria 34 Semisótano A', 'Ávila', 'Madrid', '10987222H'),
-       ('20878837Ñ', 'Calle Duran, 34 Local', 'Barcelona','Madrid', '50984222T'),
+       ('20878837Ñ', 'Calle Duran, 34 Local', 'Barcelona', 'Madrid', '50984222T'),
        ('56890323O', 'Calle modistas', 'Madrid', '28060', 'M0026541H'),
        ('X2567980A', 'Calle Lopez de Hoyos 29', 'Madrid', '28045', 'R2980277Q');
-
-
-
 
 
 -- Datos de ejemplo para la tabla PROVEEDOR
@@ -189,9 +183,9 @@ VALUES (1, 'Mahou', '917867263', 'mahou@gmail.com'),
        (16, 'Bacardi', '648901783', 'bacardi@hotmail.com'),
        (17, 'Smirnoff', '672121212', 'smirnoff@gmail.com'),
        (18, 'Baileys', '678002765', 'baileys@gmail.com'),
-       (19, 'Johnnie Walker','648901783', 'jonniewalker@gmail.com'),
+       (19, 'Johnnie Walker', '648901783', 'jonniewalker@gmail.com'),
        (20, 'Ballantines', '645339898', 'ballantines@gmail.com'),
-       (21, 'Jack Daniels ','648901783', 'jackdaniels@gmail.com'),
+       (21, 'Jack Daniels ', '648901783', 'jackdaniels@gmail.com'),
        (22, 'Smirnoff ', '809565432', 'smirnoff'),
        (23, 'Cacique', '648901783', 'cacique@gmail.com');
 
@@ -261,7 +255,7 @@ VALUES (1, 'Mahou clasica',
         230, 19, '/uploads/Cerveza5Estrellas.jpg'),
        (29, 'John Walker & Sons Odyssey',
         'John Walker & Sons Odyssey es una celebración de los viajes épicos que emprendieron whiskies Johnnie Walker en los primeros años del siglo 20, mientras viajaban por el océano a todos los rincones del ',
-        1426.8, 19, '/uploads/Cerveza5Estrellas.jpg'),  -- Corrected the id_proveedor_producto
+        1426.8, 19, '/uploads/Cerveza5Estrellas.jpg'), -- Corrected the id_proveedor_producto
        (30, 'Baileys Chocolat Luxe Cremas', '', 18.99, 18, 'uploads/Cerveza5Estrellas.jpg'),
        (31, 'Baileys Strawberries & Cream Cremas ', '', 21, 18, 'uploads/Cerveza5Estrellas.jpg'),
        (32, 'Ron 70 Cl Cacique 500 ',
@@ -301,7 +295,7 @@ INSERT INTO PEDIDO_PROVEEDOR (id_pedido_proveedor, cantidad, fecha_pedido, estad
 VALUES (1, 100, '2023-12-08', 'Entregado', 21, '19007843L'),
        (2, 80, '2023-05-07', 'Entregado', 3, '19007843L'),
        (3, 50, '2023-05-07', 'Entregado', 1, '20878837Ñ'),
-       (4, 2, '2023-05-07','Entregado' , 8, '20878837Ñ'),
+       (4, 2, '2023-05-07', 'Entregado', 8, '20878837Ñ'),
        (5, 74, '2023-05-07', 'No Entregado', NULL, NULL),
        (6, 29, NULL, NULL, 9, NULL),
        (7, 11, '2023-04-22', 'Entregado', NULL, NULL),
@@ -336,12 +330,27 @@ VALUES (1, 50, '2023-05-01', 1, '19007843L'),
        (12, 9, '2023-05-07', 12, '20980002K'),
        (13, 380, '2023-05-07', 13, '20980002K'),
        (14, 76, '2023-03-21', 14, '89032776Q'),
-       (15, 900, '2023-01-29',15, '89032776Q'),
+       (15, 900, '2023-01-29', 15, '89032776Q'),
        (16, 10, '2023-05-07', 16, '89032776Q'),
        (17, 17, '2023-05-07', 17, '89032776Q'),
        (18, 122, '2023-05-07', 18, 'H0028700M'),
        (19, 298, '2023-05-07', 19, 'R9765432P'),
        (20, 0, '2023-02-06', 20, NULL);
+
+INSERT INTO PEDIDO_CLIENTE_PRODUCTO (id,id_pedido_cliente, id_producto, cantidad, precio, comentarios)
+VALUES (1,1, 1, 2, 10.50, 'Pedido urgente, cliente requiere entrega rápida'),
+       (2,1, 2, 1, 20.00, 'Cliente pidió agregar una nota de regalo'),
+       (3,2, 1, 3, 10.50, 'Cliente frecuente, ofrecer descuento en el próximo pedido'),
+       (4,2, 3, 1, 15.75, 'Pedir confirmar disponibilidad antes de enviar'),
+       (5,3, 2, 2, 20.00, 'Requiere factura con detalles del producto');
+
+INSERT INTO PEDIDO_PROVEEDOR_PRODUCTO (id,id_pedido_proveedor, id_producto, cantidad, precio, comentarios)
+VALUES (1,1, 1, 5, 9.50, 'Pedido para reponer stock de tienda'),
+       (2,1, 3, 2, 14.75, 'Proveedor tiene entrega programada para mañana'),
+       (3,2, 2, 10, 18.00, 'Descuento aplicado por compra a granel'),
+       (4,3, 1, 8, 9.50, 'Entregar con prioridad, productos necesarios para oferta especial'),
+       (5,3, 3, 4, 14.75, 'Verificar la calidad antes de aceptar la entrega');
+
 
 UPDATE producto
 SET img = CONCAT('/static', img)

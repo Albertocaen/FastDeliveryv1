@@ -19,25 +19,25 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/profile}">Perfil</a>
+                    <a class="nav-link " th:href="@{/profile}"><strong>Perfil</strong></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/login}">Login</a>
+                    <a class="nav-link" th:href="@{/login}"><strong>Iniciar Sesion</strong></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/register}">Register</a>
+                    <a class="nav-link" th:href="@{/register}"><strong>Registrarte</strong></a>
                 </li>
                 <li>
-                    <a class="nav-link" th:href="@{/gestor}" sec:authorize="hasAuthority('ROLE_ADMIN')">Gestor</a>
+                    <a class="nav-link" th:href="@{/gestor}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Gestor</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/productos}">Productos</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/productos}"><strong>Productos</strong></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/pedidos}">Pedidos</a>
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/pedidos}"><strong>Pedidos</strong></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link" th:href="@{/logout}">Logout</a>
+                    <a class="nav-link" th:href="@{/logout}"><strong>Cerrar Sesion</strong></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/carrito}">

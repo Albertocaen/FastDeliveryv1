@@ -2,6 +2,7 @@ package org.proyecto.fastdeliveryp_v1.service;
 
 
 
+import jakarta.servlet.http.HttpSession;
 import org.proyecto.fastdeliveryp_v1.dto.PersonaDto;
 import org.proyecto.fastdeliveryp_v1.entity.CarritoItem;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 import java.util.ArrayList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductoService {
@@ -25,6 +26,7 @@ public class ProductoService {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @Autowired
     ProductoMapper mapper;
 
 
@@ -53,32 +55,36 @@ public class ProductoService {
         return productoRepository.findTopProductos(pageable);
     }
 
-    public List<CarritoItem> obtenerCarritoDesdeCookie(String carritoCookie) {
-        if (carritoCookie == null || carritoCookie.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        List<CarritoItem> carrito = new ArrayList<>();
-        String[] items = carritoCookie.split(";");
-        for (String item : items) {
-            String[] parts = item.split(":");
-            if (parts.length == 2) {
-                Integer productId = Integer.parseInt(parts[0]);
-                Integer cantidad = Integer.parseInt(parts[1]);
-                Producto producto = getProductoById(productId);
-                if (producto != null) {
-                    carrito.add(new CarritoItem(producto, cantidad));
-                }
-            }
+    public List<CarritoItem> obtenerCarritoDesdeSesion(HttpSession session) {
+        List<CarritoItem> carrito = (List<CarritoItem>) session.getAttribute("carrito");
+        if (carrito == null) {
+            carrito = new ArrayList<>();
+            session.setAttribute("carrito", carrito);
         }
         return carrito;
     }
 
-    public String generarCookieDesdeCarrito(List<CarritoItem> carrito) {
-        List<String> items = carrito.stream()
-                .map(item -> item.getProducto().getId() + ":" + item.getCantidad())
-                .collect(Collectors.toList());
-        return String.join(";", items);
+    public void agregarProductoAlCarrito(HttpSession session, Integer idProducto, Integer cantidad) {
+        List<CarritoItem> carrito = obtenerCarritoDesdeSesion(session);
+        Producto producto = getProductoById(idProducto);
+        if (producto != null) {
+            boolean productoExistente = false;
+            for (CarritoItem item : carrito) {
+                if (item.getProducto().getId().equals(idProducto)) {
+                    item.setCantidad(item.getCantidad() + cantidad);
+                    productoExistente = true;
+                    break;
+                }
+            }
+            if (!productoExistente) {
+                carrito.add(new CarritoItem(producto, cantidad));
+            }
+        }
+    }
+
+    public void eliminarProductoDelCarrito(HttpSession session, Integer idProducto) {
+        List<CarritoItem> carrito = obtenerCarritoDesdeSesion(session);
+        carrito.removeIf(item -> item.getProducto().getId().equals(idProducto));
     }
 
 

@@ -9,15 +9,10 @@ import org.proyecto.fastdeliveryp_v1.entity.Proveedor;
 
 @Data
 public class PedidoProveedorDto {
-  private Integer id;
-
-  private Integer cantidad;
-
   private LocalDate fechaPedido;
-
+  private Integer id;
+  private Integer cantidad;
   private String estado;
-
-  private Proveedor idProveedorPedido;
-
-  private Admin dniAdminPedido;
+  private ProveedorDto idProveedorPedido;
+  private AdminDto dniAdminPedido;
 }

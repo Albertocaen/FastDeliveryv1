@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/pedidoproveedors")
+@RequestMapping("/api/pedidoproveedores")
 public class PedidoProveedorRestController {
+
   @Autowired
   private PedidoProveedorService service;
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Repartidores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+<div th:fragment="repartidores" class="container mt-5">
+    <div class="row">
+        <div th:each="repartidor : ${repartidores}" class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Repartidor: <span th:text="${repartidor.persona.nombre} + ' ' + ${repartidor.persona.apellido}"></span>
+                </div>
+                <div class="card-body">
+                    <div><strong>DNI:</strong> <span th:text="${repartidor.dniRepartidor}"></span></div>
+                    <div><strong>Teléfono:</strong> <span th:text="${repartidor.persona.telefono}"></span></div>
+                    <div><strong>Calificación:</strong> <span th:text="${repartidor.calificacion}"></span></div>
+                    <div><strong>Horario de Trabajo:</strong> <span th:text="${repartidor.horarioTrabajo}"></span></div>
+                    <div><strong>Estado de Disponibilidad:</strong> <span th:text="${repartidor.estadoDeDisponibilidad}"></span></div>
+                    <div><strong>Cantidad de Pedidos:</strong> <span th:text="${repartidor.cantidadPedidos}"></span></div>
+                    <div><strong>Placa del Vehículo:</strong> <span th:text="${repartidor.vehiculo.placaVehiculo}"></span></div>
+                    <div><strong>Marca del Vehículo:</strong> <span th:text="${repartidor.vehiculo.marca}"></span></div>
+                    <div><strong>Modelo del Vehículo:</strong> <span th:text="${repartidor.vehiculo.modelo}"></span></div>
+                    <div><strong>Color del Vehículo:</strong> <span th:text="${repartidor.vehiculo.color}"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

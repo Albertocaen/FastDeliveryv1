@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Inicio - FastDelivery</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/static/css/chat/chat.css">
@@ -24,7 +25,7 @@
 <div th:replace="fragmentos/nav :: nav-menu"></div>
 
 <!-- Contenido de la página -->
-<div class="container">
+<div class="container mt-3">
 
     <!-- Sección de anuncios -->
     <div class="advertisement"></div>
@@ -57,6 +58,8 @@
                 </div>
             </div>
         </div>
+
+
         <a class=" custom-arrow carousel-control-prev" href="#productosCarrusel" role="button" data-slide="prev">
             <span class=" carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="sr-only">Anterior</span>
@@ -65,12 +68,12 @@
             <span class="  carousel-control-next-icon" aria-hidden="true"></span>
             <span class="sr-only">Siguiente</span>
         </a>
+
     </div>
 
-    <div id="contenido-dinamico" class="mt-4"></div>
+    <div id="contenido-dinamico" style="background-color: transparent" class="mt-4"></div>
 </div>
 <div th:replace="fragmentos/chatbot :: chatbot"></div>
-
 
 <footer class="footer">
     <div class="container">

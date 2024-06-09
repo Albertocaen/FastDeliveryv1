@@ -12,18 +12,11 @@ import org.proyecto.fastdeliveryp_v1.entity.Repartidor;
 @Data
 public class PedidoClienteDto {
   private Integer id;
-
   private Integer cantidad;
-
   private LocalDate fechaPedido;
-
   private Float peso;
-
   private String estado;
-
-  private Cliente dniClientePedido;
-
-  private Repartidor dniRepartidorPedido;
-
-  private Producto producto;
+  private ClienteDto cliente;
+  private RepartidorDto repartidor;
+  private ProductoDto producto;
 }

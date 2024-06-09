@@ -9,12 +9,7 @@ import org.proyecto.fastdeliveryp_v1.entity.Producto;
 @Data
 public class StockDto {
   private Integer id;
-
   private Integer cantidad;
-
   private LocalDate fechaIngreso;
-
-  private Producto idProducto;
-
-  private Admin dniAdmin;
+  private ProductoDto idProducto;
 }

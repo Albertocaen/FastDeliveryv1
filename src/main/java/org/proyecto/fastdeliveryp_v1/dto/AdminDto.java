@@ -8,10 +8,6 @@ import org.proyecto.fastdeliveryp_v1.entity.Persona;
 @Data
 public class AdminDto {
   private String dniAdmin;
-
-  private Persona persona;
-
-  private List stocks;
-
-  private List pedidosProveedor;
+  private String nombre;
+  private String apellido;
 }

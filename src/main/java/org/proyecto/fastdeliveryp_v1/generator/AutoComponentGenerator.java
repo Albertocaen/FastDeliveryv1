@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Component
+
 public class AutoComponentGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoComponentGenerator.class);

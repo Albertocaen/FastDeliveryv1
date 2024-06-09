@@ -11,7 +11,7 @@
         <a class="navbar-brand" th:href="@{/inicio}">
             <img src="/static/uploads/imagen_2024-06-02_152502378-removebg-preview.png" alt="FastDelivery Logo" class="lh-logo">
 
-            <span class="brand-name">FastDelivery</span>
+            <span class="brand-name">Baco</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -26,6 +26,9 @@
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/register}">Register</a>
+                </li>
+                <li>
+                    <a class="nav-link" th:href="@{/gestor}" sec:authorize="hasAuthority('ROLE_ADMIN')">Gestor</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/productos}">Productos</a>

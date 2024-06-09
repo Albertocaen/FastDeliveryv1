@@ -11,18 +11,10 @@ import org.proyecto.fastdeliveryp_v1.entity.Vehiculo;
 @Data
 public class RepartidorDto {
   private String dniRepartidor;
-
-  private Persona persona;
-
+  private PersonaDto persona;
   private Float calificacion;
-
   private String horarioTrabajo;
-
   private String estadoDeDisponibilidad;
-
   private Integer cantidadPedidos;
-
-  private Vehiculo placaVehiculo;
-
-  private List pedidos;
+  private VehiculoDto vehiculo;
 }

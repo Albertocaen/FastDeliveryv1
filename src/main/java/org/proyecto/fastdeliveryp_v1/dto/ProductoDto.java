@@ -9,14 +9,7 @@ import org.proyecto.fastdeliveryp_v1.entity.Proveedor;
 @Data
 public class ProductoDto {
   private Integer id;
-
   private String nombre;
-
   private String descripcion;
-
   private Float precio;
-
-  private String img;
-
-  private Proveedor idProveedorProducto;
 }

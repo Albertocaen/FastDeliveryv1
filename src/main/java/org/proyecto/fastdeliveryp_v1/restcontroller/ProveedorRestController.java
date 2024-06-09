@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/proveedors")
+@RequestMapping("/api/proveedores")
 public class ProveedorRestController {
   @Autowired
   private ProveedorService service;

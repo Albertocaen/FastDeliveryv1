@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Proveedores</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+</head>
+<body>
+<div th:fragment="proveedor" class="container bg-floralwhite p-4 shadow-sm rounded">
+    <h1 class="mb-4">Proveedores</h1>
+    <div class="row">
+        <div class="col-md-4 mb-3" th:each="proveedor : ${proveedores}">
+            <div class="card">
+                <div class="card-header">
+                    <strong>ID: </strong><span th:text="${proveedor.id != null ? proveedor.id : 'No tiene'}">ID</span>
+                </div>
+                <div class="card-body">
+                    <p><strong>Nombre Empresa: </strong><span th:text="${proveedor.nombreEmpresa != null ? proveedor.nombreEmpresa : 'No tiene'}">Nombre Empresa</span></p>
+                    <p><strong>Teléfono: </strong><span th:text="${proveedor.telefono != null ? proveedor.telefono : 'No tiene'}">Teléfono</span></p>
+                    <p><strong>Email: </strong><span th:text="${proveedor.email != null ? proveedor.email : 'No tiene'}">Email</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

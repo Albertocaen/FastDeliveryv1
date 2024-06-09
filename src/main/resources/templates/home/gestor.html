@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <title>Baco - Minimalist</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/gestor/custom.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<header th:replace="fragmentos/simple-nav :: simple-nav"></header>
+
+<main class="container mt-4">
+    <div id="contenido-dinamico" class="p-4 shadow-sm rounded"></div>
+</main>
+
+<script src="/js/custom.js"></script>
+</body>
+</html>

@@ -2,6 +2,7 @@ package org.proyecto.fastdeliveryp_v1.restcontroller;
 
 import java.lang.Long;
 import java.util.List;
+
 import org.proyecto.fastdeliveryp_v1.dto.VehiculoDto;
 import org.proyecto.fastdeliveryp_v1.service.VehiculoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,26 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/vehiculos")
 public class VehiculoRestController {
-  @Autowired
-  private VehiculoService service;
+    @Autowired
+    private VehiculoService service;
 
-  @GetMapping
-  public List<VehiculoDto> findAll() {
-    return service.findAll();
-  }
+    @GetMapping
+    public List<VehiculoDto> findAll() {
+        return service.findAll();
+    }
 
-  @GetMapping("/{id}")
-  public VehiculoDto findById(Long id) {
-    return service.findById(id);
-  }
+    @GetMapping("/{id}")
+    public VehiculoDto findById(Long id) {
+        return service.findById(id);
+    }
 
-  @PostMapping
-  public VehiculoDto save(VehiculoDto dto) {
-    return service.save(dto);
-  }
+    @PostMapping
+    public VehiculoDto save(VehiculoDto dto) {
+        return service.save(dto);
+    }
 
-  @DeleteMapping("/{id}")
-  public void deleteById(Long id) {
-    service.deleteById(id);
-  }
+    @DeleteMapping("/{id}")
+    public void deleteById(Long id) {
+        service.deleteById(id);
+    }
 }

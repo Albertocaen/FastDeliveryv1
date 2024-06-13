@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.Collection;
 
 @Controller
-
 public class AuthController {
 
     @Autowired
@@ -33,11 +32,25 @@ public class AuthController {
     @Autowired
     private PersonaService personaService;
 
+    /**
+     * Muestra la página de inicio de sesión.
+     *
+     * @return la vista de la página de inicio de sesión.
+     */
     @GetMapping("/login")
     public String loginPage() {
         return "login";
     }
 
+    /**
+     * Maneja la solicitud de inicio de sesión.
+     *
+     * @param email    el correo electrónico del usuario.
+     * @param password la contraseña del usuario.
+     * @param model    el modelo para pasar datos a la vista.
+     * @param response la respuesta HTTP para agregar cookies.
+     * @return la vista a redirigir después del inicio de sesión.
+     */
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, Model model, HttpServletResponse response) {
         try {
@@ -67,11 +80,29 @@ public class AuthController {
         }
     }
 
+    /**
+     * Muestra la página de registro.
+     *
+     * @return la vista de la página de registro.
+     */
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
+
+    /**
+     * Maneja la solicitud de registro.
+     *
+     * @param dni        el DNI del usuario.
+     * @param email      el correo electrónico del usuario.
+     * @param nombre     el nombre del usuario.
+     * @param apellido   el apellido del usuario.
+     * @param telefono   el teléfono del usuario.
+     * @param contrasena la contraseña del usuario.
+     * @param model      el modelo para pasar datos a la vista.
+     * @return la vista a redirigir después del registro.
+     */
     @PostMapping("/register")
     public String register(@RequestParam String dni,
                            @RequestParam String email,
@@ -89,8 +120,16 @@ public class AuthController {
         }
     }
 
+    /**
+     * Maneja la solicitud de cierre de sesión.
+     *
+     * @param request  la solicitud HTTP.
+     * @param response la respuesta HTTP para manipular cookies.
+     * @return la vista a redirigir después del cierre de sesión.
+     */
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+
         // invalidar la cookie para cerrar
         Cookie cookie = new Cookie("JWT", null);
         cookie.setHttpOnly(true);
@@ -98,6 +137,7 @@ public class AuthController {
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
+        // Invalidar la sesión HTTP
         request.getSession().invalidate();
 
         return "redirect:/inicio";

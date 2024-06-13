@@ -5,9 +5,7 @@ import java.lang.Integer;
 import java.lang.String;
 import java.time.LocalDate;
 import lombok.Data;
-import org.proyecto.fastdeliveryp_v1.entity.Cliente;
-import org.proyecto.fastdeliveryp_v1.entity.Producto;
-import org.proyecto.fastdeliveryp_v1.entity.Repartidor;
+
 
 @Data
 public class PedidoClienteDto {

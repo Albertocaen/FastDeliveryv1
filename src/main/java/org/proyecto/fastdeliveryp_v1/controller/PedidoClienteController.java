@@ -1,10 +1,6 @@
 package org.proyecto.fastdeliveryp_v1.controller;
 
-import com.paypal.api.payments.Payment;
-import com.paypal.base.rest.PayPalRESTException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import org.proyecto.fastdeliveryp_v1.entity.*;
 import org.proyecto.fastdeliveryp_v1.repository.PedidoClienteProductoRepository;
 import org.proyecto.fastdeliveryp_v1.service.ClienteService;
@@ -12,16 +8,12 @@ import org.proyecto.fastdeliveryp_v1.service.PedidoClienteService;
 import org.proyecto.fastdeliveryp_v1.service.PaypalService;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 import org.proyecto.fastdeliveryp_v1.service.RepartidorService;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,13 +21,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.paypal.api.payments.Payment;
+import com.paypal.base.rest.PayPalRESTException;
+
+
 
 @Controller
 @RequestMapping("/pedidos")
@@ -64,6 +65,12 @@ public class PedidoClienteController {
     @Autowired
     PedidoClienteProductoRepository pedidoClienteProductoRepository;
 
+    /**
+     * Muestra la lista de pedidos.
+     * @param model El modelo para pasar datos a la vista.
+     * @param principal La información del usuario autenticado.
+     * @return la vista de la lista de pedidos.
+     */
     @GetMapping
     public String listPedidos(Model model, Principal principal) {
         List<PedidoCliente> pedidos;
@@ -80,6 +87,12 @@ public class PedidoClienteController {
         return "pedidos/list";
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo pedido.
+     * @param model El modelo para pasar datos a la vista.
+     * @param principal La información del usuario autenticado.
+     * @return la vista del formulario de nuevo pedido.
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/new")
     public String showNewPedidoForm(Model model, Principal principal) {
@@ -92,6 +105,16 @@ public class PedidoClienteController {
 
         return "pedidos/new :: new";
     }
+
+    /**
+     * Guarda un nuevo pedido.
+     * @param pedido El pedido a guardar.
+     * @param productoIds La lista de IDs de los productos.
+     * @param cantidades La lista de cantidades de los productos.
+     * @param principal La información del usuario autenticado.
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de nuevo pedido con un mensaje de éxito.
+     */
     @PostMapping
     public String saveNewPedido(@ModelAttribute PedidoCliente pedido, @RequestParam List<Integer> productoIds,
                                 @RequestParam List<Integer> cantidades, Principal principal, Model model) {
@@ -135,6 +158,13 @@ public class PedidoClienteController {
         return "pedidos/new :: new";
     }
 
+
+    /**
+     * Muestra el formulario para cambiar el estado de un pedido.
+     * @param id El ID del pedido.
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de cambio de estado.
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/estado/{id}")
     public String changeEstadoForm(@PathVariable Integer id, Model model) {
@@ -146,6 +176,12 @@ public class PedidoClienteController {
         return "pedidos/estado :: estado";
     }
 
+    /**
+     * Cambia el estado de un pedido.
+     * @param pedido El pedido con el estado actualizado.
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de cambio de estado con un mensaje de éxito.
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/estado")
     public String changeEstado(@ModelAttribute PedidoCliente pedido, Model model) {
@@ -156,6 +192,16 @@ public class PedidoClienteController {
         return "pedidos/estado :: estado";
     }
 
+    /**
+     * Maneja la respuesta de éxito del pago a través de PayPal.
+     * @param paymentId El ID del pago.
+     * @param payerId El ID del pagador.
+     * @param session La sesión HTTP para obtener el carrito.
+     * @param principal La información del usuario autenticado.
+     * @param response La respuesta HTTP para agregar cookies.
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista de éxito del pago.
+     */
     @GetMapping("/success")
     public String successPay(@RequestParam("paymentId") String paymentId,
                              @RequestParam("PayerID") String payerId,
@@ -238,23 +284,42 @@ public class PedidoClienteController {
         return "redirect:/";
     }
 
+    /**
+     * Maneja la cancelación del pago por parte del usuario.
+     * @return la vista de cancelación del pago.
+     */
     @GetMapping("/cancel")
     public String cancelPay() {
         logger.info("Pago cancelado por el usuario");
         return "pedidos/cancel";
     }
-    
+
+    /**
+     * Elimina un pedido por su ID.
+     * @param id El ID del pedido a eliminar.
+     * @return redirección a la lista de pedidos después de eliminar.
+     */
+
     @GetMapping("/delete/{id}")
     public String deletePedido(@PathVariable Integer id, Model model) {
         pedidoClienteService.deleteById(id);
         return "redirect:/pedidos"; // Redirige a la lista de pedidos después de eliminar
     }
 
+    /**
+     * Verifica si el usuario autenticado tiene un rol específico.
+     * @param role El rol a verificar.
+     * @return true si el usuario tiene el rol, false de lo contrario.
+     */
     private boolean hasRole(String role) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(role));
     }
 
+    /**
+     * Genera un número de orden único.
+     * @return un número de orden único.
+     */
     private String generarNumeroOrden() {
         return UUID.randomUUID().toString();
     }

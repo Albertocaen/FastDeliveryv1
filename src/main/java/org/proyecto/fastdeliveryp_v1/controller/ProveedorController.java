@@ -3,6 +3,7 @@ package org.proyecto.fastdeliveryp_v1.controller;
 
 import org.proyecto.fastdeliveryp_v1.dto.ProveedorDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,10 +17,18 @@ public class ProveedorController {
     @Autowired
     private RestTemplate restTemplate;
 
-    private static final String PROVEEDORES_API_URL = "http://localhost:8080/api/proveedores";
+    @Value("${api.base.url}")
+    private String apiBaseUrl;
 
+    /**
+     * Maneja las solicitudes GET para obtener todos los proveedores.
+     *
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista de la lista de proveedores.
+     */
     @GetMapping("/proveedores")
     public String getProveedores(Model model) {
+        String PROVEEDORES_API_URL = apiBaseUrl + "/api/proveedores";
         ProveedorDto[] proveedoresArray = restTemplate.getForObject(PROVEEDORES_API_URL, ProveedorDto[].class);
         List<ProveedorDto> proveedores = Arrays.asList(proveedoresArray);
 

@@ -6,8 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Data;
-import org.proyecto.fastdeliveryp_v1.entity.Admin;
-import org.proyecto.fastdeliveryp_v1.entity.Proveedor;
+
 
 @Data
 public class PedidoProveedorDto {

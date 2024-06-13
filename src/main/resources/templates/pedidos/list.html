@@ -3,71 +3,56 @@
 <head>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
     <title>Lista de Pedidos</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="/static/css/pedidos/pedidos.css">
     <link rel="stylesheet" href="/static/css/pedidos/form.css">
 </head>
 <body>
 <div class="container">
-    <a href="/inicio" class="back-arrow">Volver</a>
-    <h1>Pedidos</h1>
-    <a href="#" id="newPedidoLink" class="btn-new">Nuevo Pedido</a>
+    <div class="lottie-container" id="lottie-carrito"></div>
+    <a href="/inicio" class="button is-link is-light back-arrow">Volver</a>
+    <h1 class="title">Pedidos</h1>
+    <div id="notifications"></div>
     <div id="newPedidoContainer"></div>
     <div id="estadoPedidoContainer"></div>
-    <div id="notifications"></div>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Productos</th>
-            <th>Estado</th>
-            <th sec:authorize="hasAuthority('ROLE_ADMIN')">Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="pedido : ${pedidos}">
-            <td th:text="${pedido.id}"></td>
-            <td th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}"></td>
-            <td th:text="${pedido.fechaPedido}"></td>
-            <td>
-                <ul>
-                    <li th:each="producto : ${pedido.productos}" th:text="${producto.producto.nombre + ' - ' + producto.cantidad + ' unidades'}"></li>
-                </ul>
-            </td>
-            <td th:text="${pedido.estado}"></td>
-            <td sec:authorize="hasAuthority('ROLE_ADMIN')">
-                <a href="#" class="estadoPedidoLink" th:data-id="${pedido.id}">Cambiar Estado</a>
-                <a href="#" class="deletePedidoLink" th:data-id="${pedido.id}">Eliminar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="columns is-multiline">
+        <div class="column is-4" th:each="pedido : ${pedidos}">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Pedido <span th:text="${pedido.id}"></span>
+                    </p>
+                    <button class="deletePedidoLink card-header-icon" aria-label="more options" th:data-id="${pedido.id}">
+                        <span class="icon">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                    </button>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p><strong>Cliente:</strong> <span th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}"></span></p>
+                        <p><strong>Fecha:</strong> <span th:text="${pedido.fechaPedido}"></span></p>
+                        <p><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
+                        <p><strong>Productos:</strong></p>
+                        <ul>
+                            <li th:each="producto : ${pedido.productos}" th:text="${producto.producto.nombre + ' - ' + producto.cantidad + ' unidades'}"></li>
+                        </ul>
+                    </div>
+                </div>
+                <footer class="card-footer">
+                    <a href="#" class="card-footer-item estadoPedidoLink" th:data-id="${pedido.id}">Cambiar Estado</a>
+                </footer>
+            </div>
+        </div>
+    </div>
 </div>
-<script>
-    const socket = new SockJS('/ws');
-    const stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/notifications', function (notification) {
-            showNotification(notification.body);
-        });
-    });
-
-    function showNotification(message) {
-        const notificationsDiv = document.getElementById('notifications');
-        const notification = document.createElement('div');
-        notification.innerText = message;
-        notificationsDiv.appendChild(notification);
-    }
-</script>
-<script src="/js/newEstado.js"></script>
-<script src="/js/notifiaciones/notificaciones.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.13/lottie.min.js"></script>
+<script src="/static/js/notifiaciones/notificaciones.js"></script>
+<script src="/static/js/notifiaciones/newEstado.js"></script>
 </body>
 </html>

@@ -4,7 +4,6 @@ import java.lang.Float;
 import java.lang.Integer;
 import java.lang.String;
 import lombok.Data;
-import org.proyecto.fastdeliveryp_v1.entity.Proveedor;
 
 @Data
 public class ProductoDto {

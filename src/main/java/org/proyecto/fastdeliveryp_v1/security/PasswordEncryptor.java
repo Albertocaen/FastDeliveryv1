@@ -8,7 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+/**
+ * Componente que cifra las contraseñas de los usuarios al iniciar la aplicación.
+ */
 @Component
 public class PasswordEncryptor implements CommandLineRunner {
 
@@ -18,7 +20,12 @@ public class PasswordEncryptor implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //Este script se ejecutará al iniciar la aplicación y cifrará todas las contraseñas que no estén cifradas.
+    /**
+     * Este script se ejecutará al iniciar la aplicación y cifrará todas las contraseñas que no estén cifradas.
+     *
+     * @param args argumentos de línea de comandos.
+     * @throws Exception si ocurre algún error durante el cifrado de contraseñas.
+     */
     @Override
     public void run(String... args) throws Exception {
         // Obtiene todos los usuarios

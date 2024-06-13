@@ -18,9 +18,6 @@ RUN mkdir -p /var/www/logs && \
     touch /var/www/logs/error.log && \
     chmod -R 755 /var/www/logs
 
-# Configurar ServerName para suprimir la advertencia
-RUN echo "ServerName localhost" >> /etc/apache2/httpd.conf
-
 # Incluir la configuración de Apache desde el directorio conf.d
 RUN echo "Include /etc/apache2/conf.d/*.conf" >> /etc/apache2/httpd.conf
 

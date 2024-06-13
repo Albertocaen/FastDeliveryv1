@@ -14,6 +14,12 @@ public class UserProfileController {
     @Autowired
     private PersonaService personaService;
 
+    /**
+     * Maneja las solicitudes GET para ver el perfil del usuario actual.
+     *
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del perfil del usuario.
+     */
     @GetMapping
     public String viewProfile(Model model) {
         Persona persona = personaService.getCurrentUser();
@@ -21,6 +27,12 @@ public class UserProfileController {
         return "profile/view";
     }
 
+    /**
+     * Maneja las solicitudes GET para editar el perfil del usuario actual.
+     *
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de edición de perfil.
+     */
     @GetMapping("/edit")
     public String editProfile(Model model) {
         Persona persona = personaService.getCurrentUser();
@@ -28,6 +40,13 @@ public class UserProfileController {
         return "profile/edit :: edit";
     }
 
+    /**
+     * Maneja las solicitudes POST para actualizar el perfil del usuario actual.
+     *
+     * @param persona El objeto Persona con los datos actualizados.
+     * @param model   El modelo para pasar datos a la vista.
+     * @return la redirección a la vista del perfil del usuario o la vista de edición en caso de error.
+     */
     @PostMapping("/edit")
     public String updateProfile(@ModelAttribute Persona persona, Model model) {
         try {

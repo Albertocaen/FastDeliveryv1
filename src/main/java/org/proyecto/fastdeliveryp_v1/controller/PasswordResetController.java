@@ -33,11 +33,23 @@ public class PasswordResetController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Muestra la página de solicitud de restablecimiento de contraseña.
+     *
+     * @return la vista de solicitud de restablecimiento de contraseña.
+     */
     @GetMapping("/forgotPassword")
     public String forgotPasswordPage() {
         return "clientes/forgotPassword";
     }
 
+    /**
+     * Maneja la solicitud de restablecimiento de contraseña.
+     *
+     * @param email el correo electrónico del usuario.
+     * @param model el modelo para pasar datos a la vista.
+     * @return la vista de solicitud de restablecimiento de contraseña con un mensaje.
+     */
     @PostMapping("/forgotPassword")
     public String forgotPassword(@RequestParam String email, Model model) {
         Persona persona = personaRepository.findByEmail(email);
@@ -47,13 +59,21 @@ public class PasswordResetController {
         }
 
         String token = jwtTokenUtil.createPasswordResetToken(email);
-        String resetUrl = "http://localhost:8081/auth/resetPassword?token=" + token;
+        String resetUrl = "http://localhost:8080/auth/resetPassword?token=" + token;
         emailService.sendEmail(email, "Restablecer Contraseña", "Para restablecer tu contraseña, haz clic en el siguiente enlace: " + resetUrl);
 
         model.addAttribute("message", "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.");
         return "clientes/forgotPassword";
     }
 
+    /**
+     * Muestra la página para restablecer la contraseña.
+     *
+     * @param token    el token de restablecimiento de contraseña.
+     * @param model    el modelo para pasar datos a la vista.
+     * @param response la respuesta HTTP para agregar cookies.
+     * @return la vista de restablecimiento de contraseña.
+     */
     @GetMapping("/resetPassword")
     public String resetPasswordPage(@RequestParam String token, Model model, HttpServletResponse response) {
         // Almacenar el token en una cookie
@@ -67,6 +87,14 @@ public class PasswordResetController {
         return "clientes/resetPassword";
     }
 
+    /**
+     * Maneja la solicitud para restablecer la contraseña.
+     *
+     * @param newPassword la nueva contraseña.
+     * @param model       el modelo para pasar datos a la vista.
+     * @param request     la solicitud HTTP para obtener cookies.
+     * @return la vista de inicio de sesión con un mensaje de éxito.
+     */
     @PostMapping("/resetPassword")
     public String resetPassword(@RequestParam String newPassword, Model model, HttpServletRequest request) {
         // El token se recuperará del JwtTokenFilter
@@ -95,6 +123,12 @@ public class PasswordResetController {
         return "login";
     }
 
+    /**
+     * Obtiene el token de restablecimiento de las cookies.
+     *
+     * @param cookies las cookies de la solicitud HTTP.
+     * @return el token de restablecimiento de contraseña.
+     */
     private String getTokenFromCookies(Cookie[] cookies) {
         if (cookies == null) return null;
 
@@ -108,8 +142,7 @@ public class PasswordResetController {
                 resetToken = cookie.getValue();
             }
         }
-
-        // Return authToken if present, else return resetToken
+        // Retorna el authtoken si esta presente, si no retorna el resetToken
         return authToken != null ? authToken : resetToken;
     }
 }

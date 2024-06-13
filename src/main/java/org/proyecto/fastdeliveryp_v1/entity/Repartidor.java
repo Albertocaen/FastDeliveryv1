@@ -10,10 +10,17 @@ import java.util.List;
 @Entity
 @Table(name = "REPARTIDOR")
 public class Repartidor {
+    /**
+     * DNI del repartidor, que actúa como clave primaria.
+     */
     @Id
     @Column(name = "DNI_REPARTIDOR", nullable = false, length = 20)
     private String dniRepartidor;
 
+    /**
+     * Relación uno a uno con la entidad Persona.
+     * Representa la persona asociada al repartidor.
+     */
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "DNI_REPARTIDOR", nullable = false)
@@ -31,11 +38,19 @@ public class Repartidor {
     @Column(name = "cantidad_pedidos")
     private Integer cantidadPedidos;
 
+    /**
+     * Relación muchos a uno con la entidad Vehiculo.
+     * Representa el vehículo asignado al repartidor.
+     */
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "placa_vehiculo")
     private Vehiculo placaVehiculo;
 
+    /**
+     * Relación uno a muchos con la entidad PedidoCliente.
+     * Representa los pedidos realizados por el repartidor.
+     */
     @ToString.Exclude
     @OneToMany(mappedBy = "dniRepartidorPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoCliente> pedidos;

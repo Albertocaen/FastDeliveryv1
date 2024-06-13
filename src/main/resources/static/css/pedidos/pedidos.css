@@ -1,150 +1,84 @@
-/* Estilos para la lista de pedidos */
 body {
-    background-color: whitesmoke; /* Fondo claro */
-    color: #333; /* Texto oscuro */
+    background-color: #2d2d2d; /* Fondo oscuro */
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    padding: 2em; /* Añadir padding al body */
+    padding: 2em;
 }
 
-/* Contenedor principal */
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 2em;
+    background-color: #1c1c1c; /* Fondo oscuro para el contenedor */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Título */
-h1 {
-    color: black; /* Color negro para el título */
-    font-size: 2em;
+.title {
+    color: #f5f5f5; /* Texto claro */
+    font-size: 2.5em;
     text-align: center;
     margin-bottom: 1em;
-    padding: 0.5em;
-    background-color: whitesmoke; /* Fondo claro */
+}
+
+.card {
+    transition: transform 0.2s;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Enlace de nuevo pedido */
-.btn-new {
-    display: inline-block;
-    margin-bottom: 1em;
-    padding: 0.5em 1em;
-    background-color: #333; /* Fondo negro */
-    color: floralwhite; /* Texto claro */
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-.btn-new:hover {
-    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
-    transform: scale(1.05);
-}
-
-/* Tabla de pedidos */
-table {
-    width: 100%;
-    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #333; /* Fondo oscuro para la tarjeta */
     margin-bottom: 2em;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 2s ease-in-out;
 }
 
-thead {
-    background-color: #333; /* Fondo negro para el encabezado */
-    color: floralwhite; /* Texto claro */
+.card:hover {
+    transform: scale(1.02);
 }
 
-th, td {
-    padding: 1em;
-    text-align: left;
-    border-bottom: 1px solid #ddd; /* Línea de separación */
+.card-header-title {
+    font-size: 1.25em;
+    color: #f5f5f5; /* Texto claro */
 }
 
-th {
-    font-weight: bold;
+.card-content {
+    background-color: #444; /* Fondo oscuro para el contenido de la tarjeta */
+    color: #f5f5f5; /* Texto claro */
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9; /* Fondo claro para filas pares */
-}
-
-tr:hover {
-    background-color: #f1f1f1; /* Fondo más claro al pasar el ratón */
-}
-
-td a {
-    color: floralwhite; /* Texto claro */
-    background-color: #333; /* Fondo negro */
-    padding: 0.5em;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-right: 0.5em;
+.card-footer-item {
     transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    color: #f5f5f5; /* Texto claro */
 }
 
-td a:hover {
-    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+.card-footer-item:hover {
+    background-color: #555;
     transform: scale(1.05);
 }
 
-/* Notificaciones */
-#notifications {
-    margin-bottom: 1em;
-    padding: 1em;
-    background-color: white; /* Fondo dorado */
-    color: #333; /* Texto oscuro */
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.lottie-container {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 2em auto;
 }
 
-/* Flecha de volver atrás */
-.back-arrow {
-    display: inline-block;
-    margin-bottom: 1em;
-    padding: 0.5em 1em;
-    background-color: #333; /* Fondo negro */
-    color: floralwhite; /* Texto claro */
-    text-decoration: none;
-    border-radius: 5px;
+.button.is-link.is-light {
+    background-color: #444;
+    color: #f5f5f5; /* Texto claro */
+    border: none;
     transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.back-arrow:hover {
-    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
+.button.is-link.is-light:hover {
+    background-color: #555;
     transform: scale(1.05);
 }
 
-.back-arrow::before {
-    content: '\2190'; /* Unicode para la flecha hacia la izquierda */
-    margin-right: 0.5em;
+.button.is-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
 }
 
-/* Estilos específicos para dispositivos móviles */
-@media (max-width: 768px) {
-    body {
-        padding: 1em; /* Reducir padding en dispositivos móviles */
-    }
-
-    h1 {
-        font-size: 1.5em;
-    }
-
-    table {
-        font-size: 0.9em; /* Reducir tamaño de fuente en la tabla */
-    }
-
-    th, td {
-        padding: 0.5em;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+.button.is-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+    color: #fff;
 }

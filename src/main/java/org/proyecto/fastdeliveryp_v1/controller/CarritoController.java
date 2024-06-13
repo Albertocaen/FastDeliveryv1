@@ -17,6 +17,12 @@ public class CarritoController {
     @Autowired
     private ProductoService productoService;
 
+    /**
+     * Muestra la vista del carrito de compras.
+     * @param model El modelo para pasar datos a la vista.
+     * @param session La sesión HTTP para obtener el carrito.
+     * @return la vista del carrito.
+     */
     @GetMapping
     public String verCarrito(Model model, HttpSession session) {
         List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
@@ -26,6 +32,13 @@ public class CarritoController {
         return "carrito/ver";
     }
 
+    /**
+     * Agrega un producto al carrito de compras.
+     * @param idProducto El ID del producto a agregar.
+     * @param cantidad La cantidad del producto a agregar.
+     * @param session La sesión HTTP para obtener el carrito.
+     * @return La respuesta con el tamaño del carrito.
+     */
     @PostMapping("/agregar")
     @ResponseBody
     public ProductoService.CarritoResponse agregarAlCarrito(@RequestParam("idProducto") Integer idProducto,
@@ -36,6 +49,12 @@ public class CarritoController {
         return new ProductoService.CarritoResponse(carrito.size());
     }
 
+    /**
+     * Elimina un producto del carrito de compras.
+     * @param idProducto El ID del producto a eliminar.
+     * @param session La sesión HTTP para obtener el carrito.
+     * @return Redirección a la vista del carrito.
+     */
     @PostMapping("/eliminar")
     public String eliminarDelCarrito(@RequestParam("idProducto") Integer idProducto, HttpSession session) {
         productoService.eliminarProductoDelCarrito(session, idProducto);

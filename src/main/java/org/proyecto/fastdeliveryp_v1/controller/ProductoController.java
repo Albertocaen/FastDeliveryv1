@@ -32,7 +32,15 @@ public class ProductoController {
     @Value("${ruta.imagenes}")
     private String rutaImagenes;
 
-
+    /**
+     * Muestra la lista de productos con paginación.
+     *
+     * @param model     El modelo para pasar datos a la vista.
+     * @param page      La página actual.
+     * @param session   La sesión HTTP para obtener el carrito.
+     * @param principal La información del usuario autenticado.
+     * @return la vista de la lista de productos.
+     */
     @GetMapping
     public String listProductos(Model model, @RequestParam(defaultValue = "0") int page, HttpSession session, Principal principal) {
         String userId = principal != null ? principal.getName() : "anonimo";
@@ -56,13 +64,26 @@ public class ProductoController {
         return "productos/list";
     }
 
-
+    /**
+     * Muestra el formulario para crear un nuevo producto.
+     *
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de nuevo producto.
+     */
     @GetMapping("/new")
     public String newProductoForm(Model model) {
         model.addAttribute("producto", new Producto());
         return "productos/new";
     }
 
+    /**
+     * Guarda un nuevo producto.
+     *
+     * @param producto           El producto a guardar.
+     * @param imagen             El archivo de imagen del producto.
+     * @param redirectAttributes Los atributos de redirección para pasar mensajes.
+     * @return la redirección a la lista de productos.
+     */
     @PostMapping
     public String saveProducto(@ModelAttribute Producto producto,
                                @RequestParam("imagen") MultipartFile imagen,
@@ -76,6 +97,13 @@ public class ProductoController {
         return "redirect:/productos";
     }
 
+    /**
+     * Muestra el formulario para editar un producto existente.
+     *
+     * @param id    El ID del producto a editar.
+     * @param model El modelo para pasar datos a la vista.
+     * @return la vista del formulario de edición de producto.
+     */
     @GetMapping("/edit/{id}")
     public String editProductoForm(@PathVariable Integer id, Model model) {
         Producto producto = productoService.getProductoById(id);
@@ -83,6 +111,14 @@ public class ProductoController {
         return "productos/edit";
     }
 
+    /**
+     * Actualiza un producto existente.
+     *
+     * @param producto           El producto con los datos actualizados.
+     * @param imagen             El archivo de imagen del producto.
+     * @param redirectAttributes Los atributos de redirección para pasar mensajes.
+     * @return la redirección a la lista de productos.
+     */
     @PostMapping("/update")
     public String updateProducto(@ModelAttribute Producto producto,
                                  @RequestParam("imagen") MultipartFile imagen,
@@ -96,6 +132,13 @@ public class ProductoController {
         return "redirect:/productos";
     }
 
+    /**
+     * Guarda la imagen en el sistema de archivos.
+     *
+     * @param imagen El archivo de imagen a guardar.
+     * @return El nombre del archivo guardado.
+     */
+
     private String guardarImagen(MultipartFile imagen) {
         try {
             String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
@@ -108,6 +151,13 @@ public class ProductoController {
         }
     }
 
+    /**
+     * Elimina un producto por su ID.
+     *
+     * @param id                 El ID del producto a eliminar.
+     * @param redirectAttributes Los atributos de redirección para pasar mensajes.
+     * @return la redirección a la lista de productos.
+     */
     @GetMapping("/delete/{id}")
     public String deleteProducto(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         productoService.deleteProducto(id);

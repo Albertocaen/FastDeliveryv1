@@ -1,6 +1,5 @@
 package org.proyecto.fastdeliveryp_v1.restcontroller;
 
-import java.lang.Long;
 import java.util.List;
 import org.proyecto.fastdeliveryp_v1.dto.ClienteDto;
 import org.proyecto.fastdeliveryp_v1.service.ClienteService;

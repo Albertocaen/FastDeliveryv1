@@ -63,6 +63,7 @@ Fast Delivery es una solución integral para la gestión y optimización de entr
 - `ProductoController.java`: Controlador para gestión de productos.
 - `UserProfileController.java`: Controlador para gestión de perfiles de usuario.
 - `WebSocketController.java`: Controlador para gestión de WebSockets.
+- `MotoRestController.java`: Controlador para gestión de motos.
 
 #### Entidades
 
@@ -73,9 +74,14 @@ Fast Delivery es una solución integral para la gestión y optimización de entr
 - `Moto.java`: Entidad para motos.
 - `Notification.java`: Entidad para notificaciones.
 - `PedidoCliente.java`: Entidad para pedidos de clientes.
+- `PedidoClienteProducto.java`: Entidad para la relación entre pedidos de clientes y productos.
 - `PedidoProveedor.java`: Entidad para pedidos de proveedores.
+- `PedidoProveedorProducto.java`: Entidad para la relación entre pedidos de proveedores y productos.
 - `Producto.java`: Entidad para productos.
-- `Usuario.java`: Entidad para usuarios.
+- `Proveedor.java`: Entidad para proveedores.
+- `Repartidor.java`: Entidad para repartidores.
+- `Stock.java`: Entidad para stock de productos.
+- `Vehiculo.java`: Entidad para vehículos.
 
 #### Configuración
 
@@ -83,6 +89,13 @@ Fast Delivery es una solución integral para la gestión y optimización de entr
 - `PaypalConfig.java`: Configuración para integración con PayPal.
 - `WebConfig.java`: Configuración general de la aplicación web.
 - `WebSocketConfig.java`: Configuración para WebSockets.
+- `SecurityConfig.java`: Configuración de seguridad para la aplicación.
+
+#### Utilidades
+
+- `JwtTokenUtil.java`: Utilidad para manejo de operaciones con JWT.
+- `PasswordEncryptor.java`: Componente para cifrado de contraseñas al iniciar la aplicación.
+- `JwtTokenFilter.java`: Filtro para autenticación de peticiones usando JWT.
 
 ### Recursos y Plantillas
 
@@ -115,4 +128,4 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENS
 Para consultas adicionales, puedes contactarme a través de:
 
 - Email: alberto.caen.1@gmail.com
-- GitHub: Https://github.com/Albertocaen
+- GitHub: https://github.com/Albertocaen

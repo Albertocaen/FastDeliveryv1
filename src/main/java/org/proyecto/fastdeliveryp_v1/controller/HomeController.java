@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +76,7 @@ public class HomeController {
 
     @GetMapping("/gestor")
     public String showPage() {
-        return "home/gestor"; // Nombre de la plantilla HTML
+        return "home/gestor";
     }
 
     private String normalizeString(String input) {

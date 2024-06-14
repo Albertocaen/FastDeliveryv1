@@ -364,5 +364,6 @@ body {
 /* Opcional: estilo para la imagen */
 .card-img-top {
     border-radius: 10px; /* Bordes redondeados para la imagen */
+    height: 30em;
 }
 

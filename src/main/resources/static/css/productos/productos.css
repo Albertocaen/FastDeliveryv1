@@ -41,10 +41,10 @@ h1 {
     background-color: transparent;
 }
 
+
 .img-thumbnail {
-    max-width: 100%;
-    height: auto;
-    border: none; /* Remove border from thumbnail */
+    height: 20em;
+
 }
 
 .btn-primary {

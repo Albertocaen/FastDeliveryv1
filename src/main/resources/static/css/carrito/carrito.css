@@ -1,0 +1,81 @@
+/* Fondo y fuente */
+body {
+    background-image: url("/static/uploads/intento.webp");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color: #333; /* Texto oscuro */
+    font-family: 'Roboto', sans-serif;
+    margin: 0; /* Elimina cualquier margen predeterminado del body */
+    height: 100%;
+}
+
+/* Sección del perfil */
+.section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+/* Contenedor principal */
+.box {
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semi-transparente */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Título */
+.title {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 1em;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Enlace de vuelta */
+.button.is-link.is-light {
+    margin-bottom: 20px;
+}
+
+/* Estilo de los detalles del perfil */
+.content p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    background-color: transparent;
+}
+
+.content p strong {
+    font-weight: bold;
+}
+
+/* Botones */
+.button.is-primary.is-fullwidth {
+    margin-top: 20px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.button.is-primary.is-fullwidth:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Contenedor para editar el perfil */
+#editProfileContainer {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semi-transparente */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none; /* Inicialmente oculto */
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Editar Producto</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="/static/css/productos/newAndEdit/newAndEdit.css">
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5"  th:fragment="edit">
     <h1>Editar Producto</h1>
-    <form th:action="@{/productos/update}" th:object="${producto}" method="post" enctype="multipart/form-data">
+    <form id="editProfileForm" th:action="@{/productos/update}" th:object="${producto}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
         <div class="form-group">
             <label for="nombre">Nombre:</label>

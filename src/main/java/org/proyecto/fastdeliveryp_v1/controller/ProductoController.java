@@ -1,6 +1,7 @@
 package org.proyecto.fastdeliveryp_v1.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.proyecto.fastdeliveryp_v1.entity.CarritoItem;
 import org.proyecto.fastdeliveryp_v1.entity.Producto;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -73,7 +75,7 @@ public class ProductoController {
     @GetMapping("/new")
     public String newProductoForm(Model model) {
         model.addAttribute("producto", new Producto());
-        return "productos/new";
+        return "productos/new :: new";
     }
 
     /**
@@ -85,12 +87,21 @@ public class ProductoController {
      * @return la redirección a la lista de productos.
      */
     @PostMapping
-    public String saveProducto(@ModelAttribute Producto producto,
+    public String saveProducto(@Valid @ModelAttribute Producto producto, BindingResult result,
                                @RequestParam("imagen") MultipartFile imagen,
                                RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            return "productos/new";
+        }
         if (!imagen.isEmpty()) {
             String rutaImagen = guardarImagen(imagen);
-            producto.setImg("uploads/" + rutaImagen); // Ruta relativa para acceder a la imagen
+            if ((rutaImagen !=null)){
+                producto.setImg("uploads/" + rutaImagen); // Ruta relativa para acceder a la imagen
+            }else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Formato de imagen incorrecto, Solo se permiten archivos PNG Y JPG");
+                return "redirect:/productos/new";
+            }
+
         }
         productoService.saveProducto(producto);
         redirectAttributes.addFlashAttribute("message", "Producto guardado con éxito");
@@ -105,10 +116,10 @@ public class ProductoController {
      * @return la vista del formulario de edición de producto.
      */
     @GetMapping("/edit/{id}")
-    public String editProductoForm(@PathVariable Integer id, Model model) {
+    public String editProductoForm( @Valid @PathVariable Integer id, Model model) {
         Producto producto = productoService.getProductoById(id);
         model.addAttribute("producto", producto);
-        return "productos/edit";
+        return "productos/edit :: edit";
     }
 
     /**
@@ -120,12 +131,20 @@ public class ProductoController {
      * @return la redirección a la lista de productos.
      */
     @PostMapping("/update")
-    public String updateProducto(@ModelAttribute Producto producto,
+    public String updateProducto(@ModelAttribute Producto producto,BindingResult result,
                                  @RequestParam("imagen") MultipartFile imagen,
                                  RedirectAttributes redirectAttributes) {
+        if(result.hasErrors()) {
+            return "productos/edit";
+        }
         if (!imagen.isEmpty()) {
             String rutaImagen = guardarImagen(imagen);
-            producto.setImg("uploads/" + rutaImagen); // Ruta relativa para acceder a la imagen
+            if ((rutaImagen !=null)){
+                producto.setImg("uploads/" + rutaImagen); // Ruta relativa para acceder a la imagen
+            }else {
+                redirectAttributes.addFlashAttribute("errorMessage","Formato de imagen incorrecto, Solo se permiten archivos Y JPG");
+            }
+
         }
         productoService.saveProducto(producto);
         redirectAttributes.addFlashAttribute("message", "Producto actualizado con éxito");

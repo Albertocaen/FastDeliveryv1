@@ -3,6 +3,7 @@
 <head>
     <title>Carrito de Compras</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/carrito/carrito.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -37,11 +38,13 @@
             <span class="mr-2">Total: </span>
             <span th:text="${totalCarrito}"></span>
         </div>
-        <form th:action="@{/paypal/pagar}" method="post">
-            <input type="hidden" name="total" th:value="${totalCarrito}"/>
-            <button type="submit" class="btn btn-primary">Pagar con PayPal</button>
-        </form>
-        <a th:href="@{/productos}" class="btn btn-primary">Seguir Comprando</a>
+        <div class="d-flex justify-content-end">
+            <form th:action="@{/paypal/pagar}" method="post">
+                <input type="hidden" name="total" th:value="${totalCarrito}"/>
+                <button type="submit" class="btn btn-primary">Pagar con PayPal</button>
+            </form>
+            <a th:href="@{/productos}" class="btn btn-primary">Seguir Comprando</a>
+        </div>
     </div>
     <div th:if="${carrito.size() == 0}">
         <p>No hay productos en el carrito.</p>

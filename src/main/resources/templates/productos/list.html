@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/productos/productos.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/carritoList/CarritoList.js"></script>
+    <script src="/js/carritoList/CarritoList.js"></script>\
+    <link rel="stylesheet" href="/static/css/productos/newAndEdit/newAndEdit.css">
+
 </head>
 <body>
 <div class="container mt-5">
@@ -17,14 +19,17 @@
     </div>
     <div class="d-flex justify-content-center mb-3">
         <a href="/inicio" class="btn btn-secondary mr-2">Volver a Inicio</a>
-        <a href="/productos/new" class="btn btn-primary">Añadir nuevo</a>
+        <button id="btn-new" class="btn btn-primary">Añadir nuevo</button>
         <li class="nav-item" sec:authorize="isAuthenticated()">
             <a class="nav-link" th:href="@{/carrito}">
                 <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Carrito de Compras" style="width: 30px; height: 30px;">
                 <span id="carritoItems" class="badge badge-pill badge-primary" th:text="${#lists.size(carrito)}">0</span>
             </a>
         </li>
+
     </div>
+    <div id="newCont"></div>
+    <div id="editCont"></div>
     <div id="productosContainer" class="row">
         <div class="col-md-4 mb-4" th:each="producto : ${productos}">
             <div class="card h-100 shadow-sm">
@@ -34,7 +39,7 @@
                     <p class="card-text" th:text="${producto.descripcion}">Descripción del Producto</p>
                     <p class="card-text font-weight-bold" th:text="'Precio: ' + ${producto.precio} + ' €'">Precio</p>
                     <div class="mt-auto">
-                        <a th:href="@{/productos/edit/{id}(id=${producto.id})}" class="btn btn-warning btn-sm mb-1">Editar</a>
+                        <a href="#" class="editarPerfil btn btn-warning" th:data-id="${producto.id}">Editar</a>
                         <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm mb-1" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
                         <button class="btn btn-success btn-sm agregarCarrito" th:data-id="${producto.id}">
                             <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Agregar al Carrito" style="width: 30px; height: 30px;">
@@ -57,6 +62,7 @@
             </li>
         </ul>
     </nav>
+    <script src="/js/newAndEdit/newAndEdit.js"></script>\
 </div>
 </body>
 </html>

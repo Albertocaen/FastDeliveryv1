@@ -4,7 +4,7 @@ $(document).ready(function () {
         const userId = $(this).data('id');
 
         $.get('/profile/edit', function (data) {
-            $('#editProfileContainer').html(data);
+            $('#editProfileContainer').html(data).show(); // Mostrar el contenedor de edición
             $('#editProfileForm').on('submit', function (e) {
                 e.preventDefault();
                 $.ajax({
@@ -12,11 +12,24 @@ $(document).ready(function () {
                     url: $('#editProfileForm').attr('action'),
                     data: $('#editProfileForm').serialize(),
                     success: function (response) {
-                        alert('Perfil actualizado con éxito.');
-                        window.location.href = '/profile'; // Recargar la página para reflejar los cambios
+                        Swal.fire({
+                            title: 'Éxito',
+                            text: 'Perfil actualizado con éxito.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/profile'; // Recargar la página para reflejar los cambios
+                            }
+                        });
                     },
                     error: function (error) {
-                        alert('Error al actualizar el perfil: ' + error.responseText);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Error al actualizar el perfil: ' + error.responseText,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
             });

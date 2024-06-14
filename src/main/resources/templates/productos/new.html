@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Agregar Nuevo Producto</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="/static/css/productos/newAndEdit/newAndEdit.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<div class="container mt-5">
+<div class="container mt-5"  th:fragment="new">
     <h1>Agregar Nuevo Producto</h1>
     <form th:action="@{/productos}" th:object="${producto}" method="post" enctype="multipart/form-data">
         <div class="form-group">
@@ -26,6 +28,8 @@
         </div>
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
+    <script src="/static/js/exceptionHandler/clientValidate.js"></script>
+    <script src="/static/js/exceptionHandler/errorMessage.js"></script>
 </div>
 </body>
 </html>

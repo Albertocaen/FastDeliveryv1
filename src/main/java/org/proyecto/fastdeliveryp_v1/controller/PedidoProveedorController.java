@@ -31,7 +31,7 @@ public class PedidoProveedorController {
      */
     @GetMapping
     public String getPedidosProveedor(Model model) {
-        String PEDIDO_PROVEEDOR_API_URL = apiBaseUrl +"/api/proveedores";
+        String PEDIDO_PROVEEDOR_API_URL = apiBaseUrl +"/api/pedidoproveedores";
         PedidoProveedorDto[] pedidosArray = restTemplate.getForObject(PEDIDO_PROVEEDOR_API_URL, PedidoProveedorDto[].class);
         List<PedidoProveedorDto> pedidos = Arrays.asList(pedidosArray);
 
@@ -47,7 +47,7 @@ public class PedidoProveedorController {
      */
     @GetMapping("/{id}")
     public String getPedidoProveedor(@PathVariable Integer id, Model model) {
-        String PEDIDO_PROVEEDOR_API_URL = apiBaseUrl +"/api/proveedores";
+        String PEDIDO_PROVEEDOR_API_URL = apiBaseUrl +"/api/pedidoproveedores";
         PedidoProveedorDto pedido = restTemplate.getForObject(PEDIDO_PROVEEDOR_API_URL + "/" + id, PedidoProveedorDto.class);
 
         if (pedido != null) {

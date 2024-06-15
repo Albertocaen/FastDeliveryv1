@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/productos/productos.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/carritoList/CarritoList.js"></script>\
+    <script src="/static/js/carritoList/CarritoList.js"></script>
     <link rel="stylesheet" href="/static/css/productos/newAndEdit/newAndEdit.css">
 
 </head>
@@ -26,7 +26,6 @@
                 <span id="carritoItems" class="badge badge-pill badge-primary" th:text="${#lists.size(carrito)}">0</span>
             </a>
         </li>
-
     </div>
     <div id="newCont"></div>
     <div id="editCont"></div>
@@ -62,7 +61,9 @@
             </li>
         </ul>
     </nav>
-    <script src="/js/newAndEdit/newAndEdit.js"></script>\
 </div>
+<script src="/static/js/newAndEdit/newAndEdit.js"></script>
+<script src="/static/js/exceptionHandler/clientValidate.js"></script>
+<script src="/static/js/exceptionHandler/errorMessage.js"></script>
 </body>
 </html>

@@ -1,4 +1,8 @@
 Use Fastdelivery;
+
+-- Establecer la sesión en utf8
+SET NAMES 'utf8mb4';
+
 INSERT INTO PERSONA (DNI, email, nombre, apellido, telefono, contrasena, usuario)
 VALUES ('00765835D', 'lomejor25@yahoo.com', 'Ambrosio', 'Gimenez', '645202098', 'password123', 'cliente'),
        ('00785378Y', 'mariobros10@gmail.com', 'Pedro', 'Bros', '640919128', 'password123', 'repartidor'),

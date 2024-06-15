@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.proyecto.fastdeliveryp_v1.service.TokenRevocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -30,6 +31,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private TokenRevocationService tokenRevocationService;
+
     /**
      * Filtra cada solicitud HTTP para comprobar la presencia y validez de un token JWT.
      *
@@ -44,7 +48,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         final String token = getTokenFromCookies(request.getCookies());
 
-        if (token != null) {
+        if (token != null && !tokenRevocationService.isTokenRevoked(token)) { // Verificar si el token está revocado
             try {
                 if (jwtTokenUtil.isTokenExpired(token)) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");

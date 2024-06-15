@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    let errorMessage = [[${errorMessage}]];
+    let errorMessage = /*[[${errorMessage}]]*/ '';
     if (errorMessage) {
         Swal.fire({
             icon: 'error',

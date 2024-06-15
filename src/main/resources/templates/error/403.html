@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Access Denied</title>
+    <link rel="stylesheet" href="/static/css/error/404.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.13/lottie.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>403 - Access Denied</h1>
+    <p th:text="${errorMessage}">Acceso denegado: No tienes permiso para entrar en esta dirección.</p>
+    <div class="lottie-container" id="lottie-403"></div>
+    <a th:href="@{/}">Volver al Inicio</a>
+</div>
+<script>
+    lottie.loadAnimation({
+        container: document.getElementById('lottie-403'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/static/animations/403.json'
+    });
+</script>
+</body>
+</html>

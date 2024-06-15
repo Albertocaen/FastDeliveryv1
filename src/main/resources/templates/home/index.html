@@ -19,18 +19,15 @@
 <audio id="background-music" loop>
     <source src="/static/music/pitbull.mp3"
             type="audio/mp3">
-    Your browser does not support the audio element.
+    Tu explorador no soporta la carga de musica
 </audio>
 
 <div th:replace="fragmentos/nav :: nav-menu"></div>
 
-<!-- Contenido de la página -->
 <div class="container mt-3">
 
-    <!-- Sección de anuncios -->
     <div class="advertisement"></div>
 
-    <!-- Productos destacados -->
     <div class="row">
         <div class="col-md-4" th:each="producto : ${productosDestacados}">
             <div class="highlight-product">
@@ -43,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Carrusel de Productos -->
     <div id="productosCarrusel" class="carousel slide mt-5" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'"
@@ -130,8 +126,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="/js/chatbot.js"></script>
-<script src="/js/musicControl.js"></script>
+<script src="/static/js/chatbot.js"></script>
+<script src="/static/js/musicControl.js"></script>
 <script src="/static/js/Jquery.js"></script>
 </body>
 </html>

@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.proyecto.fastdeliveryp_v1.security.JwtTokenUtil;
 import org.proyecto.fastdeliveryp_v1.service.PersonaService;
+import org.proyecto.fastdeliveryp_v1.service.TokenRevocationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 @Controller
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PedidoClienteController.class);
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -31,6 +37,10 @@ public class AuthController {
 
     @Autowired
     private PersonaService personaService;
+
+    @Autowired
+    private TokenRevocationService tokenRevocationService;
+
 
     /**
      * Muestra la página de inicio de sesión.
@@ -70,6 +80,8 @@ public class AuthController {
             Cookie cookie = new Cookie("JWT", token);
             cookie.setHttpOnly(true); // Hacer la cookie HTTP-Only
             cookie.setPath("/");
+            cookie.setDomain("localhost");
+            cookie.setSecure(false); // Consistente con el entorno HTTP
             cookie.setMaxAge(7 * 24 * 60 * 60); // 1 semana
             response.addCookie(cookie);
 
@@ -127,21 +139,54 @@ public class AuthController {
      * @param response la respuesta HTTP para manipular cookies.
      * @return la vista a redirigir después del cierre de sesión.
      */
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = getTokenFromCookies(request.getCookies());
+        if (token != null) {
+            tokenRevocationService.revokeToken(token);
+        }
 
-        // invalidar la cookie para cerrar
-        Cookie cookie = new Cookie("JWT", null);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        // Invalidar las cookies para cerrar la sesión
+        invalidateCookie(response, "JWT", "localhost");
+        invalidateCookie(response, "RESET_TOKEN", "localhost");
 
         // Invalidar la sesión HTTP
         request.getSession().invalidate();
+        logger.info("Redirigiendo a /inicio");
+        return "redirect:/";
+    }
 
-        return "redirect:/inicio";
+    /**
+     * Lee y luego invalida una cookie.
+     *
+     *
+     * @param response la respuesta HTTP para manipular cookies.
+     * @param name     el nombre de la cookie a invalidar.
+     */
+
+    private void invalidateCookie(HttpServletResponse response, String name, String domain) {
+        Cookie cookie = new Cookie(name, "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setDomain(domain);
+        cookie.setSecure(false);
+        response.addCookie(cookie);
+    }
+
+    private String getTokenFromCookies(Cookie[] cookies) {
+        if (cookies == null) return null;
+
+        for (Cookie cookie : cookies) {
+            if ("JWT".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
     }
 }
+
 
 

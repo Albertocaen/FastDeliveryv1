@@ -2,7 +2,6 @@ body {
     color: #333;
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    padding: 2em;
 }
 
 .form-container {
@@ -58,6 +57,10 @@ input:focus, select:focus {
 
 .btn-submit:hover {
     background-color: #555;
+}
+
+.title{
+    color: black;
 }
 
 @keyframes fadeIn {

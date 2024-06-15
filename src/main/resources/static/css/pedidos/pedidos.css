@@ -1,15 +1,80 @@
 body {
-    background-color: #2d2d2d; /* Fondo oscuro */
+    color: #333;
     font-family: 'Roboto', sans-serif;
     margin: 0;
+    background-image: url("/static/uploads/intento.webp"); /* Fondo oscuro */
+    background-size: cover; /* Cambiado a cover para que la imagen cubra toda el área */
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Fija la imagen de fondo para que no se desplace */
+}
+
+.form-container {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 2em;
+    margin: 2em auto;
+    max-width: 600px;
+    animation: fadeIn 1s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente para la forma */
+}
+
+h1 {
+    color: black;
+    padding: 0.5em;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+label {
+    display: block;
+    margin: 0.5em 0 0.2em;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.5em;
+    margin: 0.2em 0 1em;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+input:focus, select:focus {
+    border-color: #333;
+    outline: none;
+}
+
+.btn-submit {
+    background-color: #333;
+    color: floralwhite;
+    padding: 0.7em 1.5em;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.btn-submit:hover {
+    background-color: #555;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 2em;
-    background-color: #1c1c1c; /* Fondo oscuro para el contenedor */
+    background-color: transparent; /* Fondo transparente para el contenedor */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }

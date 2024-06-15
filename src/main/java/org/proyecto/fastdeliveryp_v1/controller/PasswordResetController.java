@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+
 @Controller
 @RequestMapping("/auth")
 public class PasswordResetController {
@@ -63,7 +64,7 @@ public class PasswordResetController {
         emailService.sendEmail(email, "Restablecer Contraseña", "Para restablecer tu contraseña, haz clic en el siguiente enlace: " + resetUrl);
 
         model.addAttribute("message", "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.");
-        return "clientes/forgotPassword";
+        return "login";
     }
 
     /**
@@ -96,7 +97,7 @@ public class PasswordResetController {
      * @return la vista de inicio de sesión con un mensaje de éxito.
      */
     @PostMapping("/resetPassword")
-    public String resetPassword(@RequestParam String newPassword, Model model, HttpServletRequest request) {
+    public String resetPassword(@RequestParam String newPassword, Model model, HttpServletRequest request, HttpServletResponse response) {
         // El token se recuperará del JwtTokenFilter
         String token = getTokenFromCookies(request.getCookies());
         if (token == null) {
@@ -118,6 +119,13 @@ public class PasswordResetController {
 
         persona.setContraseña(passwordEncoder.encode(newPassword));
         personaRepository.save(persona);
+
+        // Invalidar las cookies para cerrar la sesión
+        invalidateCookie(response, "JWT", request.getServerName());
+        invalidateCookie(response, "RESET_TOKEN", request.getServerName());
+
+        // Invalidar la sesión HTTP
+        request.getSession().invalidate();
 
         model.addAttribute("message", "La contraseña se ha restablecido correctamente.");
         return "login";
@@ -144,6 +152,21 @@ public class PasswordResetController {
         }
         // Retorna el authtoken si esta presente, si no retorna el resetToken
         return authToken != null ? authToken : resetToken;
+    }
+
+    /**
+     * Invalida una cookie.
+     *
+     * @param response la respuesta HTTP para manipular cookies.
+     * @param name     el nombre de la cookie a invalidar.
+     */
+    private void invalidateCookie(HttpServletResponse response, String name,String domain) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setDomain(domain);
+        response.addCookie(cookie);
     }
 }
 

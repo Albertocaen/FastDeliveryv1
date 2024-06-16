@@ -34,5 +34,5 @@ build/
 
 
 ##
-container-config
+container-config.json
 .env

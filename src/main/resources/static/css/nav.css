@@ -1,17 +1,25 @@
 /* Fondo del body */
 body {
-
     background-image: url("/static/uploads/intento.webp");
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    background-attachment: fixed; /* Fija la imagen de fondo */
     color: #333; /* Texto oscuro */
     font-family: 'Roboto', sans-serif;
     margin: 0; /* Elimina cualquier margen predeterminado del body */
-    background-size: contain;
-    background-repeat: no-repeat;
+    min-height: 100vh; /* Asegura que el body ocupe toda la altura de la pantalla */
+    overflow-x: hidden; /* Evita el desplazamiento horizontal */
+}
+
+/* Ajuste del contenedor principal */
+.container {
+    padding-top: 70px; /* Añade espacio superior para el navbar */
 }
 
 /* Navbar styles */
 .navbar {
-    background-color: transparent !important; /* Color de fondo similar */
+    background-color: whitesmoke !important; /* Color de fondo similar */
     color: #d4af37 !important; /* Texto dorado */
     padding: 1em 2em;
     display: flex;
@@ -24,6 +32,7 @@ body {
     z-index: 1000;
     font-family: 'Roboto', sans-serif;
     font-size: 1em;
+    height: auto; /* Asegura que el navbar no ocupe toda la altura */
 }
 
 .navbar-brand {
@@ -143,7 +152,6 @@ body {
     background-position: center; /* Centra la imagen */
 }
 
-
 .producto-info {
     text-align: center;
 }
@@ -210,8 +218,6 @@ body {
     font-size: 1.2em;
     white-space: nowrap;
 }
-
-
 
 /* Ajustes para dispositivos móviles */
 @media (max-width: 768px) {
@@ -344,6 +350,7 @@ body {
         text-shadow: none;
     }
 }
+
 /* Estilo para la tarjeta en el carrusel */
 .card {
     background-color: transparent; /* Fondo transparente para las tarjetas */
@@ -367,3 +374,21 @@ body {
     height: 30em;
 }
 
+/* Ajustes adicionales */
+.highlight-product img {
+    max-width: 100%;
+    height: auto;
+}
+/* Ajustes para dispositivos móviles */
+@media (max-width: 768px) {
+    body {
+        background-size: cover; /* Ajusta la imagen para que cubra la pantalla */
+        background-attachment: scroll; /* Permite que la imagen se desplace */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        background-size: cover; /* Ajusta la imagen para que cubra la pantalla */
+    }
+}

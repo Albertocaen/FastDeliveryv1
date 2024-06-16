@@ -10,7 +10,6 @@
     <div class="container position-relative">
         <a class="navbar-brand" th:href="@{/inicio}">
             <img src="/static/uploads/imagen_2024-06-02_152502378-removebg-preview.png" alt="FastDelivery Logo" class="lh-logo">
-
             <span class="brand-name">Baco</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,14 +26,14 @@
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/register}"><strong>Registrarte</strong></a>
                 </li>
-                <li>
-                    <a class="nav-link" th:href="@{/gestor}" sec:authorize="hasAuthority('ROLE_ADMIN')"><strong>Gestor</strong></a>
+                <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/gestor}"><strong>Gestor</strong></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/productos}"><strong>Productos</strong></a>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/productos}"><strong>Productos</strong></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/pedidos}"><strong>Pedidos</strong></a>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/pedidos}"><strong>Pedidos</strong></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link" th:href="@{/logout}"><strong>Cerrar Sesion</strong></a>

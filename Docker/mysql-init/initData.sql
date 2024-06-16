@@ -1,4 +1,4 @@
-Use Fastdelivery;
+Use fastdelivery;
 
 -- Establecer la sesión en utf8
 SET NAMES 'utf8mb4';
@@ -14,7 +14,7 @@ VALUES ('00765835D', 'lomejor25@yahoo.com', 'Ambrosio', 'Gimenez', '645202098', 
        ('05089543J', 'canino20@gmail.com', 'Carmen', 'Sanz', '917265435', 'sanz1960', 'cliente'),
        ('08911735J', 'PALABRASDEBILES2@GMAIL.COM', 'Ambrosio', 'Bros', '654977781', 'NUMERO10', 'cliente'),
        ('09865345Q', 'PALABRASDEBILES3@GMAIL.COM', 'Pablo', 'Gonzalez', '670546342', 'password123', 'cliente'),
-       ('10108711N', 'paris2023@gmail.com', 'Carmen', 'Ruiz', '645202098', 'password123', 'repartidor'),
+       ('10108711N', 'paris2023@gmail.com', 'Cwarmen', 'Ruiz', '645202098', 'password123', 'repartidor'),
        ('10267456S', 'mariog@gmail.com', 'Mario', 'Bros', '964027466', '2020', 'cliente'),
        ('10654980W', 'ALONSO1234@HOTMAIL.COM', 'Luis Pedro', 'Perez', '645202098', 'password123', 'cliente'),
        ('10726534M', 'PALABRASDEBILES4@GMAIL.COM', 'Paolo', 'Sanchez', '980667281', 'password123', 'cliente'),

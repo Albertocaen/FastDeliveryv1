@@ -20,14 +20,15 @@ RUN mkdir -p /var/www/logs && \
 
 # Incluir la configuración de Apache desde el directorio conf.d
 RUN echo "Include /etc/apache2/conf.d/*.conf" >> /etc/apache2/httpd.conf
+RUN echo "ServerName localhost" >> /etc/apache2/httpd.conf
 
 # Exponer el puerto en el que la aplicación se ejecuta
 EXPOSE 8080
 
 # Iniciar Apache en segundo plano y luego ejecutar el script de espera seguido de la aplicación
 CMD /bin/sh -c 'httpd && \
-  while ! nc -z usuario-mysql 3306; do \
-    echo "Esperando a la base de datos en usuario-mysql:3306..."; \
+  while ! nc -z fastdelivery.mysql.database.azure.com 3306; do \
+    echo "Esperando a la base de datos en fastdelivery.mysql.database.azure.com:3306..."; \
     sleep 2; \
   done; \
   echo "¡Base de datos lista!"; \

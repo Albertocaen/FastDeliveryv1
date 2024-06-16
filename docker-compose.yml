@@ -1,19 +1,5 @@
 version: '3.9'
 services:
-  usuario-mysql:
-    image: mysql:latest
-    container_name: usuario-mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 2810
-      MYSQL_DATABASE: Fastdelivery
-      MYSQL_USER: caen
-      MYSQL_PASSWORD: caen
-    volumes:
-      - ./Docker/mysql-data:/var/lib/mysql
-      - ./Docker/mysql-init:/docker-entrypoint-initdb.d
-
   app:
     build:
       context: .
@@ -23,16 +9,8 @@ services:
       - "8080:8080"
     volumes:
       - ./uploads:/app/uploads
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/Fastdelivery
-      SPRING_DATASOURCE_USERNAME: caen
-      SPRING_DATASOURCE_PASSWORD: caen
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
-      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
-      ruta.imagenes: /app/uploads/
+    env_file:
+      - .env
 
 volumes:
-  mysql-data:
   uploads:

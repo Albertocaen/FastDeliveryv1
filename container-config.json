@@ -1,0 +1,90 @@
+{
+  "location": "eastus",
+  "name": "fastdelivery-container-group",
+  "properties": {
+    "containers": [
+      {
+        "name": "fastdelivery-container",
+        "properties": {
+          "image": "fastdeliveryacr.azurecr.io/fastdeliveryp_v1-app:latest",
+          "resources": {
+            "requests": {
+              "cpu": 1.0,
+              "memoryInGb": 1.5
+            }
+          },
+          "ports": [
+            {
+              "port": 8080
+            }
+          ],
+          "environmentVariables": [
+            {
+              "name": "SPRING_DATASOURCE_URL",
+              "value": "jdbc:mysql://fastdelivery.mysql.database.azure.com:3306/Fastdelivery"
+            },
+            {
+              "name": "SPRING_DATASOURCE_USERNAME",
+              "value": "caen"
+            },
+            {
+              "name": "SPRING_DATASOURCE_PASSWORD",
+              "value": "28104008Alberto."
+            },
+            {
+              "name": "SPRING_MAIL_USERNAME",
+              "value": "caenwu.6@hotmail.com"
+            },
+            {
+              "name": "SPRING_MAIL_PASSWORD",
+              "value": "edeuvkujdaptogso"
+            },
+            {
+              "name": "PAYPAL_CLIENT_ID",
+              "value": "Ac0klQRwIu6ddMe19FSeJsXqkY52qBQKpAyBnRKKXkXFv2r65bvv588UzYfUkPNe5C-z6wPN0zRhZJAF"
+            },
+            {
+              "name": "PAYPAL_CLIENT_SECRET",
+              "value": "EIQKkmVKl9Jrxv1HXsrQ95zlgZy4MZ7QMK94w-NQVef600m431sFfxKq5a1rjIqZEbZ-UzvsaHPADuC5"
+            },
+            {
+              "name": "API_BASE_URL",
+              "value": "http://fastdeliveryapp.eastus.azurecontainer.io:8080"
+            }
+          ],
+          "volumeMounts": [
+            {
+              "name": "uploads",
+              "mountPath": "/app/uploads"
+            }
+          ]
+        }
+      }
+    ],
+    "imageRegistryCredentials": [
+      {
+        "server": "fastdeliveryacr.azurecr.io",
+        "username": "fastdeliveryacr",
+        "password": "jrXc2Bz4+hwrPiIl14zkfvR8C/Ig5JX0v0rxe8eehb+ACRDasKQc"
+      }
+    ],
+    "restartPolicy": "Always",
+    "ipAddress": {
+      "type": "Public",
+      "ports": [
+        {
+          "protocol": "TCP",
+          "port": 8080
+        }
+      ],
+      "dnsNameLabel": "fastdeliveryapp"
+    },
+    "osType": "Linux",
+    "volumes": [
+      {
+        "name": "uploads",
+        "emptyDir": {}
+      }
+    ]
+  }
+}

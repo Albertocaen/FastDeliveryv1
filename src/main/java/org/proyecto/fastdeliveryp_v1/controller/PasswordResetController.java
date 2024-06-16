@@ -60,7 +60,7 @@ public class PasswordResetController {
         }
 
         String token = jwtTokenUtil.createPasswordResetToken(email);
-        String resetUrl = "http://localhost:8080/auth/resetPassword?token=" + token;
+        String resetUrl = "http://fastdeliveryapp.eastus.azurecontainer.io:8080/auth/resetPassword?token=" + token;
         emailService.sendEmail(email, "Restablecer Contraseña", "Para restablecer tu contraseña, haz clic en el siguiente enlace: " + resetUrl);
 
         model.addAttribute("message", "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.");

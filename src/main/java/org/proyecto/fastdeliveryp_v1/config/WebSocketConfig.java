@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // Registra un endpoint WebSocket en la ruta /ws y permite el uso de SockJS
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:8080")
+        registry.addEndpoint("/ws").setAllowedOrigins("http://fastdeliveryapp.eastus.azurecontainer.io:8080")
                 .withSockJS();
     }
 }

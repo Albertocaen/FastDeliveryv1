@@ -1,9 +1,5 @@
-CREATE DATABASE IF NOT EXISTS FastDelivery CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-SET NAMES utf8mb4;
-SET CHARACTER SET utf8mb4;
-
-USE FastDelivery;
+USE fastdelivery;
 
 CREATE TABLE IF NOT EXISTS PERSONA
 (

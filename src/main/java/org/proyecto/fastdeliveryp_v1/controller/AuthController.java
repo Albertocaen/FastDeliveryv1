@@ -80,8 +80,6 @@ public class AuthController {
             Cookie cookie = new Cookie("JWT", token);
             cookie.setHttpOnly(true); // Hacer la cookie HTTP-Only
             cookie.setPath("/");
-            cookie.setDomain("localhost");
-            cookie.setSecure(false); // Consistente con el entorno HTTP
             cookie.setMaxAge(7 * 24 * 60 * 60); // 1 semana
             response.addCookie(cookie);
 
@@ -141,15 +139,15 @@ public class AuthController {
      */
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpServletRequest request, HttpServletResponse response, String domain) {
         String token = getTokenFromCookies(request.getCookies());
         if (token != null) {
             tokenRevocationService.revokeToken(token);
         }
 
         // Invalidar las cookies para cerrar la sesión
-        invalidateCookie(response, "JWT", "localhost");
-        invalidateCookie(response, "RESET_TOKEN", "localhost");
+        invalidateCookie(response, "JWT", domain);
+        invalidateCookie(response, "RESET_TOKEN", domain);
 
         // Invalidar la sesión HTTP
         request.getSession().invalidate();
@@ -171,7 +169,6 @@ public class AuthController {
         cookie.setPath("/");
         cookie.setMaxAge(0);
         cookie.setDomain(domain);
-        cookie.setSecure(false);
         response.addCookie(cookie);
     }
 

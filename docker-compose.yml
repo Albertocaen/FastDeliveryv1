@@ -3,24 +3,43 @@ services:
     image: mysql:8.0
     container_name: usuario-mysql
     restart: unless-stopped
+    # IMPORTANTE: NO exponemos puertos al host. MySQL queda solo en red interna Docker.
+    expose:
+      - "3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-2810}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD no definido}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-FastDelivery}
-      MYSQL_USER: ${MYSQL_USER:-caen}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-caen}
+      MYSQL_USER: ${MYSQL_USER:?MYSQL_USER no definido}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD no definido}
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --skip-name-resolve
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./Docker/mysql-init:/docker-entrypoint-initdb.d
+      - ./Docker/mysql-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${MYSQL_USER:-caen} -p${MYSQL_PASSWORD:-caen} --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 30s
+    # Limites de recursos para VM Ampere A1 con RAM limitada
+    deploy:
+      resources:
+        limits:
+          memory: 800M
+        reservations:
+          memory: 400M
+    networks:
+      - fastdelivery-net
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
+    image: fastdelivery-app:latest
     container_name: app
     restart: unless-stopped
     depends_on:
@@ -28,15 +47,33 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    # IMPORTANTE: NO exponemos el 8080 al host. Solo Caddy lo ve por la red interna.
+    expose:
+      - "8080"
     volumes:
       - ./uploads:/app/uploads
     environment:
       DB_HOST: usuario-mysql
       DB_PORT: 3306
-      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/${MYSQL_DATABASE:-FastDelivery}
-      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-caen}
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-caen}
+      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/${MYSQL_DATABASE:-FastDelivery}?useUnicode=true&characterEncoding=utf8mb4&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       RUTA_IMAGENES: /app/uploads
+      JAVA_OPTS: ${JAVA_OPTS:--Xms256m -Xmx512m -XX:MaxRAMPercentage=75.0}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health || wget -qO- http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    networks:
+      - fastdelivery-net
 
   caddy:
     image: caddy:2-alpine
@@ -53,8 +90,20 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 32M
+    networks:
+      - fastdelivery-net
 
 volumes:
   mysql-data:
   caddy-data:
   caddy-config:
+
+networks:
+  fastdelivery-net:
+    driver: bridge

@@ -1,4 +1,36 @@
-{$CADDY_SITE_ADDRESS} {
+{$CADDY_SITE_ADDRESS:bacodelivery.com} {
     encode zstd gzip
-    reverse_proxy app:8080
+
+    # Limite de tamaño del cuerpo: util para /uploads de imagenes
+    request_body {
+        max_size 20MB
+    }
+
+    # Cabeceras de seguridad basicas
+    header {
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        -Server
+    }
+
+    # WebSocket upgrade support (SockJS / STOMP de Spring)
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade    websocket
+    }
+    reverse_proxy @websocket app:8080
+
+    # Proxy normal hacia el backend Spring Boot
+    reverse_proxy app:8080 {
+        header_up X-Real-IP       {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# Redirigir www a apex
+www.bacodelivery.com {
+    redir https://bacodelivery.com{uri} permanent
 }

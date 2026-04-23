@@ -62,7 +62,8 @@ public class AuthController {
      * @return la vista a redirigir después del inicio de sesión.
      */
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, Model model, HttpServletResponse response) {
+    public String login(@RequestParam String email, @RequestParam String password, Model model,
+                        HttpServletRequest request, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
@@ -76,12 +77,12 @@ public class AuthController {
             // Generar el token JWT
             String token = jwtTokenUtil.createToken(email, authority);
 
-            // Almacenar el token en una cookie
+            // Almacenar el token en una cookie host-only (sin setDomain para que funcione
+            // en cualquier host: localhost, bacodelivery.com, etc.).
             Cookie cookie = new Cookie("JWT", token);
-            cookie.setHttpOnly(true); // Hacer la cookie HTTP-Only
+            cookie.setHttpOnly(true);
             cookie.setPath("/");
-            cookie.setDomain("localhost");
-            cookie.setSecure(false); // Consistente con el entorno HTTP
+            cookie.setSecure(request.isSecure()); // true si detras hay HTTPS (Caddy + X-Forwarded-Proto)
             cookie.setMaxAge(7 * 24 * 60 * 60); // 1 semana
             response.addCookie(cookie);
 
@@ -147,9 +148,9 @@ public class AuthController {
             tokenRevocationService.revokeToken(token);
         }
 
-        // Invalidar las cookies para cerrar la sesión
-        invalidateCookie(response, "JWT", "localhost");
-        invalidateCookie(response, "RESET_TOKEN", "localhost");
+        // Invalidar las cookies para cerrar la sesión (host-only, sin setDomain)
+        invalidateCookie(response, "JWT", request);
+        invalidateCookie(response, "RESET_TOKEN", request);
 
         // Invalidar la sesión HTTP
         request.getSession().invalidate();
@@ -165,13 +166,14 @@ public class AuthController {
      * @param name     el nombre de la cookie a invalidar.
      */
 
-    private void invalidateCookie(HttpServletResponse response, String name, String domain) {
+    private void invalidateCookie(HttpServletResponse response, String name, HttpServletRequest request) {
         Cookie cookie = new Cookie(name, "");
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
-        cookie.setDomain(domain);
-        cookie.setSecure(false);
+        // No se setea domain para que coincida con la cookie host-only creada en login.
+        // Si se pusiera un domain distinto al de creacion, el navegador NO la invalida.
+        cookie.setSecure(request.isSecure());
         response.addCookie(cookie);
     }
 

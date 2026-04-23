@@ -8,6 +8,7 @@ import org.proyecto.fastdeliveryp_v1.repository.PersonaRepository;
 import org.proyecto.fastdeliveryp_v1.security.JwtTokenUtil;
 import org.proyecto.fastdeliveryp_v1.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,9 @@ public class PasswordResetController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${app.base.url:http://localhost:8080}")
+    private String appBaseUrl;
 
     /**
      * Muestra la página de solicitud de restablecimiento de contraseña.
@@ -60,7 +64,7 @@ public class PasswordResetController {
         }
 
         String token = jwtTokenUtil.createPasswordResetToken(email);
-        String resetUrl = "http://localhost:8080/auth/resetPassword?token=" + token;
+        String resetUrl = appBaseUrl + "/auth/resetPassword?token=" + token;
         emailService.sendEmail(email, "Restablecer Contraseña", "Para restablecer tu contraseña, haz clic en el siguiente enlace: " + resetUrl);
 
         model.addAttribute("message", "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña.");
@@ -76,11 +80,13 @@ public class PasswordResetController {
      * @return la vista de restablecimiento de contraseña.
      */
     @GetMapping("/resetPassword")
-    public String resetPasswordPage(@RequestParam String token, Model model, HttpServletResponse response) {
-        // Almacenar el token en una cookie
+    public String resetPasswordPage(@RequestParam String token, Model model,
+                                    HttpServletRequest request, HttpServletResponse response) {
+        // Almacenar el token en una cookie host-only (sin setDomain).
         Cookie cookie = new Cookie("RESET_TOKEN", token);
-        cookie.setHttpOnly(true); // Hacer la cookie HTTP-Only
+        cookie.setHttpOnly(true);
         cookie.setPath("/");
+        cookie.setSecure(request.isSecure());
         cookie.setMaxAge(24 * 60 * 60); // 24 horas
         response.addCookie(cookie);
 
@@ -120,9 +126,9 @@ public class PasswordResetController {
         persona.setContraseña(passwordEncoder.encode(newPassword));
         personaRepository.save(persona);
 
-        // Invalidar las cookies para cerrar la sesión
-        invalidateCookie(response, "JWT", request.getServerName());
-        invalidateCookie(response, "RESET_TOKEN", request.getServerName());
+        // Invalidar las cookies para cerrar la sesión (host-only, coherente con el login)
+        invalidateCookie(response, "JWT", request);
+        invalidateCookie(response, "RESET_TOKEN", request);
 
         // Invalidar la sesión HTTP
         request.getSession().invalidate();
@@ -160,12 +166,13 @@ public class PasswordResetController {
      * @param response la respuesta HTTP para manipular cookies.
      * @param name     el nombre de la cookie a invalidar.
      */
-    private void invalidateCookie(HttpServletResponse response, String name,String domain) {
+    private void invalidateCookie(HttpServletResponse response, String name, HttpServletRequest request) {
         Cookie cookie = new Cookie(name, null);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(0);
-        cookie.setDomain(domain);
+        // No se setea domain: coincide con la cookie host-only creada en /login y /resetPassword.
+        cookie.setSecure(request.isSecure());
         response.addCookie(cookie);
     }
 }

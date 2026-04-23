@@ -16,6 +16,7 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
       --skip-name-resolve
+      --lower-case-table-names=1
     volumes:
       - mysql-data:/var/lib/mysql
       - ./Docker/mysql-init:/docker-entrypoint-initdb.d:ro
@@ -55,7 +56,7 @@ services:
     environment:
       DB_HOST: usuario-mysql
       DB_PORT: 3306
-      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/${MYSQL_DATABASE:-FastDelivery}?useUnicode=true&characterEncoding=utf8mb4&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/${MYSQL_DATABASE:-FastDelivery}?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       RUTA_IMAGENES: /app/uploads

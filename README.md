@@ -39,6 +39,308 @@ Fast Delivery-Baco es una solución integral para la gestión y optimización de
     docker-compose up -d
     ```
 
+## Despliegue Remoto En Oracle Cloud
+
+Esta guia esta pensada para desplegar la aplicacion en contenedores Docker sobre una VM de Oracle Cloud Infrastructure (OCI), usando solo una instancia pequeña, MySQL interno, Caddy como reverse proxy HTTPS y Cloudflare delante del dominio para reducir exposicion ante trafico abusivo.
+
+### 1. Estrategia Recomendada
+
+- Usar una VM Always Free de OCI, preferiblemente `VM.Standard.A1.Flex` con 1 OCPU y 6 GB RAM, o 2 OCPU y 12 GB RAM si hay capacidad.
+- Publicar solo los puertos `80` y `443` hacia internet.
+- No publicar MySQL. La base de datos queda dentro de la red interna de Docker como `usuario-mysql:3306`.
+- Usar Caddy para HTTPS y proxy interno hacia `app:8080`.
+- Usar Cloudflare como DNS proxied para ocultar parcialmente el origen y absorber trafico no deseado antes de llegar a Oracle.
+- Crear Budget Alerts y, si el despliegue es critico en coste, dejar el servidor en un compartment separado con cuotas.
+
+Importante: ningun proveedor puede prometer coste cero ante cualquier escenario. Lo que hacemos aqui es reducir superficie, usar recursos Always Free, crear alertas y tener un procedimiento de apagado rapido.
+
+### 2. Crear Cuenta Y Limites De Coste En OCI
+
+1. Crea o entra en tu cuenta de Oracle Cloud.
+2. Trabaja en la Home Region de tu tenancy, porque los recursos Always Free deben crearse ahi.
+3. Ve a `Billing & Cost Management > Budgets`.
+4. Crea un budget mensual bajo, por ejemplo `1 EUR` o `1 USD`, sobre el compartment del proyecto o sobre root si no usas compartments.
+5. Añade alertas al `50%`, `80%` y `100%`.
+6. Opcional pero recomendado: crea un compartment llamado `fastdelivery-prod` y aplica quotas para limitar recursos nuevos.
+
+### 3. Crear La VM
+
+1. Ve a `Compute > Instances > Create instance`.
+2. Nombre sugerido: `fastdelivery-prod`.
+3. Imagen: Ubuntu 22.04/24.04 LTS o Oracle Linux 9.
+4. Shape recomendado: `VM.Standard.A1.Flex`.
+5. Asigna recursos moderados:
+
+```text
+OCPU: 1
+Memory: 6 GB
+Boot volume: 50 GB
+```
+
+6. Red: crea una VCN nueva o usa una existente.
+7. Subnet: publica.
+8. Public IPv4: activada.
+9. Guarda la clave SSH privada que Oracle te entregue o sube tu clave publica.
+
+Si Oracle devuelve `Out of capacity for shape VM.Standard.A1.Flex`, no es un error de configuracion del proyecto. Significa que no hay capacidad disponible en ese availability domain para el shape Always Free. Prueba:
+
+```text
+AD 1
+AD 2
+AD 3
+```
+
+Si sigue fallando, vuelve a intentarlo mas tarde. En cuentas Always Free es habitual que `VM.Standard.A1.Flex` no tenga capacidad inmediata.
+
+No cambies a shapes que no indiquen `Always Free-eligible`, como `VM.Standard.A2.Flex`, si quieres evitar costes. Como alternativa de emergencia puedes usar `VM.Standard.E2.1.Micro`, pero solo tiene 1 GB de RAM y para esta app con Docker + Spring + MySQL puede quedarse muy corta. Si usas `E2.1.Micro`, crea swap antes de desplegar:
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h
+```
+
+### 3.1. Alternativas Si Oracle No Tiene Capacidad
+
+Para este proyecto, la opcion gratuita mas adecuada sigue siendo OCI `VM.Standard.A1.Flex`, porque permite Docker Compose con varios contenedores y persistencia local. Si no hay capacidad, estas son las alternativas realistas:
+
+- `Google Cloud Free Tier e2-micro`: puede ser Always Free en regiones concretas de Estados Unidos, con limites de disco y trafico. Tiene poca RAM para Spring + MySQL + Docker, asi que requeriria swap y vigilancia de billing. No es ideal si tu prioridad absoluta es cero riesgo de coste.
+- `Render Free`: permite web services gratuitos, pero los duerme tras inactividad, el filesystem es efimero, Free Postgres expira y no sirve bien para este stack MySQL + uploads persistentes. Ademas, SMTP por puertos comunes como 587 puede estar restringido.
+- `Koyeb Free`: permite un web service gratis, pero el free instance es pequeño y sin volumen persistente para la app. Su base de datos gestionada gratuita es PostgreSQL, no MySQL, por lo que habria que migrar la app de MySQL a PostgreSQL.
+- `Fly.io`: ya no es una opcion de free tier general para cuentas nuevas; funciona por pago por uso.
+
+Conclusion practica: si necesitas gratis completo con Docker Compose y MySQL, espera o reintenta OCI A1. Si aceptas cambiar arquitectura, la alternativa mas viable seria migrar la base de datos a PostgreSQL y desplegar en Koyeb/Render con sus limitaciones gratuitas.
+
+### 4. Reglas De Red En OCI
+
+En la Security List o Network Security Group de la VM, deja solo:
+
+```text
+TCP 22   desde tu IP publica personal
+TCP 80   desde 0.0.0.0/0
+TCP 443  desde 0.0.0.0/0
+```
+
+No abras `3306`. No abras `8080`. La aplicacion Java queda detras de Caddy y MySQL queda interno.
+
+Si no sabes tu IP publica, buscala desde tu navegador con "what is my ip" y usa `/32`, por ejemplo:
+
+```text
+203.0.113.10/32
+```
+
+### 5. Instalar Docker En La VM
+
+Conectate por SSH:
+
+```bash
+ssh ubuntu@IP_DEL_SERVIDOR
+```
+
+Actualiza el servidor:
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
+Instala Docker:
+
+```bash
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Comprueba:
+
+```bash
+docker --version
+docker compose version
+```
+
+### 6. Subir El Proyecto Al Servidor
+
+Clona la rama de despliegue:
+
+```bash
+git clone URL_DE_TU_REPO FastDeliveryv1
+cd FastDeliveryv1
+git checkout NOMBRE_DE_TU_RAMA_REMOTA
+```
+
+Prepara el `.env`:
+
+```bash
+cp .env.production.example .env
+nano .env
+```
+
+Valores que debes cambiar:
+
+```env
+APP_BASE_URL=https://tu-dominio.com
+API_BASE_URL=https://tu-dominio.com
+CADDY_SITE_ADDRESS=tu-dominio.com
+PAYPAL_SUCCESS_URL=https://tu-dominio.com/pedidos/success
+PAYPAL_CANCEL_URL=https://tu-dominio.com/pedidos/cancel
+MYSQL_ROOT_PASSWORD=password-root-segura
+MYSQL_PASSWORD=password-db-segura
+SPRING_DATASOURCE_PASSWORD=password-db-segura
+JWT_SECRET=secreto-largo-unico-de-al-menos-64-caracteres
+SPRING_MAIL_USERNAME=tu-correo
+SPRING_MAIL_PASSWORD=tu-app-password
+PAYPAL_CLIENT_ID=tu-client-id
+PAYPAL_CLIENT_SECRET=tu-client-secret
+```
+
+La base de datos debe quedarse asi cuando uses Docker Compose:
+
+```env
+SPRING_DATASOURCE_URL=jdbc:mysql://usuario-mysql:3306/FastDelivery
+SPRING_DATASOURCE_USERNAME=caen
+MYSQL_USER=caen
+MYSQL_DATABASE=FastDelivery
+RUTA_IMAGENES=/app/uploads
+UPLOADS_PATH=/app/uploads
+```
+
+### 7. Dominio Y Cloudflare
+
+Compra o usa un dominio en cualquier registrador. Recomendado: gestionar DNS con Cloudflare.
+
+1. Añade el dominio a Cloudflare.
+2. Cambia los nameservers del dominio por los nameservers que te indique Cloudflare.
+3. En Cloudflare DNS, crea estos registros:
+
+```text
+Tipo: A
+Nombre: @
+Contenido: IP_PUBLICA_DEL_SERVIDOR
+Proxy: Proxied
+TTL: Auto
+```
+
+```text
+Tipo: CNAME
+Nombre: www
+Contenido: tu-dominio.com
+Proxy: Proxied
+TTL: Auto
+```
+
+4. En `SSL/TLS`, usa `Full (strict)` cuando Caddy ya tenga certificado activo.
+5. Si al principio falla el certificado, espera unos minutos y revisa logs de Caddy.
+
+Mientras no tengas dominio, puedes desplegar por IP cambiando temporalmente:
+
+```env
+CADDY_SITE_ADDRESS=:80
+APP_BASE_URL=http://IP_DEL_SERVIDOR
+API_BASE_URL=http://IP_DEL_SERVIDOR
+PAYPAL_SUCCESS_URL=http://IP_DEL_SERVIDOR/pedidos/success
+PAYPAL_CANCEL_URL=http://IP_DEL_SERVIDOR/pedidos/cancel
+```
+
+Para PayPal real conviene esperar al dominio, porque las URLs de retorno deben ser estables.
+
+### 8. Levantar La Aplicacion
+
+Desde la carpeta del proyecto:
+
+```bash
+docker compose config --quiet
+docker compose up -d --build
+```
+
+Verifica contenedores:
+
+```bash
+docker compose ps
+```
+
+Ver logs:
+
+```bash
+docker compose logs -f app
+docker compose logs -f caddy
+docker compose logs -f usuario-mysql
+```
+
+Probar:
+
+```bash
+curl -I https://tu-dominio.com
+```
+
+### 9. Actualizar Despliegue
+
+Cuando subas cambios a GitHub:
+
+```bash
+git pull
+docker compose up -d --build
+docker image prune -f
+```
+
+### 10. Copias Y Persistencia
+
+Los datos importantes quedan aqui:
+
+```text
+mysql-data     volumen Docker de MySQL
+./uploads      imagenes/subidas de la aplicacion
+caddy-data     certificados HTTPS de Caddy
+```
+
+Copia rapida de seguridad:
+
+```bash
+mkdir -p backups
+docker exec usuario-mysql mysqldump -u caen -p FastDelivery > backups/fastdelivery.sql
+tar -czf backups/uploads.tar.gz uploads
+```
+
+### 11. Medidas Anti-Coste Y DDoS
+
+- Mantener MySQL sin puerto publico.
+- Mantener `8080` cerrado al exterior.
+- Abrir SSH solo a tu IP.
+- Usar Cloudflare con DNS proxied para `@` y `www`.
+- Activar Budget Alerts en OCI.
+- Revisar `Billing & Cost Management > Cost Analysis`.
+- Si ves trafico raro, parar la app:
+
+```bash
+docker compose down
+```
+
+- Si quieres bloquear web sin apagar la VM:
+
+```bash
+sudo iptables -I INPUT -p tcp --dport 80 -j DROP
+sudo iptables -I INPUT -p tcp --dport 443 -j DROP
+```
+
+Para quitar ese bloqueo:
+
+```bash
+sudo iptables -D INPUT -p tcp --dport 80 -j DROP
+sudo iptables -D INPUT -p tcp --dport 443 -j DROP
+```
+
+### 12. Referencias Oficiales
+
+- Oracle Always Free Resources: https://docs.oracle.com/iaas/Content/FreeTier/resourceref.htm
+- Oracle Budgets: https://docs.oracle.com/iaas/Content/Billing/Concepts/budgetsoverview.htm
+- Oracle Compartment Quotas: https://docs.oracle.com/en-us/iaas/Content/General/Concepts/resourcequotas.htm
+- Oracle WAF Rate Limiting: https://docs.oracle.com/iaas/Content/WAF/RateLimiting/rate_limiting_rule_management.htm
+- Cloudflare Proxied DNS Records: https://developers.cloudflare.com/dns/manage-dns-records/reference/proxied-dns-records/
+- Cloudflare SSL Full Strict: https://developers.cloudflare.com/ssl/origin-configuration/ssl-modes/full-strict/
+
 ## Estructura del Proyecto
 
 

@@ -1,38 +1,60 @@
-version: '3.9'
 services:
   usuario-mysql:
-    image: mysql:latest
+    image: mysql:8.0
     container_name: usuario-mysql
-    ports:
-      - "3306:3306"
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 2810
-      MYSQL_DATABASE: Fastdelivery
-      MYSQL_USER: caen
-      MYSQL_PASSWORD: caen
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-2810}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-FastDelivery}
+      MYSQL_USER: ${MYSQL_USER:-caen}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-caen}
     volumes:
-      - ./Docker/mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
       - ./Docker/mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u${MYSQL_USER:-caen} -p${MYSQL_PASSWORD:-caen} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: app
-    ports:
-      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      usuario-mysql:
+        condition: service_healthy
+    env_file:
+      - .env
     volumes:
       - ./uploads:/app/uploads
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/Fastdelivery
-      SPRING_DATASOURCE_USERNAME: caen
-      SPRING_DATASOURCE_PASSWORD: caen
-      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME}
-      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD}
-      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID}
-      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET}
-      ruta.imagenes: /app/uploads/
+      DB_HOST: usuario-mysql
+      DB_PORT: 3306
+      SPRING_DATASOURCE_URL: jdbc:mysql://usuario-mysql:3306/${MYSQL_DATABASE:-FastDelivery}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-caen}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-caen}
+      RUTA_IMAGENES: /app/uploads
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    depends_on:
+      - app
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
 
 volumes:
   mysql-data:
-  uploads:
+  caddy-data:
+  caddy-config:

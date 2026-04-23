@@ -23,6 +23,18 @@ public class MailConfig {
     @Value("${spring.mail.host}")
     private String host;
 
+    @Value("${spring.mail.port}")
+    private Integer port;
+
+    @Value("${spring.mail.properties.mail.smtp.auth}")
+    private String smtpAuth;
+
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private String startTlsEnabled;
+
+    @Value("${spring.mail.properties.mail.debug}")
+    private String mailDebug;
+
     /**
      * Configura y proporciona un bean JavaMailSender.
      * @return una instancia configurada de JavaMailSender.
@@ -33,7 +45,7 @@ public class MailConfig {
 
         // Configura el host y el puerto del servidor de correo
         mailSender.setHost(host);
-        mailSender.setPort(587);
+        mailSender.setPort(port);
 
         // Configura las credenciales de autenticación
         mailSender.setUsername(name);
@@ -43,9 +55,9 @@ public class MailConfig {
         // la transmision de correos
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
+        props.put("mail.smtp.auth", smtpAuth);
+        props.put("mail.smtp.starttls.enable", startTlsEnabled);
+        props.put("mail.debug", mailDebug);
 
         return mailSender;
     }

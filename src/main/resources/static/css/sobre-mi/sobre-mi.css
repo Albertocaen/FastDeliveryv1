@@ -1,0 +1,461 @@
+/*
+ * Pagina /sobre-mi — portfolio / sobre el proyecto.
+ * Mantiene la paleta del resto de la app (#333, #f8f9fa, Roboto, radios 10-15px).
+ */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* =========================================
+   Hero
+   ========================================= */
+.portfolio-hero {
+    background: linear-gradient(135deg, #2c2c2c 0%, #434343 100%);
+    color: #ffffff;
+    padding: 4rem 0 3.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero-kicker {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    opacity: 0.75;
+    margin-bottom: 0.5rem;
+}
+
+.hero-name {
+    font-size: 2.6rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.hero-role {
+    font-size: 1.15rem;
+    opacity: 0.85;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1rem;
+    max-width: 540px;
+    opacity: 0.9;
+    margin: 0;
+}
+
+@media (max-width: 767px) {
+    .hero-subtitle {
+        margin: 0 auto;
+    }
+}
+
+/* Avatar */
+.author-photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.author-avatar-fallback {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff 0%, #e9ecef 100%);
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0 auto;
+    border: 4px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    letter-spacing: 2px;
+}
+
+/* Botones sociales */
+.hero-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+@media (max-width: 767px) {
+    .hero-socials {
+        justify-content: center;
+    }
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: background-color 0.15s ease, transform 0.15s ease, color 0.15s ease;
+}
+
+.social-btn:hover,
+.social-btn:focus {
+    background-color: #ffffff;
+    color: #333;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.social-btn-primary {
+    background-color: #ffffff;
+    color: #333;
+    font-weight: 600;
+}
+
+.social-btn-primary:hover {
+    background-color: #f8f9fa;
+    color: #000;
+}
+
+/* =========================================
+   Secciones generales
+   ========================================= */
+.section-block {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.section-heading {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+}
+
+.section-block p {
+    color: #555;
+    line-height: 1.65;
+}
+
+.section-block p.lead {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+/* =========================================
+   Grid de funcionalidades
+   ========================================= */
+.feature-grid {
+    margin-top: 0.5rem;
+}
+
+.feature-card {
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #eef0f2;
+    margin-bottom: 1rem;
+}
+
+.feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    border-color: #dde1e5;
+}
+
+.feature-icon {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.feature-card h5 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.feature-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* =========================================
+   Stack tecnico
+   ========================================= */
+.stack-subtitle {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #f1f3f5;
+    padding-bottom: 0.4rem;
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.tech-list li {
+    margin: 0;
+}
+
+.tech-chip {
+    display: inline-block;
+    background-color: #f1f3f5;
+    color: #333;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid #e9ecef;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tech-chip:hover {
+    background-color: #333;
+    color: #ffffff;
+    cursor: default;
+}
+
+/* =========================================
+   Retos tecnicos
+   ========================================= */
+.challenge-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.challenge-list li {
+    padding: 0.75rem 0;
+    padding-left: 1.75rem;
+    position: relative;
+    border-bottom: 1px solid #f1f3f5;
+    color: #555;
+    line-height: 1.6;
+}
+
+.challenge-list li:last-child {
+    border-bottom: none;
+}
+
+.challenge-list li::before {
+    content: "\f00c"; /* fa-check */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 0.9rem;
+    color: #198754;
+    font-size: 0.9rem;
+}
+
+.challenge-list code {
+    background-color: #f1f3f5;
+    color: #c7254e;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+}
+
+/* =========================================
+   Project card (otros proyectos)
+   ========================================= */
+.project-card {
+    background-color: #f8f9fa;
+    border: 1px solid #eef0f2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    border-color: #dde1e5;
+}
+
+.project-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.project-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.project-tagline {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.project-description {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.project-card .btn-outline-dark {
+    border-color: #333;
+    color: #333;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.85rem;
+    white-space: nowrap;
+}
+
+.project-card .btn-outline-dark:hover {
+    background-color: #333;
+    color: #ffffff;
+}
+
+@media (max-width: 576px) {
+    .project-card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .project-card .btn-outline-dark {
+        align-self: flex-start;
+    }
+}
+
+/* =========================================
+   CTA
+   ========================================= */
+.cta-block {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 1px solid #eef0f2;
+}
+
+.cta-block .section-heading {
+    justify-content: center;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.cta-buttons .btn {
+    border-radius: 10px;
+    padding: 0.7rem 1.75rem;
+    font-weight: 600;
+}
+
+.cta-buttons .btn-primary {
+    background-color: #333;
+    border: none;
+}
+
+.cta-buttons .btn-primary:hover {
+    background-color: #555;
+}
+
+.cta-buttons .btn-outline-dark {
+    border-color: #333;
+    color: #333;
+}
+
+.cta-buttons .btn-outline-dark:hover {
+    background-color: #333;
+    color: #ffffff;
+}
+
+/* =========================================
+   Footer
+   ========================================= */
+.portfolio-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #eef0f2;
+    margin-top: 2rem;
+}
+
+/* =========================================
+   Responsive
+   ========================================= */
+@media (max-width: 768px) {
+    .portfolio-hero {
+        padding: 3rem 0 2.5rem;
+    }
+
+    .hero-name {
+        font-size: 2rem;
+    }
+
+    .author-photo,
+    .author-avatar-fallback {
+        width: 140px;
+        height: 140px;
+        font-size: 2.5rem;
+    }
+
+    .section-block {
+        padding: 1.5rem;
+    }
+
+    .section-heading {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .portfolio-hero {
+        padding: 2.5rem 0 2rem;
+    }
+
+    .hero-name {
+        font-size: 1.7rem;
+    }
+
+    .section-block {
+        padding: 1.25rem;
+    }
+}

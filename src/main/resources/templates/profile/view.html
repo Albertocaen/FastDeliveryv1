@@ -1,38 +1,127 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <title>Mi perfil - Baco</title>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
-    <title>Perfil</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/perfil/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/perfil/perfil.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/static/js/profile.js"></script>
 </head>
 <body>
-<div class="container mt-5">
-    <h1>Perfil</h1>
-    <a href="/inicio" class="back-arrow">Volver</a>
-    <div>
-        <p><strong>DNI:</strong> <span th:text="${persona.dni}"></span></p>
-        <p><strong>Nombre:</strong> <span th:text="${persona.nombre}"></span></p>
-        <p><strong>Apellido:</strong> <span th:text="${persona.apellido}"></span></p>
-        <p><strong>Email:</strong> <span th:text="${persona.email}"></span></p>
-        <p><strong>Teléfono:</strong> <span th:text="${persona.telefono}"></span></p>
-        <div th:if="${persona.cliente != null}">
-            <p><strong>Dirección:</strong> <span th:text="${persona.cliente.direccion}"></span></p>
-            <p><strong>Ciudad:</strong> <span th:text="${persona.cliente.ciudad}"></span></p>
-            <p><strong>Código Postal:</strong> <span th:text="${persona.cliente.codigoPostal}"></span></p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9 col-xl-8">
+
+            <a href="/inicio" class="back-arrow mb-3 d-inline-flex align-items-center">
+                <i class="fas fa-arrow-left mr-2"></i> Volver al inicio
+            </a>
+
+            <div class="card profile-card">
+                <div class="card-body">
+
+                    <!-- Cabecera con avatar y nombre -->
+                    <div class="profile-header text-center mb-4">
+                        <div class="avatar-circle mx-auto mb-3">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h1 class="profile-name mb-1">
+                            <span th:text="${persona.nombre}">Nombre</span>
+                            <span th:text="${persona.apellido}">Apellido</span>
+                        </h1>
+                        <p class="profile-email text-muted mb-0">
+                            <i class="fas fa-envelope mr-1"></i>
+                            <span th:text="${persona.email}">email@correo.com</span>
+                        </p>
+                    </div>
+
+                    <!-- Datos personales -->
+                    <h5 class="section-title"><i class="fas fa-id-card mr-2"></i> Datos personales</h5>
+                    <div class="row info-grid">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">DNI</span>
+                                <span class="info-value" th:text="${persona.dni}">00000000A</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">Telefono</span>
+                                <span class="info-value" th:text="${persona.telefono}">600000000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos de cliente -->
+                    <div th:if="${persona.cliente != null}">
+                        <h5 class="section-title mt-4"><i class="fas fa-map-marker-alt mr-2"></i> Direccion de envio</h5>
+                        <div class="row info-grid">
+                            <div class="col-md-12">
+                                <div class="info-item">
+                                    <span class="info-label">Direccion</span>
+                                    <span class="info-value" th:text="${persona.cliente.direccion}">Calle</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">Ciudad</span>
+                                    <span class="info-value" th:text="${persona.cliente.ciudad}">Ciudad</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <span class="info-label">Codigo postal</span>
+                                    <span class="info-value" th:text="${persona.cliente.codigoPostal}">00000</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos de repartidor -->
+                    <div th:if="${persona.repartidor != null}">
+                        <h5 class="section-title mt-4"><i class="fas fa-motorcycle mr-2"></i> Datos de repartidor</h5>
+                        <div class="row info-grid">
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <span class="info-label">Calificacion</span>
+                                    <span class="info-value">
+                                        <i class="fas fa-star text-warning mr-1"></i>
+                                        <span th:text="${persona.repartidor.calificacion}">0</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <span class="info-label">Horario</span>
+                                    <span class="info-value" th:text="${persona.repartidor.horarioTrabajo}">09-17</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <span class="info-label">Disponibilidad</span>
+                                    <span class="info-value" th:text="${persona.repartidor.estadoDeDisponibilidad}">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="text-center mt-4">
+                        <a href="#" class="editarPerfil btn btn-primary" th:data-id="${persona.dni}">
+                            <i class="fas fa-pen mr-1"></i> Editar perfil
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenedor donde profile.js inyecta el fragmento edit.html -->
+            <div id="editProfileContainer"></div>
+
         </div>
-        <div th:if="${persona.repartidor != null}">
-            <p><strong>Calificación:</strong> <span th:text="${persona.repartidor.calificacion}"></span></p>
-            <p><strong>Horario de Trabajo:</strong> <span th:text="${persona.repartidor.horarioTrabajo}"></span></p>
-            <p><strong>Estado de Disponibilidad:</strong> <span
-                    th:text="${persona.repartidor.estadoDeDisponibilidad}"></span></p>
-        </div>
-        <a href="#" class="editarPerfil btn btn-primary" th:data-id="${persona.dni}">Editar Perfil</a>
     </div>
-    <div id="editProfileContainer"></div>
 </div>
 </body>
 </html>

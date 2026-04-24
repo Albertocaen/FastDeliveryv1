@@ -1,59 +1,226 @@
+/*
+ * Estilos del perfil de usuario.
+ * Sigue la paleta de login/register: fondo claro, card blanca con esquinas
+ * redondeadas (15px), acentos en #333 y Roboto como tipografia.
+ */
+
 body {
-    background-color: floralwhite;
+    background-color: #f8f9fa;
     color: #333;
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
-h1 {
-    background-color: whitesmoke;
-    color: black;
-    padding: 0.5em;
-    border-radius: 5px;
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 1em;
+/* Card principal del perfil */
+.profile-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
 }
 
-.container {
-    margin-top: 2em;
+.profile-card .card-body {
+    padding: 2rem;
 }
 
-.form-group {
-    margin-bottom: 1em;
+/* Cabecera: avatar + nombre */
+.profile-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #eef0f2;
+    margin-bottom: 1.5rem;
 }
 
-.btn {
-    margin-right: 0.5em;
+.avatar-circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #333 0%, #555 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.profile-name {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.profile-email {
+    font-size: 0.95rem;
+}
+
+/* Secciones internas */
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f1f3f5;
+    margin-bottom: 1rem;
+}
+
+/* Grid de datos en vista */
+.info-grid {
+    margin-bottom: 0.5rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.75rem 0;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: #333;
+    word-break: break-word;
+}
+
+/* Flecha de volver */
+.back-arrow {
+    color: #555;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.4rem 0.9rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .back-arrow:hover {
-    background-color: #555; /* Fondo gris oscuro al pasar el ratón */
-    transform: scale(1.05);
+    background-color: #333;
+    color: #ffffff;
+    text-decoration: none;
+    transform: translateX(-2px);
 }
 
-.back-arrow::before {
-    content: '\2190'; /* Unicode para la flecha hacia la izquierda */
-    margin-right: 0.5em;
-}
-
-body {
-    background-image: url("/static/uploads/intento.webp");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
-    color: #333; /* Texto oscuro */
-    font-family: 'Roboto', sans-serif;
-    margin: 0; /* Elimina cualquier margen predeterminado del body */
-    height: 100%;
-}
-
-.container {
-    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semi-transparente */
-    padding: 20px;
+/* Botones coherentes con login/register */
+.btn {
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-top: 50px;
+    padding: 0.5em 1.25em;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: #333;
+    border: none;
+    font-weight: bold;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #555;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-outline-secondary {
+    border-color: #ced4da;
+    color: #555;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f1f3f5;
+    border-color: #adb5bd;
+    color: #333;
+}
+
+/* Form controls coherentes con register/login */
+.form-group label {
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 0.7em 1em;
+    border: 1px solid #ced4da;
+}
+
+.form-control:focus {
+    border-color: #333;
+    box-shadow: 0 0 0 0.2rem rgba(51, 51, 51, 0.1);
+}
+
+.form-control[readonly] {
+    background-color: #f1f3f5;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Card de edicion (fragmento inyectado por profile.js) */
+.edit-card {
+    margin-top: 1.5rem;
+    animation: fadeInUp 0.25s ease-out;
+}
+
+.edit-card h2 {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .avatar-circle {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+
+    .profile-name {
+        font-size: 1.4rem;
+    }
+
+    .section-title {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-card .card-body {
+        padding: 1rem;
+    }
+
+    .info-item {
+        padding: 0.5rem 0;
+    }
+
+    .btn {
+        font-size: 0.9em;
+    }
 }

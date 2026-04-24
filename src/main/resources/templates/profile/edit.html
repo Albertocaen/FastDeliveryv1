@@ -1,56 +1,99 @@
-<div th:fragment="edit" class="container mt-5">
-    <h1>Editar Perfil</h1>
-    <form id="editProfileForm" th:action="@{/profile/edit}" th:object="${persona}" method="post">
-        <div class="form-group">
-            <label for="dni">DNI:</label>
-            <input type="text" id="dni" th:field="*{dni}" class="form-control" readonly/>
-        </div>
-        <div class="form-group">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" th:field="*{nombre}" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="apellido">Apellido:</label>
-            <input type="text" id="apellido" th:field="*{apellido}" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" th:field="*{email}" class="form-control" readonly/>
-        </div>
-        <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" th:field="*{telefono}" class="form-control"/>
-        </div>
-        <div th:if="${persona.cliente != null}">
-            <div class="form-group">
-                <label for="direccion">Dirección:</label>
-                <input type="text" id="direccion" th:field="*{cliente.direccion}" class="form-control"/>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="edit" class="mt-4">
+    <div class="card profile-card edit-card">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <h2 class="mb-1"><i class="fas fa-pen mr-2"></i>Editar perfil</h2>
+                <p class="text-muted mb-0">Actualiza tus datos personales. DNI y email no se pueden modificar.</p>
             </div>
-            <div class="form-group">
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" th:field="*{cliente.ciudad}" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label for="codigoPostal">Código Postal:</label>
-                <input type="text" id="codigoPostal" th:field="*{cliente.codigoPostal}" class="form-control"/>
-            </div>
+
+            <form id="editProfileForm" th:action="@{/profile/edit}" th:object="${persona}" method="post" novalidate>
+
+                <!-- Datos personales -->
+                <h5 class="section-title"><i class="fas fa-id-card mr-2"></i> Datos personales</h5>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="dni">DNI</label>
+                        <input type="text" id="dni" th:field="*{dni}" class="form-control" readonly/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="telefono">Telefono</label>
+                        <input type="text" id="telefono" th:field="*{telefono}" class="form-control"
+                               pattern="[0-9]{9}" maxlength="9" placeholder="600123456"/>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" th:field="*{nombre}" class="form-control"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="apellido">Apellido</label>
+                        <input type="text" id="apellido" th:field="*{apellido}" class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" readonly/>
+                </div>
+
+                <!-- Datos de cliente -->
+                <div th:if="${persona.cliente != null}">
+                    <h5 class="section-title mt-3"><i class="fas fa-map-marker-alt mr-2"></i> Direccion de envio</h5>
+                    <div class="form-group">
+                        <label for="direccion">Direccion</label>
+                        <input type="text" id="direccion" th:field="*{cliente.direccion}" class="form-control"
+                               placeholder="Calle, numero, piso..."/>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <label for="ciudad">Ciudad</label>
+                            <input type="text" id="ciudad" th:field="*{cliente.ciudad}" class="form-control"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="codigoPostal">Codigo postal</label>
+                            <input type="text" id="codigoPostal" th:field="*{cliente.codigoPostal}"
+                                   class="form-control" pattern="[0-9]{5}" maxlength="5" placeholder="28001"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos de repartidor -->
+                <div th:if="${persona.repartidor != null}">
+                    <h5 class="section-title mt-3"><i class="fas fa-motorcycle mr-2"></i> Datos de repartidor</h5>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="calificacion">Calificacion</label>
+                            <input type="number" id="calificacion" th:field="*{repartidor.calificacion}"
+                                   class="form-control" min="0" max="5" step="0.1"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="horarioTrabajo">Horario</label>
+                            <input type="text" id="horarioTrabajo" th:field="*{repartidor.horarioTrabajo}"
+                                   class="form-control" placeholder="09:00 - 17:00"/>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="estadoDeDisponibilidad">Disponibilidad</label>
+                            <input type="text" id="estadoDeDisponibilidad"
+                                   th:field="*{repartidor.estadoDeDisponibilidad}" class="form-control"
+                                   placeholder="Disponible"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <button type="submit" class="btn btn-primary mr-2">
+                        <i class="fas fa-save mr-1"></i> Guardar cambios
+                    </button>
+                    <a href="/profile" class="btn btn-outline-secondary">
+                        <i class="fas fa-times mr-1"></i> Cancelar
+                    </a>
+                </div>
+            </form>
         </div>
-        <div th:if="${persona.repartidor != null}">
-            <div class="form-group">
-                <label for="calificacion">Calificación:</label>
-                <input type="number" id="calificacion" th:field="*{repartidor.calificacion}" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label for="horarioTrabajo">Horario de Trabajo:</label>
-                <input type="text" id="horarioTrabajo" th:field="*{repartidor.horarioTrabajo}" class="form-control"/>
-            </div>
-            <div class="form-group">
-                <label for="estadoDeDisponibilidad">Estado de Disponibilidad:</label>
-                <input type="text" id="estadoDeDisponibilidad" th:field="*{repartidor.estadoDeDisponibilidad}"
-                       class="form-control"/>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a href="/profile" class="btn btn-secondary">Cancelar</a>
-    </form>
+    </div>
 </div>
+</body>
+</html>

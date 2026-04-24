@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sobre el proyecto - Baco</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/sobre-mi/sobre-mi.css">
+</head>
+<body>
+
+<!-- Nav reutilizado -->
+<div th:replace="~{fragmentos/nav :: nav-menu}"></div>
+
+<!-- Hero: autor + proyecto -->
+<header class="portfolio-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center mb-4 mb-md-0">
+                <!-- Avatar: uso la imagen publica de GitHub para que siempre este al dia.
+                     Si GitHub falla, cae al circulo con iniciales. -->
+                <img src="https://github.com/Albertocaen.png"
+                     alt="Alberto Caen"
+                     class="author-photo"
+                     onerror="this.style.display='none';document.getElementById('author-fallback').style.display='flex';">
+                <div id="author-fallback" class="author-avatar-fallback" style="display:none;">
+                    <span>AC</span>
+                </div>
+            </div>
+            <div class="col-md-8 text-center text-md-left">
+                <p class="hero-kicker"><i class="fas fa-laptop-code mr-2"></i>Desarrollo backend Java &middot; Portfolio</p>
+                <h1 class="hero-name">Alberto Caen</h1>
+                <p class="hero-role">Desarrollador Full Stack Java &middot; Spring Boot, Docker y cloud</p>
+                <p class="hero-subtitle">
+                    Me gusta construir proyectos de principio a fin: disenar el modelo de datos,
+                    escribir la logica de negocio, montar el despliegue y dejarlo corriendo en
+                    produccion. <strong>FastDelivery &middot; Baco</strong> es el ejemplo completo
+                    de esa forma de trabajar.
+                </p>
+                <div class="hero-socials mt-3">
+                    <a href="https://github.com/Albertocaen" target="_blank" rel="noopener"
+                       class="social-btn" aria-label="GitHub">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a href="https://www.linkedin.com/in/albertocaen77" target="_blank" rel="noopener"
+                       class="social-btn" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </a>
+                    <a href="mailto:alberto.caen.1@gmail.com" class="social-btn" aria-label="Email">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="https://bacodelivery.com" target="_blank" rel="noopener"
+                       class="social-btn social-btn-primary" aria-label="Demo en vivo">
+                        <i class="fas fa-external-link-alt"></i> Demo en vivo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container py-5">
+
+    <!-- Resumen del proyecto -->
+    <section class="section-block">
+        <h2 class="section-heading"><i class="fas fa-rocket mr-2"></i>Sobre el proyecto</h2>
+        <p class="lead">
+            <strong>FastDelivery &middot; Baco</strong> es una aplicacion web integral de
+            gestion de pedidos y reparto a domicilio. Cubre todo el ciclo: catalogo de
+            productos, carrito, pagos con PayPal, roles de cliente/repartidor/admin,
+            notificaciones en tiempo real y panel de gestion interna.
+        </p>
+        <p>
+            El objetivo del proyecto era construir una solucion completa, no solo una
+            demo: por eso incluye autenticacion JWT con cookies host-only, reverse proxy
+            TLS con Caddy, init scripts idempotentes para MySQL, y un despliegue real en
+            Oracle Cloud (VM Ampere A1 ARM64) detras del dominio
+            <a href="https://bacodelivery.com" target="_blank" rel="noopener">bacodelivery.com</a>.
+        </p>
+    </section>
+
+    <!-- Funcionalidades -->
+    <section class="section-block">
+        <h2 class="section-heading"><i class="fas fa-check-circle mr-2"></i>Funcionalidades clave</h2>
+        <div class="row feature-grid">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-shopping-cart feature-icon"></i>
+                    <h5>Pedidos y carrito</h5>
+                    <p>Alta, seguimiento y cambio de estado de pedidos en tiempo real, con un carrito persistente en sesion.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-credit-card feature-icon"></i>
+                    <h5>Pagos con PayPal</h5>
+                    <p>Integracion completa con PayPal (sandbox y live) y URLs de success/cancel configurables por entorno.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-users-cog feature-icon"></i>
+                    <h5>Roles y permisos</h5>
+                    <p>Spring Security con autenticacion JWT, roles de cliente, repartidor y admin, y rutas protegidas por autoridad.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-bell feature-icon"></i>
+                    <h5>WebSockets</h5>
+                    <p>Notificaciones en tiempo real a los repartidores cuando hay pedidos nuevos usando STOMP sobre SockJS.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-envelope feature-icon"></i>
+                    <h5>Recuperacion de cuenta</h5>
+                    <p>Restablecimiento de contrasena por email con tokens firmados, enlaces de reset y revocacion de JWT.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card">
+                    <i class="fas fa-robot feature-icon"></i>
+                    <h5>Chatbot de soporte</h5>
+                    <p>Asistente integrado que responde preguntas frecuentes sobre envios, horarios y estado de pedidos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stack tecnico -->
+    <section class="section-block">
+        <h2 class="section-heading"><i class="fas fa-layer-group mr-2"></i>Stack tecnico</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="stack-subtitle">Backend</h5>
+                <ul class="tech-list">
+                    <li><span class="tech-chip">Java 22</span></li>
+                    <li><span class="tech-chip">Spring Boot 3.2</span></li>
+                    <li><span class="tech-chip">Spring Security + JWT</span></li>
+                    <li><span class="tech-chip">Spring Data JPA / Hibernate</span></li>
+                    <li><span class="tech-chip">MySQL 8</span></li>
+                    <li><span class="tech-chip">WebSocket / STOMP</span></li>
+                    <li><span class="tech-chip">Maven</span></li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="stack-subtitle">Frontend &amp; DevOps</h5>
+                <ul class="tech-list">
+                    <li><span class="tech-chip">Thymeleaf</span></li>
+                    <li><span class="tech-chip">Bootstrap 4</span></li>
+                    <li><span class="tech-chip">jQuery &amp; SweetAlert2</span></li>
+                    <li><span class="tech-chip">Docker + Compose v2</span></li>
+                    <li><span class="tech-chip">Caddy (reverse proxy + HTTPS)</span></li>
+                    <li><span class="tech-chip">Oracle Cloud (Ampere A1 ARM64)</span></li>
+                    <li><span class="tech-chip">Cloudflare DNS</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Retos -->
+    <section class="section-block">
+        <h2 class="section-heading"><i class="fas fa-tools mr-2"></i>Retos tecnicos resueltos</h2>
+        <ul class="challenge-list">
+            <li>
+                <strong>Autenticacion detras de reverse proxy:</strong> cookies JWT
+                host-only con <code>Secure</code> derivado de <code>X-Forwarded-Proto</code>,
+                respetado gracias a <code>server.forward-headers-strategy=framework</code>.
+            </li>
+            <li>
+                <strong>Diferencias Windows &rarr; Linux en MySQL:</strong>
+                <code>--lower-case-table-names=1</code> para unificar el comportamiento
+                de identificadores y evitar que <code>PRODUCTO</code> e <code>producto</code>
+                se interpretasen como tablas distintas.
+            </li>
+            <li>
+                <strong>Encoding JDBC:</strong> <code>characterEncoding=UTF-8</code>
+                (nombre Java) en la URL, no <code>utf8mb4</code>, que Spring rechaza al
+                abrir la conexion.
+            </li>
+            <li>
+                <strong>Despliegue en ARM64:</strong> build ajustado para Ampere A1 con
+                limites de memoria por servicio, swap para la compilacion y
+                healthchecks en Docker Compose.
+            </li>
+            <li>
+                <strong>TLS automatico:</strong> Caddy gestiona certificados Let's Encrypt
+                sin configuracion manual, con soporte para WebSocket upgrade y headers
+                de seguridad (HSTS, X-Frame-Options, X-Content-Type-Options).
+            </li>
+        </ul>
+    </section>
+
+    <!-- Otros proyectos -->
+    <section class="section-block">
+        <h2 class="section-heading"><i class="fas fa-code-branch mr-2"></i>Otros proyectos</h2>
+        <p class="text-muted mb-4">
+            FastDelivery no es lo unico. En GitHub tengo otras herramientas pensadas para
+            ahorrar trabajo repetitivo y mejorar mi propio flujo como desarrollador.
+        </p>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="project-card">
+                    <div class="project-card-header">
+                        <div>
+                            <h5 class="project-title">
+                                <i class="fas fa-magic mr-2"></i>AutoComponentGenerator
+                            </h5>
+                            <p class="project-tagline">Generador automatico de componentes para proyectos Java</p>
+                        </div>
+                        <a href="https://github.com/Albertocaen/AutoComponentGenerator"
+                           target="_blank" rel="noopener" class="btn btn-outline-dark btn-sm">
+                            <i class="fab fa-github mr-1"></i> Ver repo
+                        </a>
+                    </div>
+                    <p class="project-description">
+                        Herramienta que automatiza la creacion de clases repetitivas en proyectos Java
+                        (entidades, repositorios, servicios y controladores) a partir de una
+                        configuracion minima. Nacio para acelerar la fase inicial de proyectos como
+                        FastDelivery, evitando escribir a mano el CRUD boilerplate.
+                    </p>
+                    <div class="project-tags">
+                        <span class="tech-chip">Java</span>
+                        <span class="tech-chip">Generacion de codigo</span>
+                        <span class="tech-chip">Productividad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center mt-3 mb-0">
+            <a href="https://github.com/Albertocaen" target="_blank" rel="noopener" class="text-dark">
+                Ver todos mis repositorios en GitHub <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </p>
+    </section>
+
+    <!-- Llamada a la accion -->
+    <section class="section-block cta-block text-center">
+        <h2 class="section-heading justify-content-center"><i class="fas fa-handshake mr-2"></i>¿Quieres saber mas?</h2>
+        <p>
+            El codigo completo esta disponible en GitHub y la aplicacion en vivo en el dominio
+            propio. Si te interesa el proyecto o quieres hablar conmigo, no dudes en contactar.
+        </p>
+        <div class="cta-buttons">
+            <!-- EDITAR: enlaces propios -->
+            <a href="https://github.com/Albertocaen/FastDeliveryv1" target="_blank" rel="noopener"
+               class="btn btn-primary btn-lg">
+                <i class="fab fa-github mr-2"></i>Ver codigo en GitHub
+            </a>
+            <a href="mailto:alberto.caen.1@gmail.com" class="btn btn-outline-dark btn-lg">
+                <i class="fas fa-envelope mr-2"></i>Contactar
+            </a>
+        </div>
+    </section>
+
+</main>
+
+<footer class="portfolio-footer text-center py-4">
+    <p class="mb-0 text-muted">
+        &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span>
+        Alberto Caen &middot; FastDelivery &middot; Baco. Proyecto personal con fines educativos y de portfolio.
+    </p>
+</footer>
+
+</body>
+</html>

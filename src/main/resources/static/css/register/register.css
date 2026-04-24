@@ -1,0 +1,82 @@
+/*
+ * Estilos especificos de la pagina de registro.
+ * Complementa login.css reutilizando su paleta (#333, #f8f9fa, radios 10-15px).
+ * Cargar SIEMPRE despues de login.css para que sus reglas se sobrepongan.
+ */
+
+/* Label con icono: mejora la alineacion vertical del <i class="fas"> dentro del label */
+.form-group label i,
+.form-group label .fas {
+    color: #555;
+    width: 1em;
+    text-align: center;
+}
+
+/* Inputs un pelin mas compactos que en login para que el formulario
+   de 6 campos no sea demasiado alto en laptops. */
+.form-control {
+    padding: 0.75em 1em;
+}
+
+/* Boton del ojo de la contrasena */
+.toggle-password {
+    border-radius: 0 10px 10px 0 !important;
+    border: 1px solid #ced4da;
+    border-left: none;
+    background-color: #fff;
+    color: #555;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.toggle-password:hover,
+.toggle-password:focus {
+    background-color: #f1f3f5;
+    color: #333;
+    box-shadow: none;
+}
+
+/* El input-append hermano del input de password necesita que el input
+   pierda su border-radius derecho para que encaje con el boton. */
+.input-group .form-control {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* Pequeno ajuste para que el texto de ayuda no quede pegado al input */
+.form-text {
+    margin-top: 0.35rem;
+    font-size: 0.85em;
+}
+
+/* Enlace "Inicia sesion" con un pelin de peso visual */
+.card-body .text-center a {
+    font-weight: 600;
+}
+
+/* Separador visual entre filas dobles en pantallas medianas + */
+@media (min-width: 768px) {
+    .form-row {
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Ajustes especificos para moviles: el formulario de registro
+   tiene mas campos que el de login, conviene comprimir un poco mas. */
+@media (max-width: 576px) {
+    .form-control {
+        padding: 0.6em 0.75em;
+    }
+
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .card-body h1 {
+        font-size: 1.4em;
+    }
+
+    /* En movil las columnas de form-row se apilan, no hace falta el margen lateral */
+    .form-row > .col-md-6 {
+        margin-bottom: 0;
+    }
+}

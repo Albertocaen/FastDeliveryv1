@@ -18,6 +18,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/sobre-mi}"><strong>Sobre el proyecto</strong></a>
+                </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a class="nav-link " th:href="@{/profile}"><strong>Perfil</strong></a>
                 </li>

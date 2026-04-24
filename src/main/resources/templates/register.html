@@ -1,42 +1,127 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register</title>
+    <meta charset="UTF-8">
+    <title>Crear cuenta - Baco</title>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/login/login.css">
+    <link rel="stylesheet" href="/static/css/register/register.css">
 </head>
 <body>
-<h1>Register</h1>
-<form th:action="@{/register}" method="post">
-    <div>
-        <label for="dni">DNI:</label>
-        <input type="text" id="dni" name="dni" required>
-    </div>
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-    <div>
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" required>
-    </div>
-    <div>
-        <label for="apellido">Apellido:</label>
-        <input type="text" id="apellido" name="apellido" required>
-    </div>
-    <div>
-        <label for="telefono">Telefono:</label>
-        <input type="text" id="telefono" name="telefono" required>
-    </div>
-    <div>
-        <label for="contrasena">Password:</label>
-        <input type="password" id="contrasena" name="contrasena" required>
-    </div>
-    <div>
-        <button type="submit">Register</button>
-    </div>
-</form>
-<div th:if="${error}">
-    <p th:text="${error}"></p>
+<div class="text-center mb-4">
+    <img src="/static/uploads/imagen_2024-06-02_152502378-removebg-preview.png" class="logo-main" alt="Logo">
 </div>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-9 col-xl-8">
+            <div class="card mt-3">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h1 class="d-inline">Crear cuenta</h1>
+                        <img src="/static/uploads/nuevologo.webp" class="logo-small d-inline align-middle"
+                             alt="Logo pequeño">
+                    </div>
+                    <p class="text-muted text-center mb-4">
+                        Rellena tus datos para empezar a pedir. Es rapido: luego solo necesitaras tu email y contrasena.
+                    </p>
+
+                    <form th:action="@{/register}" method="post" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="nombre"><i class="fas fa-user mr-1"></i> Nombre</label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required
+                                       placeholder="Tu nombre">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="apellido"><i class="fas fa-user mr-1"></i> Apellido</label>
+                                <input type="text" id="apellido" name="apellido" class="form-control" required
+                                       placeholder="Tus apellidos">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="dni"><i class="fas fa-id-card mr-1"></i> DNI</label>
+                                <input type="text" id="dni" name="dni" class="form-control" required
+                                       placeholder="12345678A"
+                                       pattern="[0-9]{8}[A-Za-z]" maxlength="9"
+                                       title="8 digitos seguidos de 1 letra">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="telefono"><i class="fas fa-phone mr-1"></i> Telefono</label>
+                                <input type="tel" id="telefono" name="telefono" class="form-control" required
+                                       placeholder="600123456"
+                                       pattern="[0-9]{9}" maxlength="9"
+                                       title="9 digitos">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email"><i class="fas fa-envelope mr-1"></i> Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required
+                                   placeholder="tu@correo.com" autocomplete="email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contrasena"><i class="fas fa-lock mr-1"></i> Contrasena</label>
+                            <div class="input-group">
+                                <input type="password" id="contrasena" name="contrasena" class="form-control" required
+                                       minlength="6" placeholder="Minimo 6 caracteres"
+                                       autocomplete="new-password">
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary toggle-password"
+                                            tabindex="-1" aria-label="Mostrar contrasena">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Usa al menos 6 caracteres. Te recomendamos mezclar letras y numeros.
+                            </small>
+                        </div>
+
+                        <div class="form-group text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-user-plus mr-1"></i> Crear cuenta
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <span class="text-muted">¿Ya tienes cuenta? </span>
+                        <a th:href="@{/login}">Inicia sesion</a>
+                    </div>
+
+                    <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                        <span th:text="${error}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    // Toggle para mostrar/ocultar contrasena
+    document.querySelector('.toggle-password').addEventListener('click', function () {
+        const input = document.getElementById('contrasena');
+        const icon = this.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+</script>
 </body>
 </html>

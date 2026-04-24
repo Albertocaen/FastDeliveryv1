@@ -79,6 +79,15 @@ public class HomeController {
         return "home/gestor";
     }
 
+    /**
+     * Pagina publica con la informacion del proyecto y del autor, pensada para
+     * enseñar el proyecto en un portfolio.
+     */
+    @GetMapping("/sobre-mi")
+    public String sobreMi() {
+        return "sobre-mi";
+    }
+
     private String normalizeString(String input) {
         return Normalizer.normalize(input, Normalizer.Form.NFD)
                 .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "")

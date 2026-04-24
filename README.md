@@ -29,69 +29,125 @@ desplegada en producción sobre Oracle Cloud con HTTPS automático y dominio pro
 
 ## Qué es este proyecto
 
-**FastDelivery · Baco** es una aplicación web integral que cubre todo el ciclo de un
-negocio de reparto: catálogo de productos, carrito de compra, pagos con PayPal, gestión
-de pedidos, asignación dinámica de repartidores a vehículos, control de stock,
-notificaciones en tiempo real y un panel de administración.
+**FastDelivery · Baco** es una aplicación web completa que cubre el ciclo de un negocio
+de reparto: catálogo de productos, carrito de compra, pagos con PayPal, gestión de
+pedidos, asignación dinámica de repartidores a vehículos, control de stock,
+notificaciones en tiempo real y panel de administración.
 
-No es una demo de Spring Boot: es un sistema real, con tres tipos de usuario (cliente,
-repartidor, admin), base de datos con catorce tablas, autenticación JWT con revocación
-de tokens, reverse proxy con TLS automático y un despliegue productivo en una VM ARM64
-de Oracle Cloud.
+Incluye tres tipos de usuario (cliente, repartidor, admin), base de datos con catorce
+tablas, autenticación JWT con revocación de tokens, reverse proxy con TLS y despliegue
+productivo en Oracle Cloud.
 
-## Qué he resuelto (y por qué está bien)
+## Stack técnico
 
-Esto no es un CRUD. Son los puntos del proyecto que diferencian "funciona en mi portátil"
-de "corre en producción":
+| Capa | Tecnología |
+|------|-----------|
+| Lenguaje | Java 22 |
+| Framework | Spring Boot 3.2.4 |
+| Seguridad | Spring Security 6 · JWT (JJWT 0.11.5, HMAC-SHA512) |
+| Persistencia | Spring Data JPA · Hibernate · MySQL 8 |
+| Mapeo DTO | MapStruct 1.4 |
+| Pagos | PayPal REST SDK 1.14 |
+| Tiempo real | Spring WebSocket · STOMP · SockJS |
+| Email | Spring Mail (SMTP) |
+| Vistas | Thymeleaf 3 · Bootstrap 4/5 · jQuery 3.6 |
+| Build | Maven · Dockerfile multi-stage |
+| Contenedores | Docker · Compose v2 |
+| Reverse proxy | Caddy 2 (TLS, WebSocket upgrade, security headers) |
+| Cloud | Oracle Cloud Infrastructure |
+| Edge / DNS | Cloudflare (proxy, Origin Cert, WAF, mitigación DDoS) |
+| Endurecimiento | Security List restringida a CIDR de Cloudflare (ingress 443) |
 
-- **JWT con revocación explícita:** al hacer logout el token se añade a una blacklist en
-  memoria (`TokenRevocationService`), de forma que un token robado deja de ser válido
-  aunque no haya caducado. Muy poco común en implementaciones JWT básicas.
-- **Cookies host-only detrás de reverse proxy:** tras depurar un bug de login en producción
-  me di cuenta de que un `setDomain("localhost")` hardcodeado hacía que el navegador
-  descartase la cookie. La solución fue emitir cookies sin `Domain` y derivar `Secure`
-  de `request.isSecure()`, que respeta los `X-Forwarded-Proto` que inyecta Caddy gracias a
-  `server.forward-headers-strategy=framework`.
-- **Asignación dinámica de repartidores:** algoritmo que busca el primer repartidor con
-  menos de 3 pedidos activos, descontando los ya entregados. Constraint en BBDD + lógica
-  en servicio, con fallback si todos están saturados.
-- **Diferencias Windows → Linux en MySQL:** durante el primer despliegue, los inserts de
-  datos iniciales fallaban por `Table 'FastDelivery.producto' doesn't exist`. El problema
-  era que `CREATE TABLE PRODUCTO` e `INSERT INTO producto` apuntan a tablas distintas en
-  Linux si no fuerzas `--lower-case-table-names=1`. Ese flag ahora está en el Compose.
-- **Encoding JDBC:** `characterEncoding=UTF-8` (nombre Java), no `utf8mb4` (nombre MySQL).
-  Spring rechaza el segundo al abrir la conexión — otro bug resuelto en producción.
-- **TLS automático sin Let's Encrypt a mano:** Caddy gestiona los certificados contra
-  Let's Encrypt, con soporte para WebSocket upgrade, compresión zstd/gzip y cabeceras
-  de seguridad (HSTS, X-Frame-Options, X-Content-Type-Options).
-- **Build en ARM64 de bajos recursos:** Dockerfile multi-stage con `eclipse-temurin:22`
-  (JDK para compilar, JRE para runtime), límites de memoria por servicio en Compose y
-  swap en la VM para sobrevivir a la compilación de Maven con 6 GB de RAM.
-- **Seed script idempotente:** los `Docker/mysql-init/*.sql` se ejecutan solo la primera
-  vez que se crea el volumen, dejando el sistema listo con 21 productos, 5 clientes, 4
-  repartidores y 3 admins de prueba sin intervención manual.
-- **Cloudflare con Origin Certificate (15 años):** la app vive detrás de Cloudflare,
-  que termina TLS público con su propio cert y reencripta hacia el origin con un Origin
-  Cert emitido por Cloudflare y validado por Caddy. El visitante final nunca conoce la
-  IP real de la VM y, de regalo, entran WAF, mitigación DDoS y caché de borde.
-- **`trusted_proxies` con rangos CIDR de Cloudflare en Caddy:** sin esto `{client_ip}`
-  devolvería la IP del nodo de Cloudflare en todos los logs (inútil para auditar o
-  banear). Configurando los 22 rangos (IPv4 + IPv6) que publica Cloudflare como proxies
-  de confianza, Caddy lee `CF-Connecting-IP` y reenvía la IP real del visitante en
-  `X-Real-IP` y `X-Forwarded-For`.
-- **OCI Security List cerrada a Cloudflare:** el puerto 443 de la VM solo acepta
-  tráfico desde los 15 rangos de Cloudflare configurados como reglas ingress en la
-  Security List de Oracle Cloud. Cualquier intento de hablar directamente con la IP
-  pública de la VM se dropea a nivel de red, no llega ni a Caddy. Defensa en
-  profundidad: Cloudflare en el borde + firewall de Oracle por debajo.
-- **Limpieza de secretos en el historial git:** una auditoría con
-  `git log --all -- src/main/resources/application.properties` reveló que el fichero
-  estuvo trackeado durante 11 commits del primer arranque del proyecto, y un `.env` con
-  credenciales de correo en otra rama. Reescribí todo el historial con `git filter-repo
-  --invert-paths`, force push a todas las ramas, y `git fetch --prune` en cada clone
-  (Windows + VM de producción). Los commits viejos en GitHub ya no exponen esos
-  ficheros. Las credenciales filtradas pasan al protocolo estándar "asumir
-  comprometidas, rotar y olvidar".
+## Retos técnicos resueltos
+
+Problemas reales afrontados durante el desarrollo y la puesta en producción:
+
+- **JWT con revocación explícita:** al hacer logout, el token se añade a una blacklist
+  en memoria (`TokenRevocationService`). Un token comprometido deja de ser válido al
+  instante, sin esperar a que caduque.
+- **Cookies host-only detrás de reverse proxy:** las cookies se emiten sin atributo
+  `Domain` y con `Secure` derivado de `request.isSecure()`, leyendo `X-Forwarded-Proto`
+  inyectado por Caddy gracias a `server.forward-headers-strategy=framework`. Así
+  funcionan en cualquier host (local, dominio, IP) y se marcan como seguras solo cuando
+  viajan por HTTPS.
+- **Asignación dinámica de repartidores:** algoritmo que asigna el pedido al primer
+  repartidor con menos de 3 pedidos activos, descontando los entregados. Constraint en
+  base de datos + lógica en servicio, con fallback controlado si todos están saturados.
+- **Compatibilidad Windows ↔ Linux en MySQL:** el flag `--lower-case-table-names=1` en
+  el servicio MySQL garantiza que las tablas se resuelvan igual en Linux que en Windows,
+  evitando fallos silenciosos en los scripts de inicialización al desplegar.
+- **Encoding JDBC:** la URL de conexión usa `characterEncoding=UTF-8` (nombre Java),
+  no `utf8mb4` (nombre MySQL). Sutil pero importante — Spring rechaza el segundo al
+  abrir la conexión.
+- **TLS con certificado persistente:** Caddy sirve HTTPS con un Origin Certificate de
+  15 años emitido por Cloudflare. WebSocket upgrade, compresión zstd/gzip y cabeceras
+  de seguridad (HSTS, X-Frame-Options, X-Content-Type-Options) aplicados por defecto.
+- **Build Docker multi-stage:** imagen construida en dos etapas con `eclipse-temurin:22`
+  (JDK para compilar, JRE para runtime). Imagen final ligera y sin herramientas de build.
+  Límites de memoria por servicio en Compose para que el consumo sea predecible.
+- **Seed de datos idempotente:** los scripts de `Docker/mysql-init/` se ejecutan solo
+  en la primera creación del volumen, dejando la base con 21 productos, 5 clientes, 4
+  repartidores y 3 admins de prueba listos para demo.
+- **Cloudflare como capa de borde:** Cloudflare actúa como proxy delante de la
+  aplicación: termina TLS público con su propio certificado y reencripta hacia el
+  origen con un Origin Certificate de 15 años validado por Caddy. La IP real del
+  servidor queda oculta, y entran WAF, mitigación DDoS y caché de borde.
+- **`trusted_proxies` configurado en Caddy:** los 22 rangos CIDR (IPv4 + IPv6) de
+  Cloudflare se declaran como proxies de confianza, para que `{client_ip}` y las
+  cabeceras `X-Real-IP` / `X-Forwarded-For` reflejen la IP real del visitante en lugar
+  de la IP del nodo de Cloudflare. Fundamental para logs útiles y bloqueos por IP.
+- **Security List de Oracle Cloud cerrada a Cloudflare:** el puerto 443 del servidor
+  solo acepta tráfico desde los 15 rangos de Cloudflare, configurados como reglas
+  ingress a nivel de red. Cualquier intento de acceso directo se bloquea antes incluso
+  de llegar al reverse proxy. Defensa en profundidad: Cloudflare en el borde + firewall
+  cloud por debajo.
+- **Higiene del historial git:** una auditoría con `git log --all -- ...` localizó que
+  `application.properties` y un `.env` antiguo habían estado trackeados en commits del
+  primer arranque del proyecto. Se reescribió el historial completo con
+  `git filter-repo --invert-paths`, seguido de force push a todas las ramas y
+  sincronización de clones. Los secretos filtrados se rotaron por protocolo, el
+  repositorio quedó limpio y el `.gitignore` se amplió para cubrir `certs/`, `*.pem`
+  y `*.key`.
+
+## Seguridad — capas aplicadas
+
+La aplicación está protegida por varias capas independientes que trabajan juntas:
+
+**Borde (Cloudflare)**
+- Proxy activo delante de la aplicación. El visitante habla con Cloudflare, la IP
+  real del servidor queda oculta.
+- Certificado público gestionado por Cloudflare: renovación automática, sin
+  intervención manual.
+- WAF y mitigación DDoS incluidos: bots conocidos, escaneos y ataques de amplificación
+  se filtran antes de alcanzar la aplicación.
+
+**Reverse proxy (Caddy)**
+- TLS con Origin Certificate de Cloudflare válido 15 años.
+- `trusted_proxies` configurado con los 22 rangos CIDR de Cloudflare para propagar
+  correctamente la IP real del visitante.
+- Cabeceras de seguridad: HSTS (1 año, `includeSubDomains`), `X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy`. La cabecera `Server` se elimina.
+- Soporte explícito para WebSocket upgrade (STOMP / SockJS).
+- Límite de tamaño de request (`20 MB`) para contener uploads abusivos.
+
+**Red (Oracle Cloud)**
+- Security List con reglas ingress que solo permiten tráfico al puerto 443 desde los
+  15 rangos IP de Cloudflare. El resto se bloquea antes de entrar al servidor.
+- Puertos internos (`8080` de la aplicación, `3306` de MySQL) no se exponen al host;
+  viven dentro de la red Docker privada `fastdelivery-net`.
+
+**Aplicación**
+- JWT con revocación activa a través de `TokenRevocationService`: el logout invalida
+  el token de inmediato.
+- Cookies host-only y `Secure` derivado dinámicamente de `request.isSecure()`, para
+  que funcionen correctamente tanto en local como detrás del reverse proxy.
+- Spring Security 6 con control de acceso por rol y protección CSRF en formularios.
+
+**Repositorio**
+- `.gitignore` cubre credenciales y certificados (`.env`, `application.properties`,
+  `certs/`, `*.pem`, `*.key`).
+- Historial de git auditado y limpio: ficheros sensibles que estuvieron trackeados
+  en versiones iniciales fueron eliminados del historial con `git filter-repo`.
 
 ## Funcionalidades principales
 
@@ -119,26 +175,6 @@ de "corre en producción":
 - Página pública `/sobre-mi` orientada a portfolio, con stack técnico y retos resueltos.
 - Error pages propias (403, 404, genérica) coherentes con la estética.
 
-## Stack técnico
-
-| Capa | Tecnología |
-|------|-----------|
-| Lenguaje | Java 22 |
-| Framework | Spring Boot 3.2.4 |
-| Seguridad | Spring Security 6 · JWT (JJWT 0.11.5, HMAC-SHA512) |
-| Persistencia | Spring Data JPA · Hibernate · MySQL 8 |
-| Mapeo DTO | MapStruct 1.4 |
-| Pagos | PayPal REST SDK 1.14 |
-| Tiempo real | Spring WebSocket · STOMP · SockJS |
-| Email | Spring Mail (SMTP) |
-| Vistas | Thymeleaf 3 · Bootstrap 4/5 · jQuery 3.6 |
-| Build | Maven · Dockerfile multi-stage |
-| Contenedores | Docker · Compose v2 |
-| Reverse proxy | Caddy 2 (TLS, WebSocket upgrade, security headers) |
-| Cloud | Oracle Cloud — VM Ampere A1 (ARM64, 6 GB RAM) |
-| Edge / DNS | Cloudflare (proxy, Origin Cert, WAF, mitigación DDoS) |
-| Endurecimiento | OCI Security List restringida a CIDR de Cloudflare (ingress 443) |
-
 ## Arquitectura del proyecto
 
 ```
@@ -160,6 +196,17 @@ La base de datos modela tres jerarquías naturales: **Persona** como raíz de us
 (Admin / Cliente / Repartidor), **Vehiculo** como padre de Moto y Coche, y los pedidos
 desdoblados en **PedidoCliente** (cara al comprador) y **PedidoProveedor** (reposición
 de stock), cada uno con su tabla de línea de productos.
+
+## Despliegue en producción
+
+La guía completa de despliegue en Oracle Cloud (Caddy con HTTPS, DNS en Cloudflare,
+backups y mantenimiento) está en [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md).
+
+Resumen del flujo: `docker compose up -d --build` en el servidor, Caddy presenta el
+Origin Certificate de Cloudflare, y MySQL persiste en un volumen Docker. El servidor
+solo expone los puertos 80 y 443, y la Security List de Oracle Cloud los restringe a
+los rangos IP de Cloudflare. La aplicación y MySQL viven en la red interna
+`fastdelivery-net`, sin contacto con el host.
 
 ## Instalación local
 
@@ -185,64 +232,19 @@ docker compose logs -f app
 
 Una vez arranque, la app está en `http://localhost:8080`.
 
-## Despliegue en producción
+## Tests
 
-La guía completa de despliegue en Oracle Cloud (VM Ampere A1 ARM64, Caddy con HTTPS
-automático, DNS en Cloudflare, swap para la build, backups) está en
-[`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md) para no ensuciar este README.
+Cobertura con JUnit 5 y Mockito en los puntos críticos:
+- `FastDeliveryPV1ApplicationTests` — carga del contexto de Spring.
+- `JwtTokenUtilTest` — creación, validación y expiración de tokens.
+- `CarritoControllerTest` — flujos del carrito.
+- `ProductoServiceTest` — lógica de negocio de productos.
 
-El resumen es: `docker compose up -d --build` en la VM, Caddy presenta el Origin
-Certificate de Cloudflare, y MySQL persiste en un volumen Docker. La VM solo expone
-80 y 443, y la Security List de Oracle Cloud los restringe a los rangos IP de
-Cloudflare. La app y MySQL viven en la red interna `fastdelivery-net`, sin contacto
-con el host.
+## Historial de cambios
 
-## Endurecimiento de seguridad
+### Primer despliegue productivo
 
-Capa por capa, qué protege a la app:
-
-**Borde (Cloudflare)**
-- Proxy activo: el visitante final habla con Cloudflare, no con la VM. La IP real
-  del origin queda oculta.
-- Cert público gestionado por Cloudflare: certificado renovado automáticamente, sin
-  Let's Encrypt manual ni cron.
-- WAF y mitigación DDoS incluidos en el plan gratuito: bots básicos, escaneos y
-  amplification attacks se filtran antes de llegar al origin.
-
-**Origen (Caddy + Spring Boot)**
-- TLS interno con Origin Certificate de Cloudflare (15 años): sin renovaciones que
-  vigilar.
-- `trusted_proxies static` con los 22 rangos CIDR de Cloudflare: `{client_ip}` y los
-  headers `X-Real-IP` / `X-Forwarded-For` reflejan la IP real del visitante.
-- Cabeceras de seguridad fijas: HSTS (1 año, includeSubDomains), X-Content-Type-Options,
-  X-Frame-Options, Referrer-Policy. La cabecera `Server` se elimina.
-- WebSocket upgrade explícito para mantener STOMP/SockJS funcionando bajo proxy.
-- `request_body max_size 20MB` para limitar uploads abusivos.
-
-**Red (Oracle Cloud)**
-- Security List ingress de la VCN solo deja entrar 80 y 443 desde los 15 rangos de
-  Cloudflare (uno por regla, IPv4). Todo lo demás se dropea en la capa de red — no
-  llega ni a Caddy.
-- Puertos internos (8080 de la app, 3306 de MySQL) **no se exponen al host**, solo
-  son accesibles dentro de la red Docker `fastdelivery-net`.
-
-**Aplicación**
-- JWT con blacklist en memoria (`TokenRevocationService`): el logout invalida el token
-  inmediatamente, aunque no haya caducado.
-- Cookies host-only sin atributo `Domain`: funcionan en cualquier host (localhost,
-  bacodelivery.com, IP) sin necesidad de configuración por entorno.
-- Cookies `Secure` derivadas de `request.isSecure()`, leyendo `X-Forwarded-Proto` que
-  inyecta Caddy gracias a `server.forward-headers-strategy=framework`.
-- Spring Security 6 con configuración estricta de rutas por rol y CSRF en formularios.
-
-**Repositorio**
-- `.gitignore` cubre `.env`, `application.properties`, `certs/`, `*.pem`, `*.key`.
-- Historial git limpio: `application.properties` y `.env` eliminados de los 11+5
-  commits viejos donde estuvieron trackeados, mediante `git filter-repo`.
-
-## Changelog — primer despliegue productivo
-
-Los fixes más relevantes aplicados durante el primer deploy a `bacodelivery.com`:
+Fixes relevantes aplicados durante el primer deploy a `bacodelivery.com`:
 
 **Autenticación**
 - Cookies JWT host-only (sin `setDomain`), para que funcionen en cualquier host.
@@ -250,12 +252,12 @@ Los fixes más relevantes aplicados durante el primer deploy a `bacodelivery.com
 - Enlaces de reset password parametrizados por `app.base.url` (antes apuntaban a `localhost:8080`).
 
 **Despliegue y base de datos**
-- `docker-compose.yml`: MySQL y `app` dejan de exponer puertos al host; solo Caddy.
-- `docker-compose.yml`: límites de memoria pensados para VM Ampere A1 (6 GB).
+- `docker-compose.yml`: MySQL y `app` dejan de exponer puertos al host, solo Caddy.
+- `docker-compose.yml`: límites de memoria por servicio para controlar el consumo.
 - `docker-compose.yml`: `--lower-case-table-names=1` en MySQL para igualar Linux ↔ Windows.
 - `docker-compose.yml`: JDBC con `characterEncoding=UTF-8` (Java) en lugar de `utf8mb4` (MySQL).
 - `docker-compose.yml`: healthchecks y `restart: unless-stopped` por servicio.
-- `Caddyfile`: WebSocket upgrade, HSTS, X-Frame-Options, redirect `www` → apex.
+- `Caddyfile`: WebSocket upgrade, HSTS, `X-Frame-Options`, redirect `www` → apex.
 
 **Init SQL**
 - Unificado el nombre de la base (`Fastdelivery` → `FastDelivery`) para que el `USE`
@@ -267,34 +269,27 @@ Los fixes más relevantes aplicados durante el primer deploy a `bacodelivery.com
   estética coherente (cards, avatar, paleta `#333` / `#f8f9fa`, Roboto).
 - Página nueva `/sobre-mi` con hero, funcionalidades, stack, retos y proyectos.
 
-## Changelog — endurecimiento post-deploy
+### Endurecimiento de seguridad
 
-Mejoras de seguridad y operación aplicadas después del primer arranque estable:
+Mejoras de seguridad y operación aplicadas sobre el despliegue ya estable:
 
 **Cloudflare y red**
-- Activado el proxy de Cloudflare (modo Full strict) con Origin Certificate de 15 años.
-- `Caddyfile`: `tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key` y bloque
-  global `servers { trusted_proxies static ... }` con los 22 rangos CIDR de Cloudflare.
-- `docker-compose.yml`: nuevo mount `./certs:/etc/caddy/certs:ro` para que Caddy lea
-  el cert sin que viaje en la imagen.
-- OCI Security List: añadidas 15 reglas ingress para puerto 443 limitadas a los rangos
-  IPv4 de Cloudflare. Acceso directo a la IP de la VM bloqueado.
+- Proxy de Cloudflare activo en modo Full strict, con Origin Certificate de 15 años.
+- `Caddyfile`: directiva `tls` apuntando al cert de Cloudflare y bloque global
+  `servers { trusted_proxies static ... }` con los 22 rangos CIDR de Cloudflare.
+- `docker-compose.yml`: volumen `./certs:/etc/caddy/certs:ro` para montar los certs
+  sin incluirlos en la imagen.
+- Security List de Oracle Cloud: 15 reglas ingress en el puerto 443 restringidas a
+  los rangos IP de Cloudflare. Acceso directo por IP bloqueado.
 
 **Repositorio y secretos**
-- Auditoría con `git log --all -- ...` localizó secretos antiguos en el historial.
-- `git filter-repo --path ... --invert-paths` reescribió el historial completo (master
-  y todas las ramas vivas) eliminando `application.properties` y `.env` de cada commit.
-- Force push a todas las ramas + `git fetch --prune` en cada clone.
-- `.gitignore` actualizado con `certs/`, `*.pem`, `*.key`.
-- Limpieza de ramas obsoletas (`local-working`, `test`) que ya no aportaban valor.
-
-## Tests
-
-Cobertura básica con JUnit 5 y Mockito en los puntos críticos:
-- `FastDeliveryPV1ApplicationTests` — carga del contexto de Spring.
-- `JwtTokenUtilTest` — creación, validación y expiración de tokens.
-- `CarritoControllerTest` — flujos del carrito.
-- `ProductoServiceTest` — lógica de negocio de productos.
+- Auditoría del historial con `git log --all -- ...` para localizar secretos
+  trackeados en versiones iniciales.
+- Reescritura del historial completo con `git filter-repo --invert-paths`, eliminando
+  `application.properties` y `.env` de cada commit en todas las ramas.
+- Force push sincronizado + `git fetch --prune` en cada clone.
+- `.gitignore` ampliado con `certs/`, `*.pem` y `*.key`.
+- Limpieza de ramas obsoletas.
 
 ## Licencia
 

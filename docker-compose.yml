@@ -3,7 +3,6 @@ services:
     image: mysql:8.0
     container_name: usuario-mysql
     restart: unless-stopped
-    # IMPORTANTE: NO exponemos puertos al host. MySQL queda solo en red interna Docker.
     expose:
       - "3306"
     environment:
@@ -26,7 +25,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-    # Limites de recursos para VM Ampere A1 con RAM limitada
     deploy:
       resources:
         limits:
@@ -48,7 +46,6 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    # IMPORTANTE: NO exponemos el 8080 al host. Solo Caddy lo ve por la red interna.
     expose:
       - "8080"
     volumes:
@@ -89,8 +86,6 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      # Cert/key del Origin Server de Cloudflare (NO en git, ver .gitignore).
-      # En la VM se crean en ~/FastDeliveryv1/certs/ con permisos 600.
       - ./certs:/etc/caddy/certs:ro
       - caddy-data:/data
       - caddy-config:/config

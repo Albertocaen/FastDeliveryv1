@@ -39,3 +39,8 @@ src/main/resources/application.properties
 
 #Archives
 .env
+
+# Certificados Origin de Cloudflare (NUNCA subir la clave privada)
+certs/
+*.pem
+*.key

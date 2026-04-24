@@ -89,6 +89,9 @@ services:
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Cert/key del Origin Server de Cloudflare (NO en git, ver .gitignore).
+      # En la VM se crean en ~/FastDeliveryv1/certs/ con permisos 600.
+      - ./certs:/etc/caddy/certs:ro
       - caddy-data:/data
       - caddy-config:/config
     deploy:

@@ -1,4 +1,40 @@
+# Configuracion global: Caddy reconoce las IPs de Cloudflare como proxies de
+# confianza. Asi {client_ip} devuelve la IP real del visitante (de
+# CF-Connecting-IP) en lugar de la IP de Cloudflare.
+{
+    servers {
+        trusted_proxies static \
+            173.245.48.0/20 \
+            103.21.244.0/22 \
+            103.22.200.0/22 \
+            103.31.4.0/22 \
+            141.101.64.0/18 \
+            108.162.192.0/18 \
+            190.93.240.0/20 \
+            188.114.96.0/20 \
+            197.234.240.0/22 \
+            198.41.128.0/17 \
+            162.158.0.0/15 \
+            104.16.0.0/13 \
+            104.24.0.0/14 \
+            172.64.0.0/13 \
+            131.0.72.0/22 \
+            2400:cb00::/32 \
+            2606:4700::/32 \
+            2803:f800::/32 \
+            2405:b500::/32 \
+            2405:8100::/32 \
+            2a06:98c0::/29 \
+            2c0f:f248::/32
+    }
+}
+
 {$CADDY_SITE_ADDRESS:bacodelivery.com} {
+    # Certificado Origin Server emitido por Cloudflare (15 anos).
+    # Solo valido entre Cloudflare y nuestro origin: el visitante final ve el
+    # cert publico de Cloudflare, no este.
+    tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key
+
     encode zstd gzip
 
     # Limite de tamaño del cuerpo: util para /uploads de imagenes
@@ -22,15 +58,18 @@
     }
     reverse_proxy @websocket app:8080
 
-    # Proxy normal hacia el backend Spring Boot
+    # Proxy normal hacia el backend Spring Boot.
+    # {client_ip} respeta los trusted_proxies de arriba: pasa la IP real del
+    # visitante, no la del nodo de Cloudflare.
     reverse_proxy app:8080 {
-        header_up X-Real-IP       {remote_host}
-        header_up X-Forwarded-For {remote_host}
+        header_up X-Real-IP        {client_ip}
+        header_up X-Forwarded-For  {client_ip}
         header_up X-Forwarded-Proto {scheme}
     }
 }
 
-# Redirigir www a apex
+# Redirigir www a apex (mismo cert)
 www.bacodelivery.com {
+    tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key
     redir https://bacodelivery.com{uri} permanent
 }

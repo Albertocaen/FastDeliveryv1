@@ -2,11 +2,25 @@
 body {
 
     background-image: url("/static/uploads/intento.webp");
+    background-color: #f8f9fa; /* Color de respaldo cuando la imagen no cubre */
     color: #333; /* Texto oscuro */
     font-family: 'Roboto', sans-serif;
     margin: 0; /* Elimina cualquier margen predeterminado del body */
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    min-height: 100vh;
+}
+
+/* En móvil: fondo fijo causa problemas en iOS, usar scroll y posición superior */
+@media (max-width: 768px) {
+    body {
+        background-size: cover;
+        background-attachment: scroll;
+        background-position: top center;
+        background-color: #f8f9fa;
+    }
 }
 
 /* Navbar styles */

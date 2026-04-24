@@ -1,227 +1,221 @@
-# Fast Delivery
+<div align="center">
+
 ![Logo de FastDelivery](./src/main/resources/static/uploads/cambio-removebg-preview.png)
-## Baco 
 
-Fast Delivery-Baco es una solución integral para la gestión y optimización de entregas de productos. Este proyecto tiene como objetivo proporcionar una plataforma eficiente y confiable para gestionar pedidos, rastrear envíos y facilitar la comunicación entre clientes y proveedores.
+# FastDelivery · Baco
 
-## Funcionalidades Principales
+**Plataforma completa de pedidos y reparto a domicilio construida con Spring Boot,
+desplegada en producción sobre Oracle Cloud con HTTPS automático y dominio propio.**
 
-- **Gestión de Pedidos**: Creación, actualización y seguimiento de pedidos.
-- **Carrito de Compras**: Gestión de items en el carrito de compras del cliente.
-- **Autenticación y Autorización**: Manejo seguro de usuarios con roles y permisos.
-- **Notificaciones en Tiempo Real**: Uso de WebSockets para notificaciones instantáneas.
-- **Integración con PayPal**: Procesamiento de pagos a través de PayPal.
-- **Restablecimiento de Contraseña**: Funcionalidad para recuperación de cuentas.
-- **Configuración de Envío de Correos**: Configuración de notificaciones por correo electrónico.
-- **Chatbot Integrado**: Asistencia automatizada a través de un chatbot.
+[![Demo en vivo](https://img.shields.io/badge/demo-bacodelivery.com-success?style=for-the-badge&logo=icloud&logoColor=white)](https://bacodelivery.com)
+[![Sobre el proyecto](https://img.shields.io/badge/sobre_el_proyecto-grey?style=for-the-badge)](https://bacodelivery.com/sobre-mi)
+[![Java](https://img.shields.io/badge/Java-22-orange?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.4-6DB33F?style=for-the-badge&logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Docker](https://img.shields.io/badge/Docker-Compose_v2-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-## Requisitos
+</div>
 
+---
+
+## Enlaces rápidos
+
+- **Demo en vivo:** [bacodelivery.com](https://bacodelivery.com)
+- **Página del proyecto:** [bacodelivery.com/sobre-mi](https://bacodelivery.com/sobre-mi)
+- **Guía de despliegue (OCI):** [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md)
+- **Autor:** [Alberto Caen](https://github.com/Albertocaen) — [LinkedIn](https://www.linkedin.com/in/albertocaen77)
+
+---
+
+## Qué es este proyecto
+
+**FastDelivery · Baco** es una aplicación web integral que cubre todo el ciclo de un
+negocio de reparto: catálogo de productos, carrito de compra, pagos con PayPal, gestión
+de pedidos, asignación dinámica de repartidores a vehículos, control de stock,
+notificaciones en tiempo real y un panel de administración.
+
+No es una demo de Spring Boot: es un sistema real, con tres tipos de usuario (cliente,
+repartidor, admin), base de datos con catorce tablas, autenticación JWT con revocación
+de tokens, reverse proxy con TLS automático y un despliegue productivo en una VM ARM64
+de Oracle Cloud.
+
+## Qué he resuelto (y por qué está bien)
+
+Esto no es un CRUD. Son los puntos del proyecto que diferencian "funciona en mi portátil"
+de "corre en producción":
+
+- **JWT con revocación explícita:** al hacer logout el token se añade a una blacklist en
+  memoria (`TokenRevocationService`), de forma que un token robado deja de ser válido
+  aunque no haya caducado. Muy poco común en implementaciones JWT básicas.
+- **Cookies host-only detrás de reverse proxy:** tras depurar un bug de login en producción
+  me di cuenta de que un `setDomain("localhost")` hardcodeado hacía que el navegador
+  descartase la cookie. La solución fue emitir cookies sin `Domain` y derivar `Secure`
+  de `request.isSecure()`, que respeta los `X-Forwarded-Proto` que inyecta Caddy gracias a
+  `server.forward-headers-strategy=framework`.
+- **Asignación dinámica de repartidores:** algoritmo que busca el primer repartidor con
+  menos de 3 pedidos activos, descontando los ya entregados. Constraint en BBDD + lógica
+  en servicio, con fallback si todos están saturados.
+- **Diferencias Windows → Linux en MySQL:** durante el primer despliegue, los inserts de
+  datos iniciales fallaban por `Table 'FastDelivery.producto' doesn't exist`. El problema
+  era que `CREATE TABLE PRODUCTO` e `INSERT INTO producto` apuntan a tablas distintas en
+  Linux si no fuerzas `--lower-case-table-names=1`. Ese flag ahora está en el Compose.
+- **Encoding JDBC:** `characterEncoding=UTF-8` (nombre Java), no `utf8mb4` (nombre MySQL).
+  Spring rechaza el segundo al abrir la conexión — otro bug resuelto en producción.
+- **TLS automático sin Let's Encrypt a mano:** Caddy gestiona los certificados contra
+  Let's Encrypt, con soporte para WebSocket upgrade, compresión zstd/gzip y cabeceras
+  de seguridad (HSTS, X-Frame-Options, X-Content-Type-Options).
+- **Build en ARM64 de bajos recursos:** Dockerfile multi-stage con `eclipse-temurin:22`
+  (JDK para compilar, JRE para runtime), límites de memoria por servicio en Compose y
+  swap en la VM para sobrevivir a la compilación de Maven con 6 GB de RAM.
+- **Seed script idempotente:** los `Docker/mysql-init/*.sql` se ejecutan solo la primera
+  vez que se crea el volumen, dejando el sistema listo con 21 productos, 5 clientes, 4
+  repartidores y 3 admins de prueba sin intervención manual.
+
+## Funcionalidades principales
+
+### Para el cliente
+- Catálogo de productos con destacados en portada.
+- Carrito de compra persistente en sesión.
+- Checkout con PayPal (sandbox o live, configurable por entorno).
+- Historial de pedidos y estado en tiempo real vía WebSocket.
+- Registro, login, edición de perfil y recuperación de contraseña por email.
+
+### Para el repartidor
+- Vista dedicada con sus pedidos asignados.
+- Notificaciones en tiempo real (STOMP sobre SockJS) cuando hay pedidos nuevos.
+- Cambio de estado del pedido (en reparto → entregado) que libera su cola.
+- Vehículo asignado (moto o coche) con atributos específicos.
+
+### Para el admin
+- Panel de gestión con CRUD de productos, proveedores, clientes, repartidores,
+  vehículos y stock.
+- Creación de pedidos a proveedores para reponer inventario.
+- Visión global del sistema en una única vista (`/gestor`).
+
+### Transversales
+- Chatbot integrado con respuestas a FAQ (envíos, horarios, contacto, devoluciones).
+- Página pública `/sobre-mi` orientada a portfolio, con stack técnico y retos resueltos.
+- Error pages propias (403, 404, genérica) coherentes con la estética.
+
+## Stack técnico
+
+| Capa | Tecnología |
+|------|-----------|
+| Lenguaje | Java 22 |
+| Framework | Spring Boot 3.2.4 |
+| Seguridad | Spring Security 6 · JWT (JJWT 0.11.5, HMAC-SHA512) |
+| Persistencia | Spring Data JPA · Hibernate · MySQL 8 |
+| Mapeo DTO | MapStruct 1.4 |
+| Pagos | PayPal REST SDK 1.14 |
+| Tiempo real | Spring WebSocket · STOMP · SockJS |
+| Email | Spring Mail (SMTP) |
+| Vistas | Thymeleaf 3 · Bootstrap 4/5 · jQuery 3.6 |
+| Build | Maven · Dockerfile multi-stage |
+| Contenedores | Docker · Compose v2 |
+| Reverse proxy | Caddy 2 (TLS automático) |
+| Cloud | Oracle Cloud — VM Ampere A1 (ARM64, 6 GB RAM) |
+| DNS | Cloudflare |
+
+## Arquitectura del proyecto
+
+```
+src/main/java/org/proyecto/fastdeliveryp_v1/
+├── classes/          Validadores custom (ImageUrlValidator, NumericValidator)
+├── config/           Beans de configuracion (WebConfig, WebSocketConfig, PaypalConfig, CookieInterceptor)
+├── controller/       16 controladores Thymeleaf MVC
+├── restcontroller/   12 controladores REST para el panel de gestion y APIs internas
+├── dto/              DTOs para exponer entidades sin leaks
+├── entity/           14 entidades JPA (Persona, Cliente, Repartidor, Vehiculo, Producto...)
+├── exceptionHandler/ GlobalExceptionHandler + CustomErrorController
+├── mapper/           17 mappers MapStruct (entity <-> DTO)
+├── repository/       Repositorios Spring Data JPA
+├── security/         JwtTokenUtil, JwtTokenFilter, PasswordEncryptor
+└── service/          17 servicios con la logica de negocio
+```
+
+La base de datos modela tres jerarquías naturales: **Persona** como raíz de usuario
+(Admin / Cliente / Repartidor), **Vehiculo** como padre de Moto y Coche, y los pedidos
+desdoblados en **PedidoCliente** (cara al comprador) y **PedidoProveedor** (reposición
+de stock), cada uno con su tabla de línea de productos.
+
+## Instalación local
+
+Requisitos:
 - Java 22 (el `Dockerfile` usa `eclipse-temurin:22`)
 - Docker y Docker Compose v2 (`docker compose`, no `docker-compose`)
 - Maven (opcional; el proyecto incluye `./mvnw`)
 
-## Instalación local
+Arranque:
 
-1. Clona el repositorio:
-    ```bash
-    git clone https://github.com/Albertocaen/FastDeliveryv1.git
-    cd FastDeliveryv1
-    ```
+```bash
+git clone https://github.com/Albertocaen/FastDeliveryv1.git
+cd FastDeliveryv1
 
-2. Crea tu `.env` a partir de la plantilla:
-    ```bash
-    cp .env.production.example .env
-    # edita .env con tus credenciales de MySQL, JWT, SMTP, PayPal, etc.
-    ```
+# Variables de entorno a partir de la plantilla
+cp .env.production.example .env
+# edita .env con tus credenciales de MySQL, JWT, SMTP, PayPal...
 
-3. Arranca todo el stack (app + MySQL + Caddy):
-    ```bash
-    docker compose up -d --build
-    docker compose logs -f app
-    ```
+# Levantar todo el stack
+docker compose up -d --build
+docker compose logs -f app
+```
 
-## Despliegue en produccion
+Una vez arranque, la app está en `http://localhost:8080`.
 
-La guia completa de despliegue en Oracle Cloud (VM Ampere A1, Caddy con HTTPS
-automatico, Cloudflare DNS) se ha movido a [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md)
-para no sobrecargar este README. Alli encontraras:
+## Despliegue en producción
 
-- Configuracion de OCI (Security Lists, Route Tables, NSG, IGW)
-- Instalacion de Docker + Compose v2 en Ubuntu ARM64
-- Creacion de swap para la build en VMs con poca RAM
-- Plantilla `.env.production.example` y valores que hay que sustituir
-- Obtencion de certificados Let's Encrypt a traves de Caddy
-- Backups de MySQL y del volumen de uploads
+La guía completa de despliegue en Oracle Cloud (VM Ampere A1 ARM64, Caddy con HTTPS
+automático, DNS en Cloudflare, swap para la build, backups) está en
+[`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md) para no ensuciar este README.
 
-## Cambios recientes
+El resumen es: `docker compose up -d --build` en la VM, Caddy saca el certificado
+Let's Encrypt solo, y MySQL persiste en un volumen Docker. Los únicos puertos expuestos
+al mundo son 80 y 443, atacados por Caddy. La app y MySQL viven en la red interna
+`fastdelivery-net`, sin exposición al host.
 
-Historial resumido de los fixes relevantes aplicados durante el primer
-despliegue en produccion (`bacodelivery.com`). Para detalle completo, mirar
-`git log` y los mensajes de commit.
+## Changelog — primer despliegue productivo
 
-### Despliegue y base de datos
+Los fixes más relevantes aplicados durante el primer deploy a `bacodelivery.com`:
 
-- **`docker-compose.yml`**: MySQL y el servicio `app` dejan de exponer puertos
-  al host; solo Caddy abre 80/443. MySQL queda accesible unicamente en la red
-  interna `fastdelivery-net`.
-- **`docker-compose.yml`**: limites de memoria (`deploy.resources.limits`) por
-  servicio, pensados para VM Ampere A1 de 6 GB de RAM.
-- **`docker-compose.yml`**: `--lower-case-table-names=1` en MySQL, para que el
-  comportamiento en Linux coincida con el de desarrollo en Windows. Sin esto,
-  `CREATE TABLE PRODUCTO` y `INSERT INTO producto` apuntan a tablas distintas
-  en Linux y rompen la carga de datos iniciales.
-- **`docker-compose.yml`**: JDBC URL con `characterEncoding=UTF-8` (nombre
-  Java) en lugar de `utf8mb4` (nombre MySQL). Spring no reconoce `utf8mb4`
-  como encoding Java y fallaba al abrir la conexion.
-- **`docker-compose.yml`**: `healthcheck` para el servicio `app` y politicas
-  de reinicio (`restart: unless-stopped`).
-- **`Caddyfile`**: soporte para WebSocket upgrade (STOMP/SockJS), cabeceras de
-  seguridad basicas (HSTS, X-Frame-Options, X-Content-Type-Options) y redirect
-  `www` → apex.
+**Autenticación**
+- Cookies JWT host-only (sin `setDomain`), para que funcionen en cualquier host.
+- `Secure` derivado de `request.isSecure()`, respetando `X-Forwarded-Proto` de Caddy.
+- Enlaces de reset password parametrizados por `app.base.url` (antes apuntaban a `localhost:8080`).
 
-### Autenticacion
+**Despliegue y base de datos**
+- `docker-compose.yml`: MySQL y `app` dejan de exponer puertos al host; solo Caddy.
+- `docker-compose.yml`: límites de memoria pensados para VM Ampere A1 (6 GB).
+- `docker-compose.yml`: `--lower-case-table-names=1` en MySQL para igualar Linux ↔ Windows.
+- `docker-compose.yml`: JDBC con `characterEncoding=UTF-8` (Java) en lugar de `utf8mb4` (MySQL).
+- `docker-compose.yml`: healthchecks y `restart: unless-stopped` por servicio.
+- `Caddyfile`: WebSocket upgrade, HSTS, X-Frame-Options, redirect `www` → apex.
 
-- **`AuthController`**: las cookies JWT se emiten **host-only** (sin `setDomain`).
-  Antes estaban cableadas a `Domain=localhost`, lo que hacia que el navegador
-  descartara la cookie en cualquier dominio distinto de `localhost` y el
-  usuario no pudiera pasar del login en produccion.
-- **`AuthController` y `PasswordResetController`**: `Secure` de las cookies se
-  deriva de `request.isSecure()`, que respeta `X-Forwarded-Proto` de Caddy.
-- **`application.properties`**: `server.forward-headers-strategy=framework`
-  para que Spring honre los headers del reverse proxy.
-- **`PasswordResetController`**: el enlace de reset password en el email deja
-  de apuntar a `http://localhost:8080/...` y usa `${app.base.url}`.
+**Init SQL**
+- Unificado el nombre de la base (`Fastdelivery` → `FastDelivery`) para que el `USE`
+  coincida con `MYSQL_DATABASE`. Los scripts de `Docker/mysql-init/` ahora son
+  idempotentes en la primera creación del volumen.
 
-### Init SQL
+**Frontend**
+- Rehechas `register.html`, `profile/view.html`, `profile/edit.html` y `perfil.css` con
+  estética coherente (cards, avatar, paleta `#333` / `#f8f9fa`, Roboto).
+- Página nueva `/sobre-mi` con hero, funcionalidades, stack, retos y proyectos.
 
-- Los scripts de `Docker/mysql-init/` se corrigieron para unificar el nombre
-  de la base (`Fastdelivery` → `FastDelivery`) y que el `USE` coincida con la
-  DB que crea `MYSQL_DATABASE`. Con esto, el entrypoint de MySQL ejecuta los
-  SQL la primera vez que se crea el volumen sin intervencion manual.
+## Tests
 
-## Estructura del Proyecto
-
-
-### Configuración y Dependencias
-
-- `pom.xml`: Archivo de configuración de Maven.
-- `Dockerfile`: Archivo de configuración para la creación de la imagen Docker.
-- `docker-compose.yml`: Archivo de configuración para la orquestación de contenedores Docker.
-
-### Código Fuente
-
-#### Paquete Principal
-
-- `src/main/java/org/proyecto/fastdeliveryp_v1/FastDeliveryPV1Application.java`: Clase principal para iniciar la aplicación.
-
-#### Controladores
-
-- `AuthController.java`: Controlador para autenticación de usuarios.
-- `CarritoController.java`: Controlador para gestión del carrito de compras.
-- `ClienteController.java`: Controlador para gestión de clientes.
-- `CustomErrorController` : Controlador para el manejo de errores
-- `HomeController.java`: Controlador para la página principal.
-- `MotoController.java`: Controllador para manejar las motos asignadas
-- `PasswordResetController.java`: Controlador para restablecimiento de contraseñas.
-- `PayPalController.java`: Controlador para integración con PayPal.
-- `PedidoClienteController.java`: Controlador para gestión de pedidos de clientes.
-- `PedidoProveedorController.java`: Controlador para gestiónde de pedidos a proveedores
-- `ProveedorController.java`: Controlador para manejar a los proveedores
-- `ProductoController.java`: Controlador para gestión de productos.
-- `RepartidorController.java`: Controlador para el manejo de los repartidores
-- `StockController.java`: Controlador para la gestion del stock
-- `UserProfileController.java`: Controlador para gestión de perfiles de usuario.
-- `WebSocketController.java`: Controlador para gestión de WebSockets.
-
-#### RestController
-
-- `AdminRestController.java`: Controlador para la gestion de los usuarios administradores
-- `MotoRestController.java`: Controlador para gestión de motos.
-- `ClienteRestController.java`: Controlador para la gestion de los usuarios clientes
-- `CocheRestController.java`: Controlador para la gestion de los coches
-- `PedidoClienteRestController.java`: Controlador para la gestion de pedidos de clientes
-- `PedidoProveedorRestController.java`: Controlador para la gestion de pedidos a proveedores
-- `PersonaRestController.java`: Controlador de gestion centralizada de los usuarios 
-- `ProductoRestController.java`: Controlador para gestion de los productos
-- `ProveedorRestController.java`: Controlador para gestion de los proveedores
-- `RepartidorRestController.java`: Controlador para gestion de Repartidores
-- `VehiculoRestController.java`: Controlador para la gestion de vehiculos
-
-#### Entidades
-- `Persona.java`: Entidad General de atributos de (Clientesm,Repartidores,Administradores).
-- `Admin.java`: Entidad para administradores.
-- `Cliente.java`: Entidad para clientes.
-- `Coche.java`: Entidad para coches.
-- `Moto.java`: Entidad para motos.
-- `PedidoCliente.java`: Entidad para pedidos de clientes.
-- `PedidoClienteProducto.java`: Entidad para la relación entre pedidos de clientes y productos.
-- `PedidoProveedor.java`: Entidad para pedidos de proveedores.
-- `PedidoProveedorProducto.java`: Entidad para la relación entre pedidos de proveedores y productos.
-- `Producto.java`: Entidad para productos.
-- `Proveedor.java`: Entidad para proveedores.
-- `Repartidor.java`: Entidad para repartidores.
-- `Stock.java`: Entidad para stock de productos.
-- `Vehiculo.java`: Entidad para vehículos.
-
-#### Clases
-- `CarritoItem.java`: Clase Para logica del carrito
-- `Notification.java`: Manejo de las notificaciones del websock
-- `NotificationMessage.java`: Manejo del Mensaje del websock
-- `ImageUrlValidator.java`: Validacion de numeros
-- `NumericValidator.java`: Validador de tipo de archivo
-
-#### Configuración
-
-- `MailConfig.java`: Configuración para el envío de correos electrónicos.
-- `PaypalConfig.java`: Configuración para integración con PayPal.
-- `WebConfig.java`: Configuración general de la aplicación web.
-- `WebSocketConfig.java`: Configuración para WebSockets.
-- `AppConfig.java`: Configuración del bean RestTemplate para inyección de dependencias
-- `CookieInterceptor.java`: Método que intercepta la solicitud HTTP y añade la cookie JWT al encabezado si está presente.
-
-
-#### Seguridad
-
-- `JwtTokenUtil.java`: Utilidad para manejo de operaciones con JWT.
-- `PasswordEncryptor.java`: Componente para cifrado de contraseñas al iniciar la aplicación.
-- `JwtTokenFilter.java`: Filtro para autenticación de peticiones usando JWT.
-- `SecurityConfig.java`: Configuración de seguridad para la aplicación.
-
-### Recursos y Plantillas
-
-- `src/main/resources/templates`: Plantillas HTML para la interfaz de usuario, login, register
-    - `home/*`: Página principal y Gestor
-    - `carrito/ver.html`: Gestion de pago de productos
-    - `clientes/*`: Plantillas relacionadas con la gestión de Clientes
-    - `error/*`: Plantillas relacionadas con los errores de la web
-    - `repartidores/*`: Plantillas relacionadas con los repartidores
-    - `stock/*`: Plantillas relacionadas con el manejo del stock
-    - `pedidos/*`: Plantillas relacionadas con la gestión de pedidos.
-    - `productos/*`: Plantillas relacionadas con la gestión de productos.
-    - `profile/*`: Plantillas relacionadas con los perfiles de usuario.
-    - `fragmentos/*`: Fragmentos de plantillas reutilizables (e.g., navegación, pie de página).
-
-### Pruebas
-
-- `src/test/java/org/proyecto/fastdeliveryp_v1/FastDeliveryPV1ApplicationTests.java`: Pruebas para la aplicación principal.
-- `CarritoControllerTest.java`: Pruebas para el controlador del carrito de compras.
-- `JwtTokenUtilTest.java`: Pruebas para utilidades de tokens JWT.
-- `ProductoServiceTest.java`: Pruebas para el servicio de productos.
-
-## Contribuciones
-
-Las contribuciones son bienvenidas. Por favor, envía un pull request o abre un issue para discutir cualquier cambio que te gustaría realizar.
+Cobertura básica con JUnit 5 y Mockito en los puntos críticos:
+- `FastDeliveryPV1ApplicationTests` — carga del contexto de Spring.
+- `JwtTokenUtilTest` — creación, validación y expiración de tokens.
+- `CarritoControllerTest` — flujos del carrito.
+- `ProductoServiceTest` — lógica de negocio de productos.
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+MIT. Ver [`LICENSE`](./LICENSE).
 
----
+## Contacto
 
-### Contacto
-
-Para consultas adicionales, puedes contactarme a través de:
-
-- Email: alberto.caen.1@gmail.com
-- GitHub: https://github.com/Albertocaen
+- **Autor:** Alberto Caen
+- **GitHub:** [github.com/Albertocaen](https://github.com/Albertocaen)
+- **LinkedIn:** [linkedin.com/in/albertocaen77](https://www.linkedin.com/in/albertocaen77)
+- **Email:** alberto.caen.1@gmail.com
+- **Proyecto en vivo:** [bacodelivery.com](https://bacodelivery.com) · [Sobre el proyecto](https://bacodelivery.com/sobre-mi)

@@ -70,6 +70,28 @@ de "corre en producción":
 - **Seed script idempotente:** los `Docker/mysql-init/*.sql` se ejecutan solo la primera
   vez que se crea el volumen, dejando el sistema listo con 21 productos, 5 clientes, 4
   repartidores y 3 admins de prueba sin intervención manual.
+- **Cloudflare con Origin Certificate (15 años):** la app vive detrás de Cloudflare,
+  que termina TLS público con su propio cert y reencripta hacia el origin con un Origin
+  Cert emitido por Cloudflare y validado por Caddy. El visitante final nunca conoce la
+  IP real de la VM y, de regalo, entran WAF, mitigación DDoS y caché de borde.
+- **`trusted_proxies` con rangos CIDR de Cloudflare en Caddy:** sin esto `{client_ip}`
+  devolvería la IP del nodo de Cloudflare en todos los logs (inútil para auditar o
+  banear). Configurando los 22 rangos (IPv4 + IPv6) que publica Cloudflare como proxies
+  de confianza, Caddy lee `CF-Connecting-IP` y reenvía la IP real del visitante en
+  `X-Real-IP` y `X-Forwarded-For`.
+- **OCI Security List cerrada a Cloudflare:** el puerto 443 de la VM solo acepta
+  tráfico desde los 15 rangos de Cloudflare configurados como reglas ingress en la
+  Security List de Oracle Cloud. Cualquier intento de hablar directamente con la IP
+  pública de la VM se dropea a nivel de red, no llega ni a Caddy. Defensa en
+  profundidad: Cloudflare en el borde + firewall de Oracle por debajo.
+- **Limpieza de secretos en el historial git:** una auditoría con
+  `git log --all -- src/main/resources/application.properties` reveló que el fichero
+  estuvo trackeado durante 11 commits del primer arranque del proyecto, y un `.env` con
+  credenciales de correo en otra rama. Reescribí todo el historial con `git filter-repo
+  --invert-paths`, force push a todas las ramas, y `git fetch --prune` en cada clone
+  (Windows + VM de producción). Los commits viejos en GitHub ya no exponen esos
+  ficheros. Las credenciales filtradas pasan al protocolo estándar "asumir
+  comprometidas, rotar y olvidar".
 
 ## Funcionalidades principales
 
@@ -112,9 +134,10 @@ de "corre en producción":
 | Vistas | Thymeleaf 3 · Bootstrap 4/5 · jQuery 3.6 |
 | Build | Maven · Dockerfile multi-stage |
 | Contenedores | Docker · Compose v2 |
-| Reverse proxy | Caddy 2 (TLS automático) |
+| Reverse proxy | Caddy 2 (TLS, WebSocket upgrade, security headers) |
 | Cloud | Oracle Cloud — VM Ampere A1 (ARM64, 6 GB RAM) |
-| DNS | Cloudflare |
+| Edge / DNS | Cloudflare (proxy, Origin Cert, WAF, mitigación DDoS) |
+| Endurecimiento | OCI Security List restringida a CIDR de Cloudflare (ingress 443) |
 
 ## Arquitectura del proyecto
 
@@ -168,10 +191,54 @@ La guía completa de despliegue en Oracle Cloud (VM Ampere A1 ARM64, Caddy con H
 automático, DNS en Cloudflare, swap para la build, backups) está en
 [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md) para no ensuciar este README.
 
-El resumen es: `docker compose up -d --build` en la VM, Caddy saca el certificado
-Let's Encrypt solo, y MySQL persiste en un volumen Docker. Los únicos puertos expuestos
-al mundo son 80 y 443, atacados por Caddy. La app y MySQL viven en la red interna
-`fastdelivery-net`, sin exposición al host.
+El resumen es: `docker compose up -d --build` en la VM, Caddy presenta el Origin
+Certificate de Cloudflare, y MySQL persiste en un volumen Docker. La VM solo expone
+80 y 443, y la Security List de Oracle Cloud los restringe a los rangos IP de
+Cloudflare. La app y MySQL viven en la red interna `fastdelivery-net`, sin contacto
+con el host.
+
+## Endurecimiento de seguridad
+
+Capa por capa, qué protege a la app:
+
+**Borde (Cloudflare)**
+- Proxy activo: el visitante final habla con Cloudflare, no con la VM. La IP real
+  del origin queda oculta.
+- Cert público gestionado por Cloudflare: certificado renovado automáticamente, sin
+  Let's Encrypt manual ni cron.
+- WAF y mitigación DDoS incluidos en el plan gratuito: bots básicos, escaneos y
+  amplification attacks se filtran antes de llegar al origin.
+
+**Origen (Caddy + Spring Boot)**
+- TLS interno con Origin Certificate de Cloudflare (15 años): sin renovaciones que
+  vigilar.
+- `trusted_proxies static` con los 22 rangos CIDR de Cloudflare: `{client_ip}` y los
+  headers `X-Real-IP` / `X-Forwarded-For` reflejan la IP real del visitante.
+- Cabeceras de seguridad fijas: HSTS (1 año, includeSubDomains), X-Content-Type-Options,
+  X-Frame-Options, Referrer-Policy. La cabecera `Server` se elimina.
+- WebSocket upgrade explícito para mantener STOMP/SockJS funcionando bajo proxy.
+- `request_body max_size 20MB` para limitar uploads abusivos.
+
+**Red (Oracle Cloud)**
+- Security List ingress de la VCN solo deja entrar 80 y 443 desde los 15 rangos de
+  Cloudflare (uno por regla, IPv4). Todo lo demás se dropea en la capa de red — no
+  llega ni a Caddy.
+- Puertos internos (8080 de la app, 3306 de MySQL) **no se exponen al host**, solo
+  son accesibles dentro de la red Docker `fastdelivery-net`.
+
+**Aplicación**
+- JWT con blacklist en memoria (`TokenRevocationService`): el logout invalida el token
+  inmediatamente, aunque no haya caducado.
+- Cookies host-only sin atributo `Domain`: funcionan en cualquier host (localhost,
+  bacodelivery.com, IP) sin necesidad de configuración por entorno.
+- Cookies `Secure` derivadas de `request.isSecure()`, leyendo `X-Forwarded-Proto` que
+  inyecta Caddy gracias a `server.forward-headers-strategy=framework`.
+- Spring Security 6 con configuración estricta de rutas por rol y CSRF en formularios.
+
+**Repositorio**
+- `.gitignore` cubre `.env`, `application.properties`, `certs/`, `*.pem`, `*.key`.
+- Historial git limpio: `application.properties` y `.env` eliminados de los 11+5
+  commits viejos donde estuvieron trackeados, mediante `git filter-repo`.
 
 ## Changelog — primer despliegue productivo
 
@@ -199,6 +266,27 @@ Los fixes más relevantes aplicados durante el primer deploy a `bacodelivery.com
 - Rehechas `register.html`, `profile/view.html`, `profile/edit.html` y `perfil.css` con
   estética coherente (cards, avatar, paleta `#333` / `#f8f9fa`, Roboto).
 - Página nueva `/sobre-mi` con hero, funcionalidades, stack, retos y proyectos.
+
+## Changelog — endurecimiento post-deploy
+
+Mejoras de seguridad y operación aplicadas después del primer arranque estable:
+
+**Cloudflare y red**
+- Activado el proxy de Cloudflare (modo Full strict) con Origin Certificate de 15 años.
+- `Caddyfile`: `tls /etc/caddy/certs/origin.pem /etc/caddy/certs/origin.key` y bloque
+  global `servers { trusted_proxies static ... }` con los 22 rangos CIDR de Cloudflare.
+- `docker-compose.yml`: nuevo mount `./certs:/etc/caddy/certs:ro` para que Caddy lea
+  el cert sin que viaje en la imagen.
+- OCI Security List: añadidas 15 reglas ingress para puerto 443 limitadas a los rangos
+  IPv4 de Cloudflare. Acceso directo a la IP de la VM bloqueado.
+
+**Repositorio y secretos**
+- Auditoría con `git log --all -- ...` localizó secretos antiguos en el historial.
+- `git filter-repo --path ... --invert-paths` reescribió el historial completo (master
+  y todas las ramas vivas) eliminando `application.properties` y `.env` de cada commit.
+- Force push a todas las ramas + `git fetch --prune` en cada clone.
+- `.gitignore` actualizado con `certs/`, `*.pem`, `*.key`.
+- Limpieza de ramas obsoletas (`local-working`, `test`) que ya no aportaban valor.
 
 ## Tests
 

@@ -22,7 +22,6 @@ desplegada en producción sobre Oracle Cloud con HTTPS automático y dominio pro
 
 - **Demo en vivo:** [bacodelivery.com](https://bacodelivery.com)
 - **Página del proyecto:** [bacodelivery.com/sobre-mi](https://bacodelivery.com/sobre-mi)
-- **Guía de despliegue (OCI):** [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md)
 - **Autor:** [Alberto Caen](https://github.com/Albertocaen) — [LinkedIn](https://www.linkedin.com/in/albertocaen77)
 
 ---
@@ -199,13 +198,10 @@ de stock), cada uno con su tabla de línea de productos.
 
 ## Despliegue en producción
 
-La guía completa de despliegue en Oracle Cloud (Caddy con HTTPS, DNS en Cloudflare,
-backups y mantenimiento) está en [`DEPLOYMENT_OCI.md`](./DEPLOYMENT_OCI.md).
-
-Resumen del flujo: `docker compose up -d --build` en el servidor, Caddy presenta el
-Origin Certificate de Cloudflare, y MySQL persiste en un volumen Docker. El servidor
-solo expone los puertos 80 y 443, y la Security List de Oracle Cloud los restringe a
-los rangos IP de Cloudflare. La aplicación y MySQL viven en la red interna
+La aplicación se despliega en Oracle Cloud con `docker compose up -d --build`. Caddy
+presenta el Origin Certificate de Cloudflare y MySQL persiste en un volumen Docker.
+El servidor solo expone los puertos 80 y 443, y la Security List de Oracle Cloud los
+restringe a los rangos IP de Cloudflare. La aplicación y MySQL viven en la red interna
 `fastdelivery-net`, sin contacto con el host.
 
 ## Instalación local

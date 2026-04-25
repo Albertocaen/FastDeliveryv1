@@ -72,7 +72,7 @@ public class PedidoClienteController {
      * @return la vista de la lista de pedidos.
      */
     @GetMapping
-    public String listPedidos(Model model, Principal principal) {
+    public String listPedidos(Model model, Principal principal, HttpSession session) {
         List<PedidoCliente> pedidos;
         String username = principal.getName();
         Cliente cliente = clienteService.getClienteByEmail(username);
@@ -83,6 +83,8 @@ public class PedidoClienteController {
             pedidos = pedidoClienteService.getPedidosByCliente(cliente);
         }
 
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
+        model.addAttribute("carrito", carrito);
         model.addAttribute("pedidos", pedidos);
         return "pedidos/list";
     }
@@ -158,6 +160,47 @@ public class PedidoClienteController {
         return "pedidos/new :: new";
     }
 
+
+    /**
+     * Devuelve el fragmento con el detalle completo de un pedido (productos,
+     * precios unitarios, total, repartidor asignado).
+     * Accesible tanto por clientes (sólo sus propios pedidos) como por admins.
+     *
+     * @param id      El ID del pedido.
+     * @param model   El modelo para pasar datos a la vista.
+     * @param session La sesión HTTP para obtener el carrito (necesario para el nav).
+     * @param principal La información del usuario autenticado.
+     * @return El fragmento Thymeleaf "pedidos/detalle :: detalle".
+     */
+    @GetMapping("/{id}/detalle")
+    public String showDetalle(@PathVariable Integer id, Model model,
+                              HttpSession session, Principal principal) {
+        PedidoCliente pedido = pedidoClienteService.getPedidoById(id);
+        if (pedido == null) {
+            throw new IllegalArgumentException("Pedido no encontrado para el ID: " + id);
+        }
+
+        // Seguridad: un cliente sólo puede ver sus propios pedidos
+        if (!hasRole("ROLE_ADMIN")) {
+            String username = principal.getName();
+            Cliente cliente = clienteService.getClienteByEmail(username);
+            if (pedido.getDniClientePedido() == null ||
+                    !pedido.getDniClientePedido().getDniCliente().equals(cliente.getDniCliente())) {
+                throw new IllegalArgumentException("No tienes permiso para ver este pedido.");
+            }
+        }
+
+        // Calcular total del pedido
+        double total = pedido.getProductos().stream()
+                .mapToDouble(p -> p.getPrecio() * p.getCantidad())
+                .sum();
+
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
+        model.addAttribute("pedido", pedido);
+        model.addAttribute("totalPedido", String.format("%.2f", total));
+        model.addAttribute("carrito", carrito);
+        return "pedidos/detalle :: detalle";
+    }
 
     /**
      * Muestra el formulario para cambiar el estado de un pedido.

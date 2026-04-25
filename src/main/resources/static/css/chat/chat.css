@@ -1,165 +1,134 @@
-/* Estilos base para el chatbot */
+/* =============================================================================
+   CHAT.CSS — Chatbot flotante + control de música.
+   Solo aparece en desktop (≥1025px). Mobile/tablet ocultos por UX.
+   ============================================================================= */
+
+/* ---------- Chatbot ---------- */
 .chatbot-container {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    height: 400px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    bottom: var(--space-5);
+    right: var(--space-5);
+    z-index: var(--z-overlay);
+    width: 320px;
+    max-height: 440px;
+    background-color: var(--color-surface-elev);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s ease-in-out;
+    transition: max-height var(--tr-base), transform var(--tr-base);
+    font-family: var(--font-sans);
 }
 
-/* Ocultar en dispositivos móviles y tabletas */
+.chatbot-container.minimized {
+    max-height: 56px;
+}
+
+/* Ocultar en mobile y tablet */
 @media (max-width: 1024px) {
     .chatbot-container {
         display: none;
     }
 }
 
-/* Estilos para el encabezado del chatbot */
+/* Cabecera (también el card-header de Bootstrap) */
+.chatbot-container .card-header,
 .chatbot-header {
-    background-color: #333;
-    color: white;
-    padding: 10px;
+    background: linear-gradient(135deg, var(--color-ink) 0%, #2f2f2f 100%);
+    color: #fff;
+    padding: var(--space-3) var(--space-4);
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-weight: 500;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.02em;
+    border: none;
+    border-radius: 0;
 }
 
 .chatbot-header h4 {
     margin: 0;
+    font-size: var(--fs-base);
 }
 
 .chatbot-header .close-btn {
     background: none;
     border: none;
-    color: white;
-    font-size: 1.2em;
+    color: #fff;
+    font-size: var(--fs-lg);
+    line-height: 1;
 }
 
-/* Estilos para los mensajes del chatbot */
+/* Mensajes */
 .chatbot-messages {
     flex: 1;
-    padding: 10px;
+    padding: var(--space-3);
     overflow-y: auto;
-}
-
-/* Estilos para la entrada del chatbot */
-.chatbot-input {
+    background: rgba(250, 248, 243, 0.6);
     display: flex;
-    padding: 10px;
-    border-top: 1px solid #ddd;
+    flex-direction: column;
+    gap: var(--space-2);
 }
-
-.chatbot-input input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-}
-
-.chatbot-input button {
-    padding: 10px 20px;
-    border: none;
-    background-color: #333;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* Estilos para minimizar el chatbot */
-.minimized {
-    height: 70px !important;
-}
-
 
 .user-message {
-    background-color: #e1ffc7;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
+    background-color: rgba(201, 169, 97, 0.18);
+    color: var(--color-ink);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md) var(--radius-md) var(--radius-xs) var(--radius-md);
     align-self: flex-end;
+    max-width: 80%;
+    font-size: var(--fs-sm);
 }
 
 .chatbot-message {
-    background-color: #f1f1f1;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: var(--color-text);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md) var(--radius-md) var(--radius-md) var(--radius-xs);
     align-self: flex-start;
+    max-width: 80%;
+    font-size: var(--fs-sm);
+    border: 1px solid var(--color-border);
 }
 
-.music-control {
-    position: fixed;
-    top: 10px;
-    right: 20px;
-    background-color: whitesmoke;
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    z-index: 1100; /* Asegúrate de que esté por encima de otros elementos */
-    transition: transform 0.3s ease-in-out;
+/* Input */
+.chatbot-container .input-group {
+    margin: 0;
+    padding: var(--space-2);
+    background: var(--color-surface-solid);
+    border-top: 1px solid var(--color-border);
 }
 
-.music-control img {
-    width: 30px;
-    height: 30px;
+.chatbot-container .form-control {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--fs-sm);
 }
 
-.music-control:hover {
-    transform: scale(1.1);
+.chatbot-container .form-control:focus {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.2);
 }
 
-
-/* Media queries para dispositivos móviles */
-@media (max-width: 768px) {
-    .music-control {
-        top: 60px; /* Ajusta la posición para dispositivos móviles */
-        right: 20px;
-        padding: 8px;
-    }
-
-    .music-control img {
-        width: 25px;
-        height: 25px;
-    }
+.chatbot-container .input-group-append .btn {
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-deep) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    transition: filter var(--tr-base);
 }
 
-/* Media queries para tablets */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .music-control {
-        top: 15px; /* Ajusta la posición para tablets */
-        right: 25px;
-        padding: 10px;
-    }
-
-    .music-control img {
-        width: 28px;
-        height: 28px;
-    }
+.chatbot-container .input-group-append .btn:hover {
+    filter: brightness(1.08);
 }
-
-/* Media queries para pantallas grandes */
-@media (min-width: 1025px) {
-    .music-control {
-        top: 10px;
-        right: 20px;
-        padding: 10px;
-    }
-
-    .music-control img {
-        width: 30px;
-        height: 30px;
-    }
-
-}
-
 

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+
+<!--
+  Fragmento: pedidos/detalle :: detalle
+  Cargado vía AJAX por el botón "Ver detalles" en pedidos/list.html.
+  No incluye nav ni scripts globales: se inserta dentro del DOM ya existente.
+  Muestra: estado, fecha, cliente, repartidor, líneas de producto y total.
+-->
+<div th:fragment="detalle" class="detalle-overlay" id="detallePanel">
+
+    <div class="detalle-panel">
+
+        <!-- Cabecera del panel -->
+        <header class="detalle-panel__header">
+            <div class="detalle-panel__title-group">
+                <span class="detalle-panel__kicker">Detalle</span>
+                <h2 class="detalle-panel__title">
+                    Pedido <strong>#<span th:text="${pedido.id}">–</span></strong>
+                </h2>
+            </div>
+            <button class="btn-icon detalle-panel__close" id="detalleClose" aria-label="Cerrar detalle">
+                <i class="fas fa-times"></i>
+            </button>
+        </header>
+
+        <!-- Estado + fecha -->
+        <div class="detalle-meta">
+            <span class="pedido-status detalle-meta__status"
+                  th:classappend="${pedido.estado == 'Entregado' ? 'pedido-status--done' :
+                                   pedido.estado == 'Cancelado' ? 'pedido-status--cancel' :
+                                   'pedido-status--progress'}"
+                  th:text="${pedido.estado}">Estado</span>
+            <span class="detalle-meta__date">
+                <i class="fas fa-calendar-alt"></i>
+                <span th:text="${pedido.fechaPedido}">–</span>
+            </span>
+        </div>
+
+        <!-- Grid de info -->
+        <div class="detalle-info-grid">
+
+            <!-- Cliente -->
+            <div class="detalle-info-card" th:if="${pedido.dniClientePedido != null}">
+                <div class="detalle-info-card__icon"><i class="fas fa-user"></i></div>
+                <div>
+                    <p class="detalle-info-card__label">Cliente</p>
+                    <p class="detalle-info-card__value"
+                       th:text="${pedido.dniClientePedido.persona.nombre + ' ' + pedido.dniClientePedido.persona.apellido}">–</p>
+                    <p class="detalle-info-card__sub"
+                       th:text="${pedido.dniClientePedido.persona.email}">–</p>
+                </div>
+            </div>
+
+            <!-- Repartidor -->
+            <div class="detalle-info-card" th:if="${pedido.dniRepartidorPedido != null}">
+                <div class="detalle-info-card__icon"><i class="fas fa-motorcycle"></i></div>
+                <div>
+                    <p class="detalle-info-card__label">Repartidor</p>
+                    <p class="detalle-info-card__value"
+                       th:text="${pedido.dniRepartidorPedido.persona.nombre + ' ' + pedido.dniRepartidorPedido.persona.apellido}">–</p>
+                    <p class="detalle-info-card__sub"
+                       th:text="${'⭐ ' + (pedido.dniRepartidorPedido.calificacion != null ? pedido.dniRepartidorPedido.calificacion : 'Sin valoración')}">–</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Tabla de productos -->
+        <section class="detalle-productos">
+            <h3 class="detalle-productos__heading">
+                <i class="fas fa-box-open"></i> Productos del pedido
+            </h3>
+
+            <div class="detalle-productos__table-wrap">
+                <table class="detalle-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th class="text-right">Precio u.</th>
+                            <th class="text-center">Cant.</th>
+                            <th class="text-right">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="linea : ${pedido.productos}">
+                            <td>
+                                <span class="detalle-table__product-name"
+                                      th:text="${linea.producto.nombre}">Producto</span>
+                            </td>
+                            <td class="text-right"
+                                th:text="${#numbers.formatDecimal(linea.precio, 1, 2) + ' €'}">0.00 €</td>
+                            <td class="text-center"
+                                th:text="${linea.cantidad}">1</td>
+                            <td class="text-right detalle-table__subtotal"
+                                th:text="${#numbers.formatDecimal(linea.precio * linea.cantidad, 1, 2) + ' €'}">0.00 €</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="detalle-table__total-row">
+                            <td colspan="3" class="text-right">
+                                <strong>Total</strong>
+                            </td>
+                            <td class="text-right detalle-table__total"
+                                th:text="${totalPedido + ' €'}">0.00 €</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <!-- Pie del panel -->
+        <footer class="detalle-panel__footer">
+            <button class="btn-baco btn-baco--ghost" id="detalleCerrarBtn">
+                <i class="fas fa-times"></i> Cerrar
+            </button>
+        </footer>
+
+    </div>
+</div>
+
+</body>
+</html>

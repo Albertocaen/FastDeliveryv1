@@ -43,10 +43,12 @@
             <artifactId>font-awesome</artifactId>
             <version>${fontawesome.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
+        <!--
+            Auditoría 2026-04: eliminado spring-boot-starter-webflux.
+            Razón: la app es 100% MVC (Spring Boot Web + Tomcat embebido). Webflux
+            traía el stack reactivo (Netty) que conflicta con Web por el embedded
+            server. Reactor-test sigue siendo dependencia de test heredada.
+        -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>

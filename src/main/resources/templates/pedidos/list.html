@@ -1,57 +1,171 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Pedidos — Baco</title>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
-    <title>Lista de Pedidos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/nav.css">
     <link rel="stylesheet" href="/static/css/pedidos/pedidos.css">
-    <link rel="stylesheet" href="/static/css/pedidos/form.css">
 </head>
 <body>
-<div class="container">
-    <div class="lottie-container" id="lottie-carrito"></div>
-    <a href="/inicio" class="button is-link is-light back-arrow">Volver</a>
-    <h1 class="title">Pedidos</h1>
+<div class="offer-banner">
+    <h4>50€ DE DESCUENTO EN TU PRIMER PEDIDO</h4>
+</div>
+
+<div th:replace="fragmentos/nav :: nav-menu"></div>
+
+<main class="container pedidos-page">
+    <header class="pedidos-header">
+        <div class="lottie-container" id="lottie-carrito"></div>
+        <h1 class="pedidos-title">Tus pedidos</h1>
+        <p class="pedidos-subtitle">Historial y estado de tus compras</p>
+    </header>
+
+    <div class="pedidos-actions">
+        <a href="/inicio" class="btn-baco btn-baco--ghost">
+            <i class="fas fa-arrow-left"></i> Inicio
+        </a>
+    </div>
+
     <div id="notifications"></div>
     <div id="newPedidoContainer"></div>
     <div id="estadoPedidoContainer"></div>
-    <div class="columns is-multiline">
-        <div class="column is-4" th:each="pedido : ${pedidos}">
-            <div class="card">
-                <header class="card-header">
-                    <p class="card-header-title">
-                        Pedido <span th:text="${pedido.id}"></span>
-                    </p>
-                    <button class="deletePedidoLink card-header-icon" aria-label="more options" th:data-id="${pedido.id}">
-                        <span class="icon">
-                            <i class="fas fa-trash"></i>
-                        </span>
-                    </button>
-                </header>
-                <div class="card-content">
-                    <div class="content">
-                        <p><strong>Cliente:</strong> <span th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}"></span></p>
-                        <p><strong>Fecha:</strong> <span th:text="${pedido.fechaPedido}"></span></p>
-                        <p><strong>Estado:</strong> <span th:text="${pedido.estado}"></span></p>
-                        <p><strong>Productos:</strong></p>
-                        <ul>
-                            <li th:each="producto : ${pedido.productos}" th:text="${producto.producto.nombre + ' - ' + producto.cantidad + ' unidades'}"></li>
-                        </ul>
-                    </div>
+
+    <div class="pedidos-grid" th:if="${pedidos != null and !pedidos.isEmpty()}">
+        <article class="pedido-card" th:each="pedido : ${pedidos}">
+            <header class="pedido-card__header">
+                <div class="pedido-card__id">
+                    <span class="pedido-card__id-label">Pedido</span>
+                    <strong>#<span th:text="${pedido.id}">123</span></strong>
                 </div>
-                <footer class="card-footer">
-                    <a href="#" class="card-footer-item estadoPedidoLink" th:data-id="${pedido.id}">Cambiar Estado</a>
-                </footer>
+                <button class="deletePedidoLink btn-icon btn-icon--danger"
+                        sec:authorize="hasAuthority('ROLE_ADMIN')"
+                        th:data-id="${pedido.id}" aria-label="Eliminar pedido">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </header>
+
+            <div class="pedido-card__body">
+                <div class="pedido-card__row">
+                    <span class="pedido-card__label"><i class="fas fa-user"></i> Cliente</span>
+                    <span th:text="${pedido.dniClientePedido != null ? pedido.dniClientePedido.persona.nombre : 'N/A'}">Cliente</span>
+                </div>
+                <div class="pedido-card__row">
+                    <span class="pedido-card__label"><i class="fas fa-calendar"></i> Fecha</span>
+                    <span th:text="${pedido.fechaPedido}">2025-01-01</span>
+                </div>
+                <div class="pedido-card__row">
+                    <span class="pedido-card__label"><i class="fas fa-truck"></i> Estado</span>
+                    <span class="pedido-status"
+                          th:classappend="${pedido.estado == 'Entregado' ? 'pedido-status--done' :
+                                           pedido.estado == 'Cancelado' ? 'pedido-status--cancel' :
+                                           'pedido-status--progress'}"
+                          th:text="${pedido.estado}">En curso</span>
+                </div>
+
+                <div class="pedido-card__products">
+                    <span class="pedido-card__label"><i class="fas fa-box"></i> Productos</span>
+                    <ul class="pedido-card__list">
+                        <li th:each="producto : ${pedido.productos}"
+                            th:text="${producto.producto.nombre + ' × ' + producto.cantidad}">Producto x 1</li>
+                    </ul>
+                </div>
             </div>
-        </div>
+
+            <!-- Footer con botones. "Ver detalles" disponible para todos;
+                 "Cambiar estado" sólo para admin. -->
+            <footer class="pedido-card__footer pedido-card__footer--multi">
+                <button class="btn-baco btn-baco--ghost btn-baco--block verDetalleLink"
+                        th:data-id="${pedido.id}" type="button">
+                    <i class="fas fa-eye"></i> Ver detalles
+                </button>
+                <a href="#" class="btn-baco btn-baco--ghost btn-baco--block estadoPedidoLink"
+                   sec:authorize="hasAuthority('ROLE_ADMIN')"
+                   th:data-id="${pedido.id}">
+                    <i class="fas fa-edit"></i> Cambiar estado
+                </a>
+            </footer>
+        </article>
     </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <div class="pedidos-empty" th:if="${pedidos == null or pedidos.isEmpty()}">
+        <div class="pedidos-empty__icon">
+            <i class="fas fa-receipt"></i>
+        </div>
+        <h2 class="pedidos-empty__title">Aún no tienes pedidos</h2>
+        <p class="pedidos-empty__text">Cuando hagas tu primera compra, aparecerá aquí.</p>
+        <a th:href="@{/productos}" class="btn-baco">
+            <i class="fas fa-wine-bottle"></i> Ver productos
+        </a>
+    </div>
+</main>
+
+<!-- Contenedor del panel de detalle (se inyecta vía AJAX) -->
+<div id="detalleContainer"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.13/lottie.min.js"></script>
 <script src="/static/js/notifiaciones/notificaciones.js"></script>
 <script src="/static/js/notifiaciones/newEstado.js"></script>
+
+<script>
+/* -----------------------------------------------------------------------
+   Ver detalles de pedido
+   Carga el fragmento pedidos/detalle :: detalle vía AJAX y lo muestra
+   como un panel deslizante con overlay. El botón de cierre (×) y el
+   fondo oscuro desmontan el panel del DOM.
+   ----------------------------------------------------------------------- */
+$(document).on('click', '.verDetalleLink', function () {
+    const pedidoId = $(this).data('id');
+
+    $.get('/pedidos/' + pedidoId + '/detalle', function (html) {
+        $('#detalleContainer').html(html);
+
+        // Forzar reflow antes de añadir la clase para que la animación CSS arrange
+        requestAnimationFrame(function () {
+            $('#detallePanel').addClass('detalle-overlay--visible');
+        });
+
+        // Cerrar con el botón × o el botón "Cerrar"
+        $(document).on('click', '#detalleClose, #detalleCerrarBtn', cerrarDetalle);
+
+        // Cerrar al hacer clic en el overlay (fuera del panel)
+        $(document).on('click', '#detallePanel', function (e) {
+            if ($(e.target).is('#detallePanel')) {
+                cerrarDetalle();
+            }
+        });
+
+        // Cerrar con Escape
+        $(document).on('keydown.detalle', function (e) {
+            if (e.key === 'Escape') cerrarDetalle();
+        });
+
+    }).fail(function () {
+        swal('Error', 'No se pudo cargar el detalle del pedido.', 'error');
+    });
+});
+
+function cerrarDetalle() {
+    $('#detallePanel').removeClass('detalle-overlay--visible');
+    // Esperar a que termine la transición CSS antes de limpiar el DOM
+    setTimeout(function () {
+        $('#detalleContainer').empty();
+    }, 280);
+    $(document).off('keydown.detalle');
+    $(document).off('click', '#detalleClose, #detalleCerrarBtn');
+}
+</script>
 </body>
 </html>

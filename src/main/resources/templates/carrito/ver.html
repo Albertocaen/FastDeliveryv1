@@ -1,55 +1,104 @@
 <!DOCTYPE html>
-<html lang="ES" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <title>Carrito de Compras</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Carrito — Baco</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/nav.css">
     <link rel="stylesheet" href="/static/css/carrito/carrito.css">
 </head>
 <body>
-<div class="container mt-5">
-    <h1>Carrito de Compras</h1>
-    <div th:if="${carrito.size() > 0}">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${carrito}">
-                <td th:text="${item.producto.nombre}">Nombre del Producto</td>
-                <td th:text="${#numbers.formatDecimal(item.producto.precio, 1, 2)}">Precio del Producto</td>
-                <td th:text="${item.cantidad}">Cantidad</td>
-                <td th:text="${#numbers.formatDecimal(item.total, 1, 2)}">Total del Producto</td>
-                <td>
-                    <form th:action="@{/carrito/eliminar}" method="post">
-                        <input type="hidden" name="idProducto" th:value="${item.producto.id}"/>
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-end">
-            <span class="mr-2">Total: </span>
-            <span th:text="${totalCarrito}"></span>
-        </div>
-        <div class="d-flex justify-content-end">
+<div class="offer-banner">
+    <h4>50€ DE DESCUENTO EN TU PRIMER PEDIDO</h4>
+</div>
+
+<div th:replace="fragmentos/nav :: nav-menu"></div>
+
+<main class="container carrito-page">
+    <header class="carrito-header">
+        <h1 class="carrito-title">Tu carrito</h1>
+        <p class="carrito-subtitle" th:if="${carrito.size() > 0}"
+           th:text="${carrito.size()} + ' producto(s) listos para pedido'">3 productos</p>
+    </header>
+
+    <!-- Carrito con items -->
+    <div th:if="${carrito.size() > 0}" class="carrito-layout">
+        <section class="carrito-items">
+            <article class="carrito-item" th:each="item : ${carrito}">
+                <div class="carrito-item__info">
+                    <h3 class="carrito-item__name" th:text="${item.producto.nombre}">Nombre del producto</h3>
+                    <div class="carrito-item__meta">
+                        <span class="carrito-item__price-unit">
+                            <span th:text="${#numbers.formatDecimal(item.producto.precio, 1, 2)} + ' €'">0,00 €</span>
+                            <span class="muted">/ ud</span>
+                        </span>
+                        <span class="carrito-item__qty">
+                            <i class="fas fa-times"></i>
+                            <span th:text="${item.cantidad}">1</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="carrito-item__total">
+                    <span class="carrito-item__total-label">Total</span>
+                    <strong th:text="${#numbers.formatDecimal(item.total, 1, 2)} + ' €'">0,00 €</strong>
+                </div>
+                <form th:action="@{/carrito/eliminar}" method="post" class="carrito-item__remove">
+                    <input type="hidden" name="idProducto" th:value="${item.producto.id}"/>
+                    <button type="submit" class="btn-icon btn-icon--danger" aria-label="Eliminar del carrito">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </article>
+        </section>
+
+        <aside class="carrito-summary">
+            <h2 class="carrito-summary__title">Resumen</h2>
+            <div class="carrito-summary__row">
+                <span>Subtotal</span>
+                <strong th:text="${totalCarrito} + ' €'">0,00 €</strong>
+            </div>
+            <div class="carrito-summary__row muted">
+                <span>Envío</span>
+                <span>Gratis</span>
+            </div>
+            <hr class="carrito-summary__divider">
+            <div class="carrito-summary__row carrito-summary__row--total">
+                <span>Total</span>
+                <strong th:text="${totalCarrito} + ' €'">0,00 €</strong>
+            </div>
             <form th:action="@{/paypal/pagar}" method="post">
                 <input type="hidden" name="total" th:value="${totalCarrito}"/>
-                <button type="submit" class="btn btn-primary">Pagar con PayPal</button>
+                <button type="submit" class="btn-baco btn-baco--block">
+                    <i class="fab fa-paypal"></i> Pagar con PayPal
+                </button>
             </form>
-            <a th:href="@{/productos}" class="btn btn-primary">Seguir Comprando</a>
+            <a th:href="@{/productos}" class="btn-baco btn-baco--ghost btn-baco--block">
+                <i class="fas fa-arrow-left"></i> Seguir comprando
+            </a>
+        </aside>
+    </div>
+
+    <!-- Carrito vacío -->
+    <div th:if="${carrito.size() == 0}" class="carrito-empty">
+        <div class="carrito-empty__icon">
+            <i class="fas fa-shopping-cart"></i>
         </div>
+        <h2 class="carrito-empty__title">Tu carrito está vacío</h2>
+        <p class="carrito-empty__text">Echa un vistazo al catálogo y descubre nuestra selección.</p>
+        <a th:href="@{/productos}" class="btn-baco">
+            <i class="fas fa-wine-bottle"></i> Ver productos
+        </a>
     </div>
-    <div th:if="${carrito.size() == 0}">
-        <p>No hay productos en el carrito.</p>
-        <a th:href="@{/productos}" class="btn btn-primary">Ver Productos</a>
-    </div>
-</div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

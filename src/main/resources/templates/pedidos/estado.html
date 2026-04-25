@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
-    <title>Cambiar Estado del Pedido</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Cambiar estado — Baco</title>
 </head>
 <body>
-<div class="container" th:fragment="estado">
-    <h1>Cambiar Estado del Pedido</h1>
+<div class="form-container" th:fragment="estado">
+    <h1 class="title">Cambiar estado del pedido</h1>
     <form th:action="@{/pedidos/estado}" th:object="${pedido}" method="post">
         <input type="hidden" th:field="*{id}" />
-        <label for="estado">Estado:</label>
-        <select th:field="*{estado}">
-            <option value="En Curso">En Curso</option>
+
+        <label for="estado">Estado</label>
+        <select th:field="*{estado}" id="estado">
+            <option value="En Curso">En curso</option>
             <option value="Entregado">Entregado</option>
             <option value="Cancelado">Cancelado</option>
         </select>
-        <button type="submit">Actualizar Estado</button>
+
+        <button type="submit" class="btn-submit">
+            Actualizar estado
+        </button>
     </form>
 
-    <div th:if="${message}">
+    <div th:if="${message}" class="form-message">
         <p th:text="${message}"></p>
     </div>
 </div>

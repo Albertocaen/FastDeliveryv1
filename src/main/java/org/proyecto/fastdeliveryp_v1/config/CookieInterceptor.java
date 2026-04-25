@@ -3,8 +3,8 @@ package org.proyecto.fastdeliveryp_v1.config;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 
@@ -12,43 +12,55 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
+/**
+ * Propaga la cookie {@code JWT} del usuario al hacer llamadas {@code RestTemplate}
+ * salientes desde el backend.
+ *
+ * <p>Cuando el controller MVC llama a su propio API REST interno (por ejemplo, para
+ * delegar listados ya construidos), este interceptor copia la cookie JWT del usuario
+ * actual al header {@code Cookie} del request saliente, para que el endpoint REST
+ * vea al mismo usuario autenticado.</p>
+ *
+ * <p><b>Auditoría 2026-04 — fix:</b> {@code request.getCookies()} puede devolver
+ * {@code null} (si la petición no trae cookies). El código previo asumía no-null y
+ * lanzaba NPE en ese caso. Ahora se maneja con guarda explícita.</p>
+ */
 @Component
 public class CookieInterceptor implements ClientHttpRequestInterceptor {
+
+    private static final String JWT_COOKIE_NAME = "JWT";
 
     private final HttpServletRequest request;
 
     /**
-     * Constructor para inyectar la solicitud HTTP.
-     *
-     * @param request La solicitud HTTP actual.
+     * @param request la petición HTTP entrante (inyectada por Spring para acceder
+     *                a las cookies del usuario actual).
      */
-
     public CookieInterceptor(HttpServletRequest request) {
         this.request = request;
     }
 
     /**
-     * Método que intercepta la solicitud HTTP y añade la cookie JWT al encabezado si está presente.
+     * Intercepta el request saliente y copia la cookie JWT al header {@code Cookie}.
      *
-     * @param request   La solicitud HTTP.
-     * @param body      El cuerpo de la solicitud HTTP.
-     * @param execution Ejecución de la solicitud HTTP.
-     * @return La respuesta HTTP.
-     * @throws IOException Si ocurre un error durante la ejecución de la solicitud.
+     * @param request   request saliente.
+     * @param body      cuerpo del request.
+     * @param execution cadena de ejecución para continuar.
+     * @return la respuesta del servidor remoto.
+     * @throws IOException si la ejecución falla.
      */
-
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        // Obtiene todas las cookies de la solicitud
+    public ClientHttpResponse intercept(HttpRequest request,
+                                        byte[] body,
+                                        ClientHttpRequestExecution execution) throws IOException {
         Cookie[] cookies = this.request.getCookies();
-
-        // Busca la cookie JWT en el arreglo de cookies
-        Optional<Cookie> jwtCookie = Arrays.stream(cookies)
-                .filter(cookie -> "JWT".equals(cookie.getName()))
-                .findFirst();
-        // Si la cookie JWT está presente, la añade a los encabezados de la solicitud
-        jwtCookie.ifPresent(cookie -> request.getHeaders().add("Cookie", "JWT=" + cookie.getValue()));
-        // Ejecuta la solicitud HTTP con los cambios realizados
+        if (cookies != null) {
+            Optional<Cookie> jwtCookie = Arrays.stream(cookies)
+                    .filter(cookie -> JWT_COOKIE_NAME.equals(cookie.getName()))
+                    .findFirst();
+            jwtCookie.ifPresent(cookie ->
+                    request.getHeaders().add("Cookie", JWT_COOKIE_NAME + "=" + cookie.getValue()));
+        }
         return execution.execute(request, body);
     }
 }

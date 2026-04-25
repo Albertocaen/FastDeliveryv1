@@ -34,11 +34,15 @@ build/
 ### VS Code ###
 .vscode/
 
-##IGNORE PROPIERTIES
-src/main/resources/application.properties
-
 #Archives
 .env
+
+# Override local de docker-compose (solo desarrollo, NUNCA subir)
+docker-compose.override.yml
+
+# Notas privadas del autor (auditorías, decisiones, ideas)
+PROJECT_NOTES.md
+NOTES.md
 
 # Certificados Origin de Cloudflare (NUNCA subir la clave privada)
 certs/

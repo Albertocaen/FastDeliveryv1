@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lista de Clientes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lista de Clientes — Baco</title>
 </head>
 <body>
 <h1>Lista de Clientes</h1>
@@ -19,7 +21,14 @@
         <td th:text="${cliente.persona.nombre}"></td>
         <td>
             <a th:href="@{/clientes/edit/{dniCliente}(dniCliente=${cliente.dniCliente})}">Editar</a>
-            <a th:href="@{/clientes/delete/{dniCliente}(dniCliente=${cliente.dniCliente})}">Eliminar</a>
+            <!-- DELETE por POST (auditoría 2026-04). Antes era un <a> GET, vulnerable
+                 a CSRF GET-based: cualquier <img src="..."> disparaba la eliminación. -->
+            <form th:action="@{/clientes/delete/{dniCliente}(dniCliente=${cliente.dniCliente})}"
+                  method="post"
+                  style="display:inline"
+                  onsubmit="return confirm('¿Eliminar este cliente?');">
+                <button type="submit">Eliminar</button>
+            </form>
         </td>
     </tr>
     </tbody>

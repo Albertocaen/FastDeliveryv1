@@ -1,31 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
     <meta charset="UTF-8">
-    <title>Pago Cancelado</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pago cancelado — Baco</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="/static/css/pay/pay.css">
 </head>
 <body>
 <header>
     <nav>
         <ul>
-            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/inicio}">Inicio</a></li>
             <li><a th:href="@{/productos}">Productos</a></li>
             <li><a th:href="@{/carrito}">Carrito</a></li>
-            <li><a th:href="@{/contacto}">Contacto</a></li>
+            <li><a th:href="@{/pedidos}">Mis pedidos</a></li>
         </ul>
     </nav>
 </header>
 <main>
     <section>
-        <h1>Pago Cancelado</h1>
-        <p>Tu pago ha sido cancelado. Puedes intentar nuevamente o contactar al soporte si necesitas ayuda.</p>
-        <a th:href="@{/carrito}">Volver al Carrito</a>
+        <div class="cancel-icon">
+            <i class="fas fa-times"></i>
+        </div>
+        <h1>Pago cancelado</h1>
+        <p>El pago no se completó. Tu carrito sigue intacto, puedes intentarlo de nuevo cuando quieras.</p>
+        <a th:href="@{/carrito}">
+            <i class="fas fa-arrow-left"></i> Volver al carrito
+        </a>
     </section>
 </main>
 <footer>
-    <p>&copy; 2024 Fast Delivery. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Baco. Todos los derechos reservados.</p>
 </footer>
+
+<style>
+    .cancel-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        background: rgba(192, 57, 43, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #c0392b;
+        font-size: 2rem;
+    }
+</style>
 </body>
 </html>

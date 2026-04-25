@@ -1,73 +1,91 @@
-body {
-    color: #333;
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-}
+/* =============================================================================
+   PEDIDOS FORM — Modal de cambio de estado y formularios relacionados.
+   Cargado dinámicamente vía JS en pedidos/list.html.
+   ============================================================================= */
 
 .form-container {
-
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 2em;
-    margin: 2em auto;
-    max-width: 600px;
-    animation: fadeIn 1s ease-in-out;
+    background: var(--color-surface-elev);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--space-6);
+    margin: var(--space-6) auto;
+    max-width: 560px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: formFadeIn 0.4s ease-out;
 }
 
-h1 {
-
-    color: black;
-    padding: 0.5em;
-    border-radius: 5px;
+.form-container h1,
+.form-container .title {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    color: var(--color-ink);
     text-align: center;
-    font-size: 1.5em;
+    margin: 0 0 var(--space-5);
+    letter-spacing: -0.01em;
 }
 
-label {
+.form-container label {
     display: block;
-    margin: 0.5em 0 0.2em;
-    font-weight: bold;
+    margin: 0 0 var(--space-1);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
 }
 
-input, select {
+.form-container input,
+.form-container select,
+.form-container textarea {
     width: 100%;
-    padding: 0.5em;
-    margin: 0.2em 0 1em;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
+    padding: var(--space-3) var(--space-4);
+    margin: 0 0 var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-solid);
+    font-family: var(--font-sans);
+    font-size: var(--fs-base);
+    color: var(--color-text);
+    transition: border-color var(--tr-fast), box-shadow var(--tr-fast);
 }
 
-input:focus, select:focus {
-    border-color: #333;
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+    border-color: var(--color-gold);
     outline: none;
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.18);
 }
 
-.btn-submit {
-    background-color: #333;
-    color: floralwhite;
-    padding: 0.7em 1.5em;
+.form-container .btn-submit,
+.form-container button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-deep) 100%);
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    letter-spacing: 0.02em;
     border: none;
-    border-radius: 5px;
-    font-size: 1em;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-gold);
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    transition: transform var(--tr-base), filter var(--tr-base), box-shadow var(--tr-base);
 }
 
-.btn-submit:hover {
-    background-color: #555;
+.form-container .btn-submit:hover,
+.form-container button[type="submit"]:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 6px 22px rgba(201, 169, 97, 0.35);
 }
 
-.title{
-    color: black;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+@keyframes formFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }

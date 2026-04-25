@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Page Not Found</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Página no encontrada — Baco</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="/static/css/error/404.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.13/lottie.min.js"></script>
 </head>
 <body>
 <div class="container">
     <div class="lottie-container" id="lottie-404"></div>
-    <h1>404 - La Pagina no Existe</h1>
-    <p th:text="${errorMessage}">Lo sentimos, la página que buscas no existe.</p>
-    <a th:href="@{/}">Volver al Inicio</a>
+    <h1>404 — Página no encontrada</h1>
+    <p th:text="${errorMessage}">Lo sentimos, la página que buscas no existe o ya no está disponible.</p>
+    <a th:href="@{/}">Volver al inicio</a>
 </div>
 <script>
     lottie.loadAnimation({

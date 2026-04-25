@@ -1,33 +1,77 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pago Exitoso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pago realizado — Baco</title>
+    <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="/static/css/pay/pay.css">
 </head>
 <body>
 <header>
     <nav>
         <ul>
-            <li><a th:href="@{/}">Inicio</a></li>
+            <li><a th:href="@{/inicio}">Inicio</a></li>
             <li><a th:href="@{/productos}">Productos</a></li>
             <li><a th:href="@{/carrito}">Carrito</a></li>
-            <li><a th:href="@{/contacto}">Contacto</a></li>
+            <li><a th:href="@{/pedidos}">Mis pedidos</a></li>
         </ul>
     </nav>
 </header>
 <main>
     <section>
-        <h1>¡Pago Exitoso!</h1>
-        <p>Gracias por tu compra. Tu pago ha sido procesado exitosamente.</p>
-        <p>Número de Orden: <span th:text="${orderNumber}"></span></p>
-        <p>Payment ID: <span th:text="${paymentId}"></span></p>
-        <p>Token: <span th:text="${token}"></span></p>
-        <p>Payer ID: <span th:text="${payerId}"></span></p>
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        <h1>¡Pago realizado!</h1>
+        <p>Gracias por tu compra. Hemos procesado tu pago correctamente y ya estamos preparando tu pedido.</p>
+
+        <div class="payment-details">
+            <p><strong>Nº de orden:</strong> <span th:text="${orderNumber}">—</span></p>
+            <p><strong>Payment ID:</strong> <span th:text="${paymentId}">—</span></p>
+        </div>
+
+        <a th:href="@{/pedidos}">
+            <i class="fas fa-receipt"></i> Ver mis pedidos
+        </a>
     </section>
 </main>
 <footer>
-    <p>&copy; 2024 Fast Delivery. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Baco. Todos los derechos reservados.</p>
 </footer>
+
+<style>
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+        background: rgba(47, 138, 82, 0.12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2f8a52;
+        font-size: 2rem;
+    }
+    .payment-details {
+        margin: 1.5rem 0 0.5rem;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 8px;
+        text-align: left;
+        font-size: 0.875rem;
+    }
+    .payment-details p {
+        margin: 0.25rem 0;
+    }
+    .payment-details strong {
+        color: #2a2a2a;
+    }
+</style>
 </body>
 </html>

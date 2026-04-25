@@ -75,7 +75,9 @@ public class HomeController {
     }
 
     @GetMapping("/gestor")
-    public String showPage() {
+    public String showPage(Model model, HttpSession session) {
+        List<CarritoItem> carrito = productoService.obtenerCarritoDesdeSesion(session);
+        model.addAttribute("carrito", carrito);
         return "home/gestor";
     }
 

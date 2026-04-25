@@ -1,67 +1,94 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ES" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org" lang="es" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Productos — Baco</title>
     <link rel="icon" href="/static/uploads/nuevologo.ico" type="image/x-icon">
-    <title>Productos</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/nav.css">
     <link rel="stylesheet" href="/static/css/productos/productos.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/static/js/carritoList/CarritoList.js"></script>
     <link rel="stylesheet" href="/static/css/productos/newAndEdit/newAndEdit.css">
-
 </head>
 <body>
-<div class="container mt-5">
-    <div class="d-flex justify-content-center align-items-center mb-3">
-        <h1 class="text-center p-3 mb-3">Productos Disponibles</h1>
+<div class="offer-banner">
+    <h4>50€ DE DESCUENTO EN TU PRIMER PEDIDO</h4>
+</div>
+
+<div th:replace="fragmentos/nav :: nav-menu"></div>
+
+<main class="container productos-page">
+    <header class="productos-header">
+        <h1 class="productos-title">Catálogo</h1>
+        <p class="productos-subtitle">Selección curada de bebidas premium</p>
+    </header>
+
+    <div class="productos-actions">
+        <a href="/inicio" class="btn-baco btn-baco--ghost">
+            <i class="fas fa-arrow-left"></i> Inicio
+        </a>
+        <button id="btn-new" class="btn-baco" sec:authorize="hasAuthority('ROLE_ADMIN')">
+            <i class="fas fa-plus"></i> Añadir producto
+        </button>
     </div>
-    <div class="d-flex justify-content-center mb-3">
-        <a href="/inicio" class="btn btn-secondary mr-2">Volver a Inicio</a>
-        <button id="btn-new" class="btn btn-primary">Añadir nuevo</button>
-        <li class="nav-item" sec:authorize="isAuthenticated()">
-            <a class="nav-link" th:href="@{/carrito}">
-                <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Carrito de Compras" style="width: 30px; height: 30px;">
-                <span id="carritoItems" class="badge badge-pill badge-primary" th:text="${#lists.size(carrito)}">0</span>
-            </a>
-        </li>
-    </div>
+
     <div id="newCont"></div>
     <div id="editCont"></div>
-    <div id="productosContainer" class="row">
-        <div class="col-md-4 mb-4" th:each="producto : ${productos}">
-            <div class="card h-100 shadow-sm">
-                <img th:if="${producto.img != null}" th:src="@{${producto.img}}" class="card-img-top img-thumbnail" alt="Imagen del Producto">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title" th:text="${producto.nombre}">Nombre del Producto</h5>
-                    <p class="card-text" th:text="${producto.descripcion}">Descripción del Producto</p>
-                    <p class="card-text font-weight-bold" th:text="'Precio: ' + ${producto.precio} + ' €'">Precio</p>
-                    <div class="mt-auto">
-                        <a href="#" class="editarPerfil btn btn-warning" th:data-id="${producto.id}">Editar</a>
-                        <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn btn-danger btn-sm mb-1" onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">Eliminar</a>
-                        <button class="btn btn-success btn-sm agregarCarrito" th:data-id="${producto.id}">
-                            <img src="/static/uploads/59bedb1e7a216d0b052f128b.png" alt="Agregar al Carrito" style="width: 30px; height: 30px;">
-                        </button>
-                    </div>
+
+    <div id="productosContainer" class="productos-grid">
+        <article class="producto-card" th:each="producto : ${productos}">
+            <div class="producto-card__media">
+                <img th:if="${producto.img != null}" th:src="@{${producto.img}}" alt="Imagen del producto">
+            </div>
+            <div class="producto-card__body">
+                <h3 class="producto-card__name" th:text="${producto.nombre}">Nombre del producto</h3>
+                <p class="producto-card__desc" th:text="${producto.descripcion}">Descripción del producto</p>
+                <div class="producto-card__price" th:text="${#numbers.formatDecimal(producto.precio, 1, 2)} + ' €'">0,00 €</div>
+            </div>
+            <div class="producto-card__actions">
+                <button class="btn-baco btn-baco--block agregarCarrito" sec:authorize="isAuthenticated()" th:data-id="${producto.id}">
+                    <i class="fas fa-cart-plus"></i> Añadir al carrito
+                </button>
+                <div class="producto-card__admin" sec:authorize="hasAuthority('ROLE_ADMIN')">
+                    <a href="#" class="editarPerfil btn-icon btn-icon--warning" th:data-id="${producto.id}" aria-label="Editar producto">
+                        <i class="fas fa-pen"></i>
+                    </a>
+                    <a th:href="@{/productos/delete/{id}(id=${producto.id})}" class="btn-icon btn-icon--danger"
+                       onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');" aria-label="Eliminar producto">
+                        <i class="fas fa-trash"></i>
+                    </a>
                 </div>
             </div>
-        </div>
+        </article>
     </div>
-    <nav class="pagination justify-content-center" aria-label="Page navigation example" th:if="${totalPages > 1}">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/productos(page=${currentPage - 1})}">Anterior</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/productos(page=${i})}" th:text="${i + 1}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/productos(page=${currentPage + 1})}">Siguiente</a>
-            </li>
-        </ul>
+
+    <nav class="productos-pagination" aria-label="Paginación" th:if="${totalPages > 1}">
+        <a class="page-btn" th:classappend="${currentPage == 0} ? 'disabled'"
+           th:href="@{/productos(page=${currentPage - 1})}">
+            <i class="fas fa-chevron-left"></i> Anterior
+        </a>
+        <span class="page-numbers">
+            <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+               class="page-num" th:classappend="${i == currentPage} ? 'active'"
+               th:href="@{/productos(page=${i})}" th:text="${i + 1}">1</a>
+        </span>
+        <a class="page-btn" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'"
+           th:href="@{/productos(page=${currentPage + 1})}">
+            Siguiente <i class="fas fa-chevron-right"></i>
+        </a>
     </nav>
-</div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="/static/js/carritoList/CarritoList.js"></script>
 <script src="/static/js/newAndEdit/newAndEdit.js"></script>
 <script src="/static/js/exceptionHandler/clientValidate.js"></script>
 <script src="/static/js/exceptionHandler/errorMessage.js"></script>

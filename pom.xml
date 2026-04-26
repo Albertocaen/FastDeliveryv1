@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.proyecto</groupId>
-    <artifactId>FastDeliveryP_v1</artifactId>
+    <artifactId>BacoDelivery</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>FastDeliveryP_v1</name>
     <description>FastDeliveryP_v1</description>

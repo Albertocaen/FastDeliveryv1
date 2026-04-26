@@ -2,7 +2,7 @@
 
 ![Logo de FastDelivery](./src/main/resources/static/uploads/cambio-removebg-preview.png)
 
-# FastDelivery · Baco
+#  BacoDelivery
 
 **Aplicación web completa de pedidos y reparto — construida, securizada y desplegada
 en producción por un solo desarrollador.**

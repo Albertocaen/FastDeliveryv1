@@ -15,7 +15,7 @@ RUN apk add --no-cache apache2 netcat-openbsd
 
 WORKDIR /app
 
-COPY --from=build /workspace/target/BacoDelivery-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /workspace/target/BacoDelivery.jar app.jar
 COPY my-directory.conf /etc/apache2/conf.d/
 
 RUN mkdir -p /var/www/logs /app/uploads && \

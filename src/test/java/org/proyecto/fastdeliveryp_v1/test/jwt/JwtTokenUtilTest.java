@@ -1,4 +1,4 @@
-package org.proyecto.fastdeliveryp_v1.test;
+package org.proyecto.fastdeliveryp_v1.test.jwt;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,4 +47,6 @@ public class JwtTokenUtilTest {
         String token = jwtTokenUtil.createToken("test@example.com", "ROLE_USER");
         assertFalse(jwtTokenUtil.isTokenExpired(token), "The token should not be expired");
     }
+
+
 }

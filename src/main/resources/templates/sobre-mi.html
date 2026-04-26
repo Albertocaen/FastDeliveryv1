@@ -9,7 +9,7 @@
     <meta name="author" content="Alberto Caen">
     <meta name="keywords" content="Alberto Caen, desarrollador Java, Spring Boot, full stack, portfolio, FastDelivery, Baco, Oracle Cloud, Docker, Cloudflare">
 
-    <!-- Open Graph (LinkedIn / Facebook / WhatsApp) -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="FastDelivery · Baco">
     <meta property="og:title" content="Alberto Caen — Desarrollador Full Stack Java">
@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="col-md-8 text-center text-md-left">
-                <p class="hero-kicker"><i class="fas fa-laptop-code"></i> Backend Java &middot; Portfolio</p>
+                <!-- 3: Kicker "Backend Java · Portfolio" eliminado -->
                 <h1 class="hero-name">Alberto Caen</h1>
                 <p class="hero-role">Desarrollador Full Stack Java &middot; Spring Boot, Docker y cloud</p>
                 <p class="hero-subtitle">
@@ -60,6 +60,8 @@
                     la lógica de negocio, monto el despliegue y lo dejo corriendo en producción.
                     <strong>FastDelivery &middot; Baco</strong> es el ejemplo completo.
                 </p>
+
+                <!-- Botones sociales: contacto -->
                 <nav class="hero-socials" aria-label="Enlaces de contacto">
                     <a href="https://github.com/Albertocaen" target="_blank" rel="noopener" class="social-btn">
                         <i class="fab fa-github"></i> GitHub
@@ -70,9 +72,19 @@
                     <a href="mailto:alberto.caen.1@gmail.com" class="social-btn">
                         <i class="fas fa-envelope"></i> Email
                     </a>
-                    <a href="https://bacodelivery.com" target="_blank" rel="noopener" class="social-btn social-btn--primary">
-                        <i class="fas fa-external-link-alt"></i> Demo en vivo
-                    </a>
+
+                    <!-- 1 y 2: Separados del grupo anterior para mayor distancia.
+                         "Volver atrás" navega al inicio de la app.
+                         "Mi Portfolio" va al perfil de GitHub como portfolio externo. -->
+                    <div class="hero-socials__app-links">
+                        <a href="/inicio" class="social-btn">
+                            <i class="fas fa-arrow-left"></i> Volver atrás
+                        </a>
+                        <a href="https://github.com/Albertocaen" target="_blank" rel="noopener"
+                           class="social-btn social-btn--primary">
+                            <i class="fas fa-briefcase"></i> Mi Portfolio
+                        </a>
+                    </div>
                 </nav>
             </div>
         </div>
@@ -81,7 +93,7 @@
 
 <main class="portfolio-main">
 
-    <!-- Métricas / impacto -->
+    <!-- Métricas -->
     <section class="metrics-strip" aria-label="Métricas del proyecto">
         <div class="container">
             <div class="metrics-grid">
@@ -152,7 +164,7 @@
                 <article class="feature-card">
                     <i class="fas fa-shield-alt feature-icon"></i>
                     <h3>Seguridad por capas</h3>
-                    <p>Spring Security 6 + JWT con revocación, cookies host-only, CSRF y control granular por rol.</p>
+                    <p>Spring Security 6 + JWT con revocación, cookies host-only y control granular por rol.</p>
                 </article>
                 <article class="feature-card">
                     <i class="fas fa-bolt feature-icon"></i>
@@ -248,48 +260,7 @@
             </ul>
         </section>
 
-        <!-- Otros proyectos -->
-        <section class="section-block">
-            <h2 class="section-heading">
-                <i class="fas fa-code-branch"></i>
-                Otros proyectos
-            </h2>
-            <p class="muted mb-4">
-                Otras herramientas en GitHub pensadas para ahorrar trabajo repetitivo y
-                mejorar mi propio flujo como desarrollador.
-            </p>
-            <article class="project-card">
-                <div class="project-card__head">
-                    <div>
-                        <h3 class="project-card__title">
-                            <i class="fas fa-magic"></i>
-                            AutoComponentGenerator
-                        </h3>
-                        <p class="project-card__tagline">Generador automático de componentes para proyectos Java</p>
-                    </div>
-                    <a href="https://github.com/Albertocaen/AutoComponentGenerator"
-                       target="_blank" rel="noopener" class="btn-baco btn-baco--ghost btn-baco--sm">
-                        <i class="fab fa-github"></i> Ver repo
-                    </a>
-                </div>
-                <p class="project-card__desc">
-                    Herramienta que automatiza la creación de clases repetitivas en proyectos Java
-                    (entidades, repositorios, servicios y controladores) a partir de una
-                    configuración mínima. Nació para acelerar la fase inicial de proyectos como
-                    FastDelivery, evitando escribir CRUD boilerplate a mano.
-                </p>
-                <div class="project-card__tags">
-                    <span class="tech-chip">Java</span>
-                    <span class="tech-chip">Generación de código</span>
-                    <span class="tech-chip">Productividad</span>
-                </div>
-            </article>
-            <p class="text-center mt-4 mb-0">
-                <a href="https://github.com/Albertocaen" target="_blank" rel="noopener" class="all-repos-link">
-                    Ver todos mis repositorios en GitHub <i class="fas fa-arrow-right"></i>
-                </a>
-            </p>
-        </section>
+        <!-- 5: Sección "Otros proyectos" eliminada -->
 
         <!-- CTA -->
         <section class="section-block cta-block">
@@ -303,7 +274,7 @@
                 escríbeme.
             </p>
             <div class="cta-buttons">
-                <a href="https://github.com/Albertocaen/FastDeliveryv1" target="_blank" rel="noopener" class="btn-baco">
+                <a href="https://github.com/Albertocaen/BacoDelivery" target="_blank" rel="noopener" class="btn-baco">
                     <i class="fab fa-github"></i> Ver código en GitHub
                 </a>
                 <a href="mailto:alberto.caen.1@gmail.com" class="btn-baco btn-baco--ghost">

@@ -4,6 +4,18 @@
    ============================================================================= */
 
 .portfolio-page {
+    /* Dark theme — sobreescribe los tokens globales de styles.css
+     * solo para el scope de esta página. El resto de la app queda intacto. */
+    --color-bg:             #121212;
+    --color-surface-solid:  #1c1c1c;
+    --color-surface:        rgba(255, 255, 255, 0.04);
+    --color-surface-elev:   rgba(255, 255, 255, 0.06);
+    --color-text:           #c8c4bc;
+    --color-ink:            #f0ece2;
+    --color-muted:          #7a7672;
+    --color-border:         rgba(255, 255, 255, 0.08);
+    --color-border-strong:  rgba(255, 255, 255, 0.14);
+
     margin: 0;
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -140,6 +152,27 @@
 
 @media (max-width: 767px) {
     .hero-socials {
+        justify-content: center;
+    }
+}
+
+/* Grupo secundario de botones (Volver atrás / Mi Portfolio):
+ * separado visualmente del grupo de redes sociales con una línea vertical. */
+.hero-socials__app-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: var(--space-6);
+    padding-left: var(--space-5);
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 767px) {
+    .hero-socials__app-links {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+        width: 100%;
         justify-content: center;
     }
 }

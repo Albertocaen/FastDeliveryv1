@@ -1,4 +1,4 @@
-package org.proyecto.fastdeliveryp_v1.test;
+package org.proyecto.fastdeliveryp_v1.test.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.proyecto.fastdeliveryp_v1.repository.ProductoRepository;
 import org.proyecto.fastdeliveryp_v1.service.ProductoService;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +56,14 @@ public class ProductoServiceTest {
         Producto producto = productoService.getProductoById(1);
         assertNotNull(producto);
         assertEquals("Producto 1", producto.getNombre());
+        verify(productoRepository, times(1)).findById(1);
+    }
+
+    @Test
+    void testGetProductoByIdNotFound() {
+        when(productoRepository.findById(anyInt())).thenReturn(Optional.empty());
+        Producto producto = productoService.getProductoById(1);
+        assertNull(producto);
         verify(productoRepository, times(1)).findById(1);
     }
 

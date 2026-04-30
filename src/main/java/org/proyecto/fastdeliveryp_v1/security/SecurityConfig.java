@@ -82,6 +82,13 @@ public class SecurityConfig {
                     "/logout"
                 ).permitAll()
 
+                // OpenAPI / Swagger UI — sin autenticación para poder consultarlos.
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**"
+                ).permitAll()
+
                 // Admin only.
                 .requestMatchers("/admin/**", "/gestor", "/gestor/**").hasAuthority("ROLE_ADMIN")
 

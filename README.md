@@ -286,6 +286,14 @@ Pase de auditoría P0/P1 sobre la base ya estable. Principales cambios:
 - Rate limiting con Bucket4j en `/login` y `/register`.
 - Migrar PayPal SDK (`rest-api-sdk:1.14.0` deprecado desde 2020).
 
+### 2026-04 — Integración OpenAPI / Swagger UI
+
+- Añadido `springdoc-openapi-starter-webmvc-ui 2.5.0` al `pom.xml`.
+- `OpenApiConfig`: metadatos de la spec (título, descripción, contacto, servidores local y producción).
+- `SecurityConfig`: rutas `/swagger-ui/**` y `/v3/api-docs/**` en `permitAll`.
+- Documentación disponible en `/swagger-ui/index.html` (local y producción).
+- Autenticación por cookie `jwt`: iniciar sesión en `/login` para acceder a endpoints protegidos desde la UI.
+
 ### 2026-04 — Refactor UX y sistema de diseño
 
 - Tokens CSS globales en `styles.css` (paleta dorado/cobre, tipografía, espaciado de 4px).
